@@ -1,0 +1,46 @@
+{
+  "name": "revision-city",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "db:generate": "npx supabase gen types typescript --project-id $SUPABASE_PROJECT_ID > src/types/database.ts",
+    "db:seed": "npx tsx scripts/seed-simple.ts",
+    "content:generate": "npx tsx scripts/generate-content.ts",
+    "generate": "node scripts/generate-subject-content.js",
+    "generate:batch": "node scripts/batch-generate-all.js",
+    "validate": "node scripts/validate-content.js",
+    "db:status": "node scripts/check-db.js"
+  },
+  "dependencies": {
+    "@clerk/nextjs": "^6.36.10",
+    "@stripe/stripe-js": "^4.1.0",
+    "@supabase/supabase-js": "^2.45.0",
+    "clsx": "^2.1.1",
+    "dotenv": "^17.2.3",
+    "jsonrepair": "^3.13.2",
+    "lucide-react": "^0.424.0",
+    "next": "14.2.5",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "stripe": "^16.12.0",
+    "tailwind-merge": "^2.4.0",
+    "zustand": "^4.5.4"
+  },
+  "devDependencies": {
+    "@anthropic-ai/sdk": "^0.24.3",
+    "@types/node": "^20.14.12",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "autoprefixer": "^10.4.19",
+    "eslint": "^8.57.0",
+    "eslint-config-next": "14.2.5",
+    "postcss": "^8.4.40",
+    "tailwindcss": "^3.4.7",
+    "tsx": "^4.16.2",
+    "typescript": "^5.5.4"
+  }
+}

@@ -1,0 +1,90 @@
+# Dependencies
+/node_modules
+/.pnp
+.pnp.js
+
+# Testing
+/coverage
+
+# Next.js
+/.next/
+/out/
+
+# Production
+/build
+
+# Misc
+.DS_Store
+*.pem
+
+# Debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Local env files
+.env*.local
+.env.local
+.env.local.backup
+
+# Vercel
+.vercel
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
+# Generated content
+/generated-sql/
+*.log
+*.pid
+
+# Scripts and development tools
+*.sh
+*.py
+*.sql
+*.js.map
+
+# Documentation (keep only main ones)
+AI-TEST-GENERATOR-SPEC.md
+ALL-FIXES-AND-ANIMATIONS-ADDED.md
+AUTOMATION-GUIDE.md
+AUTOMATION-SETUP.md
+BUGS-FIXED.md
+CLERK-SETUP-GUIDE.md
+COMPLETE-APP-OVERVIEW.md
+COMPREHENSIVE-FUNCTIONALITY-REPORT.md
+DEPLOYMENT-CHECKLIST.md
+FINAL-LAUNCH-STATUS.md
+FINAL-STATUS-REPORT.md
+FINAL-VERIFICATION-REPORT.md
+FIXES-APPLIED.md
+GENERATION-STATUS.md
+GENERATION-SUMMARY.md
+LAUNCH-CHECKLIST.md
+LAUNCH-CHECKLIST.txt
+LAUNCH-SUMMARY.md
+LAUNCH-TODAY-PLAN.md
+MANUAL-TESTING-GUIDE.md
+MONITOR.md
+MORNING-STATUS-REPORT.md
+MVP-GENERATION-GUIDE.md
+PHYSICS-GENERATION-GUIDE.md
+PHYSICS-QUICK-START.md
+QUICK-START.md
+START-HERE.md
+STATUS.md
+SUGGESTIONS-FOR-BEST-APP.md
+TECH-STACK.md
+WATCH-LIVE.md
+OVERNIGHT-LAUNCH-PLAN.md
+
+# Generation logs
+/generation-logs/
+import-progress*.log
+dev-server.log
+
+# Test files
+test-*.js
+check-*.js
+*.backup
