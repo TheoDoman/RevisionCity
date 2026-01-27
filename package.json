@@ -16,7 +16,7 @@
     "db:status": "node scripts/check-db.js"
   },
   "dependencies": {
-    "@clerk/nextjs": "^6.36.10",
+    "@clerk/nextjs": "^5.7.0",
     "@stripe/stripe-js": "^4.1.0",
     "@supabase/supabase-js": "^2.45.0",
     "clsx": "^2.1.1",
