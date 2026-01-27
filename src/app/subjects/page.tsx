@@ -4,6 +4,9 @@ import { getSubjectIcon, getSubjectColor } from '@/lib/utils';
 import { getSubjects } from '@/lib/data';
 import { Suspense } from 'react';
 
+// Force dynamic rendering - don't prerender during build
+export const dynamic = 'force-dynamic'
+
 // Fallback subjects for when database is empty - 9 core IGCSE subjects
 const fallbackSubjects = [
   { id: '1', name: 'Mathematics', slug: 'mathematics', description: 'Numbers, algebra, geometry, statistics and more.', topic_count: 12, icon: '📐', color: 'from-blue-500 to-indigo-600', created_at: '' },

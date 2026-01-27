@@ -6,6 +6,9 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 )
 
+// Prevent static generation - this route should only run on-demand
+export const dynamic = 'force-dynamic'
+
 export async function GET() {
   try {
     const report = {
