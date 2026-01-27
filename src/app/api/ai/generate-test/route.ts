@@ -6,8 +6,17 @@ export async function POST(request: NextRequest) {
   try {
     const { subjectId, topicId, difficulty, questionCount } = await request.json()
 
+    // Verify API key exists
+    if (!process.env.ANTHROPIC_API_KEY) {
+      console.error('ANTHROPIC_API_KEY is not set!')
+      return NextResponse.json(
+        { error: 'AI service not configured. Please contact support.' },
+        { status: 500 }
+      )
+    }
+
     // Initialize clients
-    const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY! })
+    const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
 
     const supabase = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -130,8 +139,19 @@ Return ONLY valid JSON in this exact format (no markdown, no explanation):
 
   } catch (error) {
     console.error('Error generating test:', error)
+
+    // Check if it's an Anthropic API error
+    if (error instanceof Error) {
+      console.error('Error details:', error.message)
+      console.error('Error stack:', error.stack)
+    }
+
     return NextResponse.json(
-      { error: 'Failed to generate test', details: error instanceof Error ? error.message : 'Unknown error' },
+      {
+        error: 'Failed to generate test',
+        details: error instanceof Error ? error.message : 'Unknown error',
+        hint: 'Check that ANTHROPIC_API_KEY is set in environment variables'
+      },
       { status: 500 }
     )
   }
