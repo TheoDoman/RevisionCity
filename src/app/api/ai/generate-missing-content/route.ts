@@ -85,8 +85,8 @@ Return ONLY valid JSON in this exact format (no markdown, no explanation):
     "Key concept 2"
   ],
   "definitions": [
-    { "term": "Term 1", "definition": "Clear definition" },
-    { "term": "Term 2", "definition": "Clear definition" }
+    { "term": "Key Term", "definition": "Clear, concise definition of the term" },
+    { "term": "Important Concept", "definition": "Detailed explanation of the concept" }
   ],
   "formulas": [
     { "name": "Formula Name", "formula": "x = y + z", "usage": "When to use this formula" }
