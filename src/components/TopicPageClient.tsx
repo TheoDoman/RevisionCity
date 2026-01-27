@@ -30,36 +30,36 @@ const revisionMethods = [
 // Fallback mock data
 const mockNote: Note = {
   id: '1', subtopic_id: '1', title: 'Introduction & Key Concepts',
-  content: `## Overview\n\nThis topic introduces the fundamental concepts.\n\n## Key Definitions\n\n**Term 1**: The first important definition.\n\n**Term 2**: Another crucial concept.\n\n## Core Principles\n\n- First principle: Understanding the basic framework\n- Second principle: Applying knowledge\n- Third principle: Connecting concepts`,
-  key_points: ['Understand basic definitions', 'Three core principles', 'Real-world examples help', 'Watch for misconceptions'],
+  content: `## Overview\n\nThis topic introduces the fundamental concepts you need to master for your IGCSE exams.\n\n## Key Definitions\n\n**Variable**: A quantity that can change or vary in value.\n\n**Constant**: A fixed value that does not change.\n\n## Core Principles\n\n- First principle: Understanding the basic framework and definitions\n- Second principle: Applying knowledge to solve problems\n- Third principle: Connecting concepts across topics`,
+  key_points: ['Understand basic definitions', 'Master three core principles', 'Use real-world examples', 'Watch for common misconceptions'],
   created_at: '',
 };
 
 const mockFlashcards: Flashcard[] = [
-  { id: '1', subtopic_id: '1', front: 'What is Term 1?', back: 'The foundational concept.', difficulty: 'easy', created_at: '' },
-  { id: '2', subtopic_id: '1', front: 'Name the three core principles', back: '1. Framework\n2. Application\n3. Connection', difficulty: 'medium', created_at: '' },
-  { id: '3', subtopic_id: '1', front: 'Difference between Term 1 and Term 2?', back: 'Term 1 is foundational, Term 2 builds upon it.', difficulty: 'hard', created_at: '' },
+  { id: '1', subtopic_id: '1', front: 'What is a variable?', back: 'A quantity that can change or vary in value.', difficulty: 'easy', created_at: '' },
+  { id: '2', subtopic_id: '1', front: 'Name the three core principles of this topic', back: '1. Understanding framework\n2. Applying knowledge\n3. Connecting concepts', difficulty: 'medium', created_at: '' },
+  { id: '3', subtopic_id: '1', front: 'What is the difference between a variable and a constant?', back: 'A variable can change, while a constant stays fixed.', difficulty: 'hard', created_at: '' },
 ];
 
 const mockQuiz: QuizQuestion[] = [
-  { id: '1', subtopic_id: '1', question: 'Which best describes the first principle?', question_type: 'multiple_choice', options: ['Memorizing', 'Understanding framework', 'Practice', 'Reading'], correct_answer: 'Understanding framework', explanation: 'The first principle emphasizes understanding.', difficulty: 'easy', created_at: '' },
-  { id: '2', subtopic_id: '1', question: 'True or False: Term 2 needs Term 1.', question_type: 'true_false', options: ['True', 'False'], correct_answer: 'True', explanation: 'Term 2 builds on Term 1.', difficulty: 'easy', created_at: '' },
+  { id: '1', subtopic_id: '1', question: 'Which best describes the first core principle?', question_type: 'multiple_choice', options: ['Memorizing facts', 'Understanding the framework', 'Practicing problems', 'Reading textbooks'], correct_answer: 'Understanding the framework', explanation: 'The first principle emphasizes building a strong foundation through understanding.', difficulty: 'easy', created_at: '' },
+  { id: '2', subtopic_id: '1', question: 'True or False: Constants can change their value.', question_type: 'true_false', options: ['True', 'False'], correct_answer: 'False', explanation: 'Constants are fixed values that do not change.', difficulty: 'easy', created_at: '' },
 ];
 
 const mockPractice: PracticeQuestion[] = [
-  { id: '1', subtopic_id: '1', question: 'Explain the relationship between Term 1 and Term 2.', marks: 4, mark_scheme: ['Definition of Term 1', 'Definition of Term 2', 'Relationship', 'Example'], example_answer: 'Term 1 is foundational. Term 2 builds upon it.', difficulty: 'foundation', created_at: '' },
+  { id: '1', subtopic_id: '1', question: 'Explain the relationship between variables and constants in mathematical expressions.', marks: 4, mark_scheme: ['Definition of variable', 'Definition of constant', 'How they work together', 'Example provided'], example_answer: 'Variables are quantities that can change, while constants are fixed. In expressions, constants provide stable reference points while variables allow us to represent changing quantities.', difficulty: 'foundation', created_at: '' },
 ];
 
 const mockRecall: RecallPrompt[] = [
-  { id: '1', subtopic_id: '1', prompt: 'Explain Term 1 in your own words.', hints: ['Think basics', 'Why first?'], model_answer: 'Term 1 is the foundation.', key_points_to_include: ['Definition', 'Foundation'], created_at: '' },
+  { id: '1', subtopic_id: '1', prompt: 'Explain what a variable is and give an example.', hints: ['Think about quantities that change', 'Use real-world examples'], model_answer: 'A variable is a quantity that can change or take different values. For example, temperature throughout a day is a variable.', key_points_to_include: ['Definition of variable', 'Can change value', 'Real example'], created_at: '' },
 ];
 
 const mockSummary: SummarySheet = {
-  id: '1', topic_id: '1', title: 'Summary',
-  key_concepts: ['Term 1 is foundational', 'Term 2 builds on Term 1', 'Three core principles'],
-  definitions: [{ term: 'Term 1', definition: 'Foundational concept' }],
-  formulas: [{ name: 'Basic Formula', formula: 'A = B × C', usage: 'Calculate relationship' }],
-  exam_tips: ['Define terms first', 'Use examples'],
+  id: '1', topic_id: '1', title: 'Topic Summary',
+  key_concepts: ['Variables represent changing quantities', 'Constants are fixed values', 'Apply three core principles for mastery'],
+  definitions: [{ term: 'Variable', definition: 'A quantity that can change or vary in value' }, { term: 'Constant', definition: 'A fixed value that does not change' }],
+  formulas: [{ name: 'Basic Expression', formula: 'y = mx + c', usage: 'Where m and c are constants, x is the variable' }],
+  exam_tips: ['Always define your terms clearly', 'Use examples to illustrate concepts', 'Show your working step by step'],
   created_at: '',
 };
 
@@ -68,9 +68,9 @@ const mockMindMap: MindMap = {
   root: {
     id: 'root', label: 'Key Concepts',
     children: [
-      { id: 'term1', label: 'Term 1', children: [{ id: 't1d', label: 'Definition' }] },
-      { id: 'term2', label: 'Term 2', children: [{ id: 't2d', label: 'Definition' }] },
-      { id: 'principles', label: 'Principles', children: [{ id: 'p1', label: 'Framework' }, { id: 'p2', label: 'Application' }] },
+      { id: 'variables', label: 'Variables', children: [{ id: 'v1', label: 'Can change' }, { id: 'v2', label: 'Represented by letters' }] },
+      { id: 'constants', label: 'Constants', children: [{ id: 'c1', label: 'Fixed values' }, { id: 'c2', label: 'Do not change' }] },
+      { id: 'principles', label: 'Core Principles', children: [{ id: 'p1', label: 'Understand' }, { id: 'p2', label: 'Apply' }, { id: 'p3', label: 'Connect' }] },
     ],
   },
   created_at: '',

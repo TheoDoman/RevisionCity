@@ -43,7 +43,12 @@
       "Bash(git push:*)",
       "Bash(git remote:*)",
       "Bash(gh:*)",
-      "Bash(brew install:*)"
+      "Bash(brew install:*)",
+      "Bash(npx tsx:*)",
+      "Bash(git restore:*)",
+      "Bash(NEXT_PUBLIC_SUPABASE_URL=https://waqvyqpomedcejrkoikl.supabase.co SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndhcXZ5cXBvbWVkY2VqcmtvaWtsIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2ODEzNjYxOCwiZXhwIjoyMDgzNzEyNjE4fQ.YcshqsIfUdvHVbNj0g2hADIi-QQW0C5kUQ5UnuQgiW8 npx tsx:*)",
+      "Bash(ps:*)",
+      "Bash(NEXT_PUBLIC_SUPABASE_URL=https://waqvyqpomedcejrkoikl.supabase.co SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndhcXZ5cXBvbWVkY2VqcmtvaWtsIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2ODEzNjYxOCwiZXhwIjoyMDgzNzEyNjE4fQ.YcshqsIfUdvHVbNj0g2hADIi-QQW0C5kUQ5UnuQgiW8 ANTHROPIC_API_KEY=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 npx tsx:*)"
     ]
   }
 }
