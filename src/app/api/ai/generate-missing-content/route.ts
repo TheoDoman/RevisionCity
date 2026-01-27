@@ -6,8 +6,7 @@ export async function POST(request: NextRequest) {
   try {
     const { topicId, subjectName, topicName, topicDescription } = await request.json()
 
-    const apiKey = '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'
-    const anthropic = new Anthropic({ apiKey })
+    const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY! })
 
     const supabase = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
