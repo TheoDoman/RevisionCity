@@ -110,13 +110,13 @@ export function TopicPageClient({ subject, topic, subtopics, initialContent }: T
     recallPrompts: content?.recallPrompts?.length || 0,
   });
 
-  const notes = content?.notes || mockNote;
-  const flashcards = content?.flashcards?.length ? content.flashcards : mockFlashcards;
-  const quizQuestions = content?.quizQuestions?.length ? content.quizQuestions : mockQuiz;
-  const practiceQuestions = content?.practiceQuestions?.length ? content.practiceQuestions : mockPractice;
-  const recallPrompts = content?.recallPrompts?.length ? content.recallPrompts : mockRecall;
-  const mindMap = content?.mindMap || mockMindMap;
-  const summarySheet = content?.summarySheet || mockSummary;
+  const notes = content?.notes || null;
+  const flashcards = content?.flashcards?.length ? content.flashcards : [];
+  const quizQuestions = content?.quizQuestions?.length ? content.quizQuestions : [];
+  const practiceQuestions = content?.practiceQuestions?.length ? content.practiceQuestions : [];
+  const recallPrompts = content?.recallPrompts?.length ? content.recallPrompts : [];
+  const mindMap = content?.mindMap || null;
+  const summarySheet = content?.summarySheet || null;
   const renderContent = () => {
     // Fetch content when subtopic changes
   useEffect(() => {
@@ -145,13 +145,20 @@ export function TopicPageClient({ subject, topic, subtopics, initialContent }: T
     }
 
     switch (selectedMethod) {
-      case 'notes': return <NotesViewer note={notes} />;
-      case 'flashcards': return <Flashcards flashcards={flashcards} />;
-      case 'quiz': return <Quiz questions={quizQuestions} />;
-      case 'practice': return <PracticeQuestions questions={practiceQuestions} />;
-      case 'recall': return <ActiveRecall prompts={recallPrompts} />;
-      case 'mindmap': return <MindMapViewer mindMap={mindMap} />;
-      case 'summary': return <SummarySheetViewer summarySheet={summarySheet} />;
+      case 'notes':
+        return notes ? <NotesViewer note={notes} /> : <div className="text-center py-12 text-brand-500">Notes not yet available for this topic. Check back soon!</div>;
+      case 'flashcards':
+        return flashcards.length > 0 ? <Flashcards flashcards={flashcards} /> : <div className="text-center py-12 text-brand-500">Flashcards not yet available for this topic. Check back soon!</div>;
+      case 'quiz':
+        return quizQuestions.length > 0 ? <Quiz questions={quizQuestions} /> : <div className="text-center py-12 text-brand-500">Quiz questions not yet available for this topic. Check back soon!</div>;
+      case 'practice':
+        return practiceQuestions.length > 0 ? <PracticeQuestions questions={practiceQuestions} /> : <div className="text-center py-12 text-brand-500">Practice questions not yet available for this topic. Check back soon!</div>;
+      case 'recall':
+        return recallPrompts.length > 0 ? <ActiveRecall prompts={recallPrompts} /> : <div className="text-center py-12 text-brand-500">Recall prompts not yet available for this topic. Check back soon!</div>;
+      case 'mindmap':
+        return mindMap ? <MindMapViewer mindMap={mindMap} /> : <div className="text-center py-12 text-brand-500">Mind map not yet available for this topic. Check back soon!</div>;
+      case 'summary':
+        return summarySheet ? <SummarySheetViewer summarySheet={summarySheet} /> : <div className="text-center py-12 text-brand-500">Summary sheet not yet available for this topic. Check back soon!</div>;
       default: return null;
     }
   };
