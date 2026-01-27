@@ -13,21 +13,21 @@ export const STRIPE_PLANS = {
   pro: {
     monthly: {
       priceId: process.env.STRIPE_PRO_MONTHLY_PRICE_ID!,
-      amount: 599, // £5.99
+      amount: 699, // €6.99
     },
     yearly: {
       priceId: process.env.STRIPE_PRO_YEARLY_PRICE_ID!,
-      amount: 4799, // £47.99
+      amount: 5599, // €55.99
     },
   },
   premium: {
     monthly: {
       priceId: process.env.STRIPE_PREMIUM_MONTHLY_PRICE_ID!,
-      amount: 999, // £9.99
+      amount: 1199, // €11.99
     },
     yearly: {
       priceId: process.env.STRIPE_PREMIUM_YEARLY_PRICE_ID!,
-      amount: 7999, // £79.99
+      amount: 9599, // €95.99
     },
   },
 }

@@ -14,7 +14,7 @@ export function Footer() {
             <Link href="/" className="flex items-center gap-3 mb-4 group">
               <div className="relative w-10 h-10">
                 <Image
-                  src="/logo.png"
+                  src="/logo.svg"
                   alt="Revision City Logo"
                   width={40}
                   height={40}

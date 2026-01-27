@@ -76,11 +76,11 @@ export default function PricingPage() {
   const router = useRouter();
 
   const getPrice = (tier: typeof tiers[0]) => {
-    if (tier.id === 'free') return '£0';
+    if (tier.id === 'free') return '€0';
     const price = billingCycle === 'yearly'
       ? tier.price.yearly / 12
       : tier.price.monthly;
-    return `£${price.toFixed(2)}`;
+    return `€${price.toFixed(2)}`;
   };
 
   const handleCheckout = async (tierId: string) => {

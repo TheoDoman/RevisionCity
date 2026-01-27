@@ -97,16 +97,24 @@ Return ONLY valid JSON in this exact format (no markdown, no explanation):
 
     const responseText = message.content[0].type === 'text' ? message.content[0].text : ''
 
-    // Extract JSON from response
-    const jsonMatch = responseText.match(/\{[\s\S]*\}/)
-    if (!jsonMatch) {
-      throw new Error('Failed to extract JSON from AI response')
+    // Extract JSON from response - try multiple approaches
+    let testData
+    try {
+      // First try: direct JSON parse
+      testData = JSON.parse(responseText)
+    } catch {
+      // Second try: extract JSON block
+      const jsonMatch = responseText.match(/\{[\s\S]*\}/)
+      if (!jsonMatch) {
+        console.error('AI Response:', responseText)
+        throw new Error('Failed to extract JSON from AI response')
+      }
+
+      // Use jsonrepair for robust parsing
+      const { jsonrepair } = await import('jsonrepair')
+      const sanitizedJson = jsonMatch[0].replace(/[\x00-\x1F\x7F-\x9F]/g, '')
+      testData = JSON.parse(jsonrepair(sanitizedJson))
     }
-
-    // Sanitize JSON by removing control characters
-    const sanitizedJson = jsonMatch[0].replace(/[\x00-\x1F\x7F-\x9F]/g, '')
-
-    const testData = JSON.parse(sanitizedJson)
 
     // Calculate total marks
     const totalMarks = testData.questions.reduce((sum: number, q: any) => sum + (q.marks || 0), 0)

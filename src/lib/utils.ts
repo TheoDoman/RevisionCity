@@ -66,11 +66,11 @@ export const FREE_TIER_LIMITS = {
 
 export const SUBSCRIPTION_PRICES = {
   pro: {
-    monthly: 5.99,  // Competitive pricing in GBP
-    yearly: 47.99,  // 33% discount (~£4/month)
+    monthly: 6.99,  // Competitive pricing in EUR
+    yearly: 55.99,  // 33% discount (~€4.67/month)
   },
   premium: {
-    monthly: 9.99, // Premium tier with AI tutor
-    yearly: 79.99, // 33% discount (~£6.67/month)
+    monthly: 11.99, // Premium tier with AI tutor
+    yearly: 95.99, // 33% discount (~€8/month)
   },
 };
