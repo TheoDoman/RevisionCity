@@ -211,7 +211,7 @@ export default function TermsPage() {
             </p>
             <p className="text-brand-700 leading-relaxed">
               Our total liability to you for all claims arising from or related to the Service shall not exceed the amount
-              you paid us in the twelve (12) months prior to the claim, or £100, whichever is greater.
+              you paid us in the twelve (12) months prior to the claim, or €100, whichever is greater.
             </p>
           </section>
 

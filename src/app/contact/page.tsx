@@ -47,7 +47,7 @@ export default function ContactPage() {
             <h3 className="font-semibold text-brand-900 mb-2">Help Center</h3>
             <p className="text-brand-600 text-sm mb-4">FAQs & guides</p>
             <a
-              href="#faq"
+              href="/faq"
               className="text-brand-600 hover:text-brand-800 font-medium"
             >
               View FAQs →

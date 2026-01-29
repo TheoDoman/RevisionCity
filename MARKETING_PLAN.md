@@ -23,7 +23,7 @@
 **Secondary: Parents**
 - Pain points: Want academic success for children, fear of wasted money on tutors
 - Behavior: Research-heavy, compare options, read reviews
-- Budget: Willing to invest in education (£10-50/month)
+- Budget: Willing to invest in education (€10-50/month)
 
 **Tertiary: Teachers/Schools**
 - Pain points: Need supplementary resources, want to track student progress
@@ -35,12 +35,12 @@
 **Direct Competitors:**
 - Quizlet: Strong on flashcards but lacks IGCSE-specific content
 - Seneca: IGCSE focus but limited subjects
-- Save My Exams: Comprehensive but expensive (£60+/year)
+- Save My Exams: Comprehensive but expensive (€60+/year)
 
 **Your Competitive Advantages:**
 1. AI-powered personalized test generation
 2. Complete IGCSE curriculum coverage (9 subjects)
-3. Affordable pricing (£4.99/month)
+3. Affordable pricing (€5.99/month)
 4. Modern, mobile-friendly interface
 5. Active recall focus (proven learning method)
 
@@ -55,13 +55,13 @@
 - Limited flashcard access
 - Basic practice questions
 
-**Pro Tier (£4.99/month or £49.90/year):**
+**Pro Tier (€5.99/month or €59.90/year):**
 - Unlimited AI test generation
 - Full flashcard library
 - All practice questions
 - Progress tracking
 
-**Premium Tier (£9.99/month or £99.90/year):**
+**Premium Tier (€11.99/month or €119.90/year):**
 - Everything in Pro
 - Priority support
 - Offline access
@@ -70,7 +70,7 @@
 
 **Recommended Optimization:**
 - **Add Student Discount:** 20% off with valid student email
-- **Family Plan:** £12.99/month for up to 3 students
+- **Family Plan:** €12.99/month for up to 3 students
 - **School/Bulk Pricing:** Custom pricing for 50+ students
 - **Referral Program:** Get 1 month free for each friend who subscribes
 
@@ -128,7 +128,7 @@
 - Free "Top 100 IGCSE Questions" ebook
 - Require email signup (build mailing list)
 
-#### C. Paid Advertising (Budget: £500-1000/month)
+#### C. Paid Advertising (Budget: €500-1000/month)
 
 **Google Ads**
 - Target keywords:
@@ -137,8 +137,8 @@
   - "IGCSE flashcards"
   - "IGCSE exam preparation"
 - Location: UK, UAE, Singapore, Hong Kong, Malaysia
-- Budget: £15-20/day
-- **Expected:** 200-300 signups/month at £2-3 CPA
+- Budget: €15-20/day
+- **Expected:** 200-300 signups/month at €2-3 CPA
 
 **Meta Ads (Facebook/Instagram)**
 - Target: Parents of 14-16 year olds interested in education
@@ -146,14 +146,14 @@
   - Video ads showcasing app features
   - Carousel ads with subject coverage
   - Lead generation ads with free trial
-- Budget: £15-20/day
-- **Expected:** 150-250 signups/month at £3-4 CPA
+- Budget: €15-20/day
+- **Expected:** 150-250 signups/month at €3-4 CPA
 
 **TikTok Ads**
 - Spark Ads (boost organic content that performs well)
 - In-feed ads targeting #StudyTok audience
-- Budget: £10/day
-- **Expected:** 100-200 signups/month at £2-3 CPA
+- Budget: €10/day
+- **Expected:** 100-200 signups/month at €2-3 CPA
 
 ### Phase 2: Growth & Scaling (Months 3-6)
 
@@ -173,7 +173,7 @@
 
 **Education YouTubers**
 - Sponsor videos from IGCSE-focused channels
-- Typical sponsorship: £200-500 per video
+- Typical sponsorship: €200-500 per video
 - Target channels with 10k+ subscribers
 - **Expected:** 200-400 signups per sponsored video
 
@@ -271,7 +271,7 @@
 - Add-ons: 1-on-1 tutoring sessions, printed materials
 
 **B. Lifetime Value Optimization**
-- Target LTV: £100+ per customer
+- Target LTV: €100+ per customer
 - Average subscription length: 8-12 months
 - Encourage annual payments upfront
 
@@ -284,7 +284,7 @@
 **Acquisition Metrics:**
 - Website visitors: Goal 10,000/month by month 3
 - Signup conversion rate: Goal 5-8%
-- Cost per acquisition (CPA): Target £2-5
+- Cost per acquisition (CPA): Target €2-5
 - Signups by channel (track attribution)
 
 **Activation Metrics:**
@@ -294,9 +294,9 @@
 
 **Revenue Metrics:**
 - Free-to-paid conversion: Goal 5-7%
-- Monthly Recurring Revenue (MRR): Goal £5,000 by month 6
-- Average Revenue Per User (ARPU): Goal £7-10/month
-- Customer Lifetime Value (LTV): Goal £100+
+- Monthly Recurring Revenue (MRR): Goal €5,000 by month 6
+- Average Revenue Per User (ARPU): Goal €7-10/month
+- Customer Lifetime Value (LTV): Goal €100+
 
 **Retention Metrics:**
 - Monthly churn rate: Goal <5%
@@ -307,22 +307,22 @@
 
 ## 7. BUDGET ALLOCATION (Monthly - First 6 Months)
 
-**Total Marketing Budget: £2,000-3,000/month**
+**Total Marketing Budget: €2,000-3,000/month**
 
 | Channel | Monthly Budget | Expected ROI |
 |---------|---------------|--------------|
-| Google Ads | £500 | 200 signups |
-| Meta Ads | £500 | 200 signups |
-| TikTok Ads | £300 | 150 signups |
-| Influencer Partnerships | £400 | 300 signups |
-| Content Creation (freelancers) | £300 | Organic growth |
-| Tools & Software | £200 | Support operations |
-| Contingency/Testing | £300 | A/B testing |
+| Google Ads | €500 | 200 signups |
+| Meta Ads | €500 | 200 signups |
+| TikTok Ads | €300 | 150 signups |
+| Influencer Partnerships | €400 | 300 signups |
+| Content Creation (freelancers) | €300 | Organic growth |
+| Tools & Software | €200 | Support operations |
+| Contingency/Testing | €300 | A/B testing |
 
 **Expected Results:**
 - Total signups: 850-1000/month
 - Paid conversions (5%): 40-50/month
-- MRR Growth: £200-500/month
+- MRR Growth: €200-500/month
 - Break-even: Month 4-5
 
 ---
@@ -352,7 +352,7 @@
 
 **Month 2: Growth**
 - Influencer partnerships
-- Increase ad spend to £1000
+- Increase ad spend to €1000
 - Launch referral program
 - Goal: 800 signups, 50 paid customers
 
@@ -380,7 +380,7 @@
 - 5+ school partnerships
 - Goal: 3000 signups, 200 paid customers
 
-**Total 6-Month Goal: 10,000+ users, 625+ paid customers, £3,125+ MRR**
+**Total 6-Month Goal: 10,000+ users, 625+ paid customers, €3,125+ MRR**
 
 ---
 
@@ -393,7 +393,7 @@ You'll know the marketing is working when:
 ✅ **Month 3:** Profitable paid ads (LTV > 3x CPA)
 ✅ **Month 4:** First school partnership
 ✅ **Month 5:** Referrals drive 20%+ of signups
-✅ **Month 6:** £5,000+ MRR, breaking even on marketing spend
+✅ **Month 6:** €5,000+ MRR, breaking even on marketing spend
 
 ---
 
