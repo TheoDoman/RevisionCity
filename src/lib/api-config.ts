@@ -4,10 +4,12 @@
 export const getAnthropicApiKey = (): string => {
   // Try environment variable first
   if (process.env.ANTHROPIC_API_KEY) {
+    console.log('[API Config] Using env var ANTHROPIC_API_KEY')
     return process.env.ANTHROPIC_API_KEY
   }
 
   // Fallback for production (will be replaced by Vercel env vars eventually)
+  console.log('[API Config] Using fallback key (env var not set)')
   const fallbackKey = [
     'sk-ant',
     'api03',

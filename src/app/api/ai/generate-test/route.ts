@@ -10,6 +10,9 @@ export async function POST(request: NextRequest) {
     // Get API key from config (handles env vars + fallback)
     const apiKey = getAnthropicApiKey()
 
+    console.log('[AI Generator] API Key loaded:', apiKey ? `${apiKey.substring(0, 15)}...` : 'MISSING')
+    console.log('[AI Generator] Environment:', process.env.NODE_ENV)
+
     // Initialize clients
     const anthropic = new Anthropic({ apiKey })
 
