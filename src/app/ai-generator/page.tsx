@@ -84,12 +84,21 @@ export default function AIGeneratorPage() {
   // Load subjects
   useEffect(() => {
     async function loadSubjects() {
-      const { data } = await supabase
-        .from('subjects')
-        .select('id, name, slug')
-        .order('name')
+      console.log('Loading subjects...')
+      try {
+        const response = await fetch('/api/subjects')
+        const result = await response.json()
 
-      if (data) setSubjects(data)
+        console.log('Subjects loaded:', result)
+        if (result.subjects) {
+          console.log('Setting subjects:', result.subjects)
+          setSubjects(result.subjects)
+        } else if (result.error) {
+          console.error('Error loading subjects:', result.error)
+        }
+      } catch (error) {
+        console.error('Failed to fetch subjects:', error)
+      }
     }
     loadSubjects()
   }, [])

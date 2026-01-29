@@ -6,17 +6,18 @@ export async function POST(request: NextRequest) {
   try {
     const { subjectId, topicId, difficulty, questionCount } = await request.json()
 
-    // Verify API key exists
-    if (!process.env.ANTHROPIC_API_KEY) {
-      console.error('ANTHROPIC_API_KEY is not set!')
+    // Get API key from environment
+    const apiKey = process.env.ANTHROPIC_API_KEY
+
+    if (!apiKey) {
       return NextResponse.json(
-        { error: 'AI service not configured. Please contact support.' },
+        { error: 'API key not configured' },
         { status: 500 }
       )
     }
 
     // Initialize clients
-    const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
+    const anthropic = new Anthropic({ apiKey })
 
     const supabase = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
