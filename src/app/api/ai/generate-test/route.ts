@@ -1,20 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import Anthropic from '@anthropic-ai/sdk'
+import { getAnthropicApiKey } from '@/lib/api-config'
 
 export async function POST(request: NextRequest) {
   try {
     const { subjectId, topicId, difficulty, questionCount } = await request.json()
 
-    // Get API key from environment
-    const apiKey = process.env.ANTHROPIC_API_KEY
-
-    if (!apiKey) {
-      return NextResponse.json(
-        { error: 'API key not configured' },
-        { status: 500 }
-      )
-    }
+    // Get API key from config (handles env vars + fallback)
+    const apiKey = getAnthropicApiKey()
 
     // Initialize clients
     const anthropic = new Anthropic({ apiKey })
