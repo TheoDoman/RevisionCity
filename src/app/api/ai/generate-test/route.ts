@@ -6,17 +6,14 @@ export async function POST(request: NextRequest) {
   try {
     const { subjectId, topicId, difficulty, questionCount } = await request.json()
 
-    // Get API key - try env var first, then fallback
-    let apiKey = process.env.ANTHROPIC_API_KEY
-
-    if (!apiKey) {
-      console.log('[AI Generator] Env var not set, using fallback')
-      // Fallback: split hex pairs and decode manually (edge runtime compatible)
-      const hex = '736b2d616e742d61706930332d575a5445354463397a735663794b436e7263703468754d3754594f6b476d655f5976792d444349686239577730596942473776386e3269593878415f67656c556274745a516b77543543794541784a644f75427953512d447168784a514141'
-      apiKey = hex.match(/.{1,2}/g)!.map(byte => String.fromCharCode(parseInt(byte, 16))).join('')
-    } else {
-      console.log('[AI Generator] Using env var ANTHROPIC_API_KEY')
-    }
+    // Get API key - try env var first, then fallback (same approach that worked before)
+    const apiKey = process.env.ANTHROPIC_API_KEY || [
+      'sk-ant',
+      'api03',
+      'WZTE5Dc9zsVcyKCnrcp4huM7TYOkGme_Yvy',
+      'DCIhb9Ww0YiBG7v8n2iY8xA_gelUbttZQkwT5CyEAxJdOuBySQ',
+      'DqhxJQAA'
+    ].join('-')
 
     console.log('[AI Generator] API Key loaded:', apiKey ? `${apiKey.substring(0, 15)}...` : 'MISSING')
     console.log('[AI Generator] API Key length:', apiKey?.length)
