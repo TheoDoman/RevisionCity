@@ -4,6 +4,7 @@ import { ClerkProvider } from '@clerk/nextjs';
 import './globals.css';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
+import GoogleAnalytics from '@/components/GoogleAnalytics';
 
 const outfit = Outfit({
   subsets: ['latin'],
@@ -48,8 +49,10 @@ export const metadata: Metadata = {
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode;
+  children: React.NodeNode;
 }) {
+  const gaId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
+
   return (
     <ClerkProvider>
       <html
@@ -57,6 +60,7 @@ export default function RootLayout({
         className={`${outfit.variable} ${spaceGrotesk.variable} ${jetbrainsMono.variable}`}
       >
         <body className="min-h-screen bg-surface-50 font-sans flex flex-col">
+          {gaId && <GoogleAnalytics measurementId={gaId} />}
           <Header />
           <main className="flex-1">{children}</main>
           <Footer />
