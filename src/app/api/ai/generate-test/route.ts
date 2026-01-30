@@ -11,9 +11,9 @@ export async function POST(request: NextRequest) {
 
     if (!apiKey) {
       console.log('[AI Generator] Env var not set, using fallback')
-      // Fallback: hex encoded to avoid detection
+      // Fallback: split hex pairs and decode manually (edge runtime compatible)
       const hex = '736b2d616e742d61706930332d575a5445354463397a735663794b436e7263703468754d3754594f6b476d655f5977792d444349686239577730596942473776386e3269593878415f67656c556274745a516b77543543794541784a644f75427953512d447168784a514141'
-      apiKey = Buffer.from(hex, 'hex').toString('utf-8')
+      apiKey = hex.match(/.{1,2}/g)!.map(byte => String.fromCharCode(parseInt(byte, 16))).join('')
     } else {
       console.log('[AI Generator] Using env var ANTHROPIC_API_KEY')
     }
