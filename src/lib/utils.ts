@@ -66,11 +66,11 @@ export const FREE_TIER_LIMITS = {
 
 export const SUBSCRIPTION_PRICES = {
   pro: {
-    monthly: 6.99,  // Competitive pricing in EUR
-    yearly: 55.99,  // 33% discount (~€4.67/month)
+    monthly: 4.99,  // Highly competitive - cheaper than Quizlet Plus
+    yearly: 39.99,  // 33% discount (~€3.33/month)
   },
   premium: {
-    monthly: 11.99, // Premium tier with AI tutor
-    yearly: 95.99, // 33% discount (~€8/month)
+    monthly: 7.99, // Premium tier with AI tutor
+    yearly: 63.99, // 33% discount (~€5.33/month)
   },
 };

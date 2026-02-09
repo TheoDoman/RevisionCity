@@ -27,7 +27,7 @@ const faqs = [
     questions: [
       {
         q: 'How much does Revision City cost?',
-        a: 'We offer three tiers: Free Trial (1 day), Pro (€6.99/month or €55.99/year), and Premium (€11.99/month or €95.99/year). Annual plans save you 33%!',
+        a: 'We offer three tiers: Free Trial (1 day), Pro (€4.99/month or €39.99/year), and Premium (€7.99/month or €63.99/year). Annual plans save you 33%!',
       },
       {
         q: 'Can I cancel anytime?',

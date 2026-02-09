@@ -161,7 +161,7 @@ export default function PricingPage() {
           >
             Yearly
             <span className="ml-2 text-xs bg-success-100 text-success-700 px-2 py-0.5 rounded-full">
-              -17%
+              -33%
             </span>
           </button>
         </div>

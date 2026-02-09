@@ -149,7 +149,7 @@ export default function AboutPage() {
                 </div>
                 <div>
                   <span className="font-semibold text-brand-900">Affordable:</span>
-                  <span className="text-brand-700"> Starting at just €6.99/month - less than the cost of a single tutoring session.</span>
+                  <span className="text-brand-700"> Starting at just €4.99/month - less than the cost of a single tutoring session.</span>
                 </div>
               </li>
               <li className="flex items-start gap-3">
