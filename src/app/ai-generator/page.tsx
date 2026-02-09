@@ -335,7 +335,7 @@ export default function AIGeneratorPage() {
             <input
               type="range"
               min="5"
-              max="30"
+              max="15"
               step="5"
               value={questionCount}
               onChange={(e) => setQuestionCount(parseInt(e.target.value))}
@@ -343,8 +343,8 @@ export default function AIGeneratorPage() {
             />
             <div className="flex justify-between text-xs font-medium text-gray-500 mt-2">
               <span>5</span>
+              <span>10</span>
               <span>15</span>
-              <span>30</span>
             </div>
           </div>
 

@@ -1,0 +1,137 @@
+import { currentUser } from '@clerk/nextjs/server'
+import { redirect } from 'next/navigation'
+import Link from 'next/link'
+import { BookOpen, Brain, Target, Zap, TrendingUp, Clock } from 'lucide-react'
+
+export default async function DashboardPage() {
+  const user = await currentUser()
+
+  if (!user) {
+    redirect('/sign-in')
+  }
+
+  const stats = [
+    { name: 'Subjects Started', value: '3', icon: BookOpen, color: 'from-blue-500 to-indigo-600' },
+    { name: 'Topics Completed', value: '12', icon: Target, color: 'from-green-500 to-emerald-600' },
+    { name: 'Quiz Average', value: '85%', icon: Brain, color: 'from-purple-500 to-violet-600' },
+    { name: 'Study Streak', value: '7 days', icon: Zap, color: 'from-orange-500 to-red-600' },
+  ]
+
+  const recentActivity = [
+    { subject: 'Biology', topic: 'Cell Structure', type: 'Quiz', score: '90%', time: '2 hours ago' },
+    { subject: 'Chemistry', topic: 'Atomic Structure', type: 'Flashcards', score: '24/26', time: '5 hours ago' },
+    { subject: 'Physics', topic: 'Forces', type: 'Notes', score: 'Completed', time: '1 day ago' },
+  ]
+
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-brand-50 to-white">
+      {/* Header */}
+      <div className="bg-white border-b border-brand-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <h1 className="font-display text-3xl font-bold text-brand-950 mb-2">
+            Welcome back, {user.firstName}!
+          </h1>
+          <p className="text-brand-600">
+            Keep up the great work! Here's your progress overview.
+          </p>
+        </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Stats Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          {stats.map((stat, index) => (
+            <div
+              key={stat.name}
+              className="bg-white rounded-2xl border-2 border-brand-100 p-6 hover:shadow-lg transition-all animate-slide-up"
+              style={{ animationDelay: `${index * 50}ms` }}
+            >
+              <div className="flex items-center justify-between mb-4">
+                <div className={`p-3 rounded-xl bg-gradient-to-br ${stat.color} bg-opacity-10`}>
+                  <stat.icon className="h-6 w-6 text-brand-600" />
+                </div>
+                <TrendingUp className="h-5 w-5 text-success-500" />
+              </div>
+              <p className="text-sm text-brand-500 mb-1">{stat.name}</p>
+              <p className="font-display text-3xl font-bold text-brand-950">{stat.value}</p>
+            </div>
+          ))}
+        </div>
+
+        <div className="grid lg:grid-cols-3 gap-8">
+          {/* Recent Activity */}
+          <div className="lg:col-span-2">
+            <div className="bg-white rounded-2xl border-2 border-brand-100 p-6">
+              <h2 className="font-display text-xl font-bold text-brand-950 mb-6">
+                Recent Activity
+              </h2>
+              <div className="space-y-4">
+                {recentActivity.map((activity, index) => (
+                  <div
+                    key={index}
+                    className="flex items-center justify-between p-4 bg-brand-50 rounded-xl hover:bg-brand-100 transition-colors"
+                  >
+                    <div className="flex items-center gap-4">
+                      <div className="w-10 h-10 rounded-lg bg-brand-200 flex items-center justify-center">
+                        <BookOpen className="h-5 w-5 text-brand-600" />
+                      </div>
+                      <div>
+                        <p className="font-medium text-brand-900">{activity.subject}</p>
+                        <p className="text-sm text-brand-600">{activity.topic} • {activity.type}</p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <p className="font-medium text-brand-900">{activity.score}</p>
+                      <p className="text-sm text-brand-500 flex items-center gap-1">
+                        <Clock className="h-3 w-3" />
+                        {activity.time}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Quick Actions */}
+          <div>
+            <div className="bg-white rounded-2xl border-2 border-brand-100 p-6">
+              <h2 className="font-display text-xl font-bold text-brand-950 mb-6">
+                Quick Actions
+              </h2>
+              <div className="space-y-3">
+                <Link
+                  href="/subjects"
+                  className="block p-4 bg-gradient-to-br from-brand-500 to-brand-600 text-white rounded-xl hover:from-brand-600 hover:to-brand-700 transition-all"
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="font-medium">Browse Subjects</span>
+                    <BookOpen className="h-5 w-5" />
+                  </div>
+                </Link>
+                <Link
+                  href="/ai-generator"
+                  className="block p-4 bg-gradient-to-br from-indigo-500 to-purple-600 text-white rounded-xl hover:from-indigo-600 hover:to-purple-700 transition-all"
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="font-medium">Generate AI Test</span>
+                    <Zap className="h-5 w-5" />
+                  </div>
+                </Link>
+                <Link
+                  href="/pricing"
+                  className="block p-4 bg-brand-50 text-brand-700 rounded-xl hover:bg-brand-100 transition-all border-2 border-brand-200"
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="font-medium">Upgrade to Pro</span>
+                    <TrendingUp className="h-5 w-5" />
+                  </div>
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
