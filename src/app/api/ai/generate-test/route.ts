@@ -99,9 +99,14 @@ Return ONLY valid JSON in this exact format (no markdown, no explanation):
   }
 }`
 
+    // Calculate max tokens based on question count
+    // ~200 tokens per question with answer and explanation
+    // Add 500 tokens buffer for JSON formatting
+    const maxTokens = Math.min(8000, (questionCount * 200) + 500);
+
     const message = await anthropic.messages.create({
       model: 'claude-3-haiku-20240307',
-      max_tokens: 4000,
+      max_tokens: maxTokens,
       messages: [{
         role: 'user',
         content: prompt
