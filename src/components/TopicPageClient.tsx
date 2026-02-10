@@ -117,11 +117,11 @@ export function TopicPageClient({ subject, topic, subtopics, initialContent }: T
   const recallPrompts = content?.recallPrompts?.length ? content.recallPrompts : [];
   const mindMap = content?.mindMap || null;
   const summarySheet = content?.summarySheet || null;
-  const renderContent = () => {
-    // Fetch content when subtopic changes
+
+  // Fetch content when subtopic changes
   useEffect(() => {
     if (!selectedSubtopic) return;
-    
+
     const fetchContent = async () => {
       setLoading(true);
       try {
@@ -136,6 +136,8 @@ export function TopicPageClient({ subject, topic, subtopics, initialContent }: T
 
     fetchContent();
   }, [selectedSubtopic, topic.id]);
+
+  const renderContent = () => {
     if (loading) {
       return (
         <div className="flex items-center justify-center h-64">
