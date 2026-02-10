@@ -116,7 +116,7 @@ export function ActiveRecall({ prompts, onComplete }: ActiveRecallProps) {
             <div className="flex items-center gap-2">
               <HelpCircle className="h-5 w-5 text-brand-500" />
               <span className="font-medium text-brand-700">
-                Need help? ({currentPrompt.hints.length} hints available)
+                Need help? ({currentPrompt.hints?.length || 0} hints available)
               </span>
             </div>
             {showHints ? (
@@ -128,23 +128,27 @@ export function ActiveRecall({ prompts, onComplete }: ActiveRecallProps) {
 
           {showHints && (
             <div className="px-6 pb-6 space-y-2">
-              {currentPrompt.hints.map((hint, idx) => (
-                <div key={idx}>
-                  {revealedHints.includes(idx) ? (
-                    <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg">
-                      <p className="text-brand-700">{hint}</p>
-                    </div>
-                  ) : (
-                    <button
-                      onClick={() => handleRevealHint(idx)}
-                      className="w-full p-3 bg-brand-50 border border-brand-100 rounded-lg 
-                               text-brand-600 hover:bg-brand-100 transition-colors text-left"
-                    >
-                      Hint {idx + 1} - Click to reveal
-                    </button>
-                  )}
-                </div>
-              ))}
+              {currentPrompt.hints && currentPrompt.hints.length > 0 ? (
+                currentPrompt.hints.map((hint, idx) => (
+                  <div key={idx}>
+                    {revealedHints.includes(idx) ? (
+                      <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg">
+                        <p className="text-brand-700">{hint}</p>
+                      </div>
+                    ) : (
+                      <button
+                        onClick={() => handleRevealHint(idx)}
+                        className="w-full p-3 bg-brand-50 border border-brand-100 rounded-lg
+                                 text-brand-600 hover:bg-brand-100 transition-colors text-left"
+                      >
+                        Hint {idx + 1} - Click to reveal
+                      </button>
+                    )}
+                  </div>
+                ))
+              ) : (
+                <p className="text-brand-500 text-sm">No hints available for this prompt.</p>
+              )}
             </div>
           )}
         </div>
@@ -156,14 +160,18 @@ export function ActiveRecall({ prompts, onComplete }: ActiveRecallProps) {
             Key points your answer should include:
           </h4>
           <div className="flex flex-wrap gap-2">
-            {currentPrompt.key_points_to_include.map((point, idx) => (
-              <span 
-                key={idx}
-                className="px-3 py-1.5 bg-brand-100 text-brand-700 rounded-full text-sm"
-              >
-                {point}
-              </span>
-            ))}
+            {currentPrompt.key_points_to_include && currentPrompt.key_points_to_include.length > 0 ? (
+              currentPrompt.key_points_to_include.map((point, idx) => (
+                <span
+                  key={idx}
+                  className="px-3 py-1.5 bg-brand-100 text-brand-700 rounded-full text-sm"
+                >
+                  {point}
+                </span>
+              ))
+            ) : (
+              <p className="text-brand-500 text-sm">No specific key points listed. Focus on covering the main concepts in your answer.</p>
+            )}
           </div>
         </div>
 
@@ -191,9 +199,13 @@ export function ActiveRecall({ prompts, onComplete }: ActiveRecallProps) {
           {showModelAnswer && (
             <div className="px-6 pb-6">
               <div className="p-4 bg-success-50 border border-success-200 rounded-xl">
-                <p className="text-brand-700 leading-relaxed whitespace-pre-wrap">
-                  {currentPrompt.model_answer}
-                </p>
+                {currentPrompt.model_answer ? (
+                  <p className="text-brand-700 leading-relaxed whitespace-pre-wrap">
+                    {currentPrompt.model_answer}
+                  </p>
+                ) : (
+                  <p className="text-brand-500 text-sm">No model answer available. Use the key points above to structure your response.</p>
+                )}
               </div>
             </div>
           )}
