@@ -7,6 +7,8 @@ if (!process.env.STRIPE_SECRET_KEY) {
 export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
   apiVersion: '2024-06-20',
   typescript: true,
+  maxNetworkRetries: 3,
+  timeout: 30000, // 30 seconds
 })
 
 export const STRIPE_PLANS = {

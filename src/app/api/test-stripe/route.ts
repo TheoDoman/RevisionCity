@@ -40,6 +40,37 @@ export async function GET() {
         message: err.message,
         type: err.type,
         statusCode: err.statusCode,
+        raw: err.raw,
+        headers: err.headers,
+        requestId: err.requestId,
+      }
+    }
+
+    // Test 3: Try a direct fetch to Stripe API
+    let directFetchTest: any = null
+    let directFetchError: any = null
+
+    try {
+      const response = await fetch(`https://api.stripe.com/v1/prices/${priceId}`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${process.env.STRIPE_SECRET_KEY}`,
+        },
+      })
+
+      if (response.ok) {
+        directFetchTest = await response.json()
+      } else {
+        directFetchError = {
+          status: response.status,
+          statusText: response.statusText,
+          body: await response.text(),
+        }
+      }
+    } catch (err: any) {
+      directFetchError = {
+        message: err.message,
+        name: err.name,
       }
     }
 
@@ -52,6 +83,10 @@ export async function GET() {
         priceId,
         result: priceTest,
         error: priceError,
+      },
+      directFetchTest: {
+        result: directFetchTest,
+        error: directFetchError,
       }
     })
   } catch (error: any) {

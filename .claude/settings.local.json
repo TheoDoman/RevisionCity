@@ -53,7 +53,9 @@
       "Bash(echo $NODE_ENV)",
       "Bash(killall node:*)",
       "Bash(git log:*)",
-      "Bash(grep:*)"
+      "Bash(grep:*)",
+      "Bash(vercel --version:*)",
+      "Bash(npx vercel:*)"
     ]
   }
 }
