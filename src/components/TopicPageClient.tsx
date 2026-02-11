@@ -2,12 +2,13 @@
 import { getAllRevisionContent } from '@/lib/data';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { 
-  ArrowLeft, BookOpen, Brain, HelpCircle, FileText, 
+import {
+  ArrowLeft, BookOpen, Brain, HelpCircle, FileText,
   Lightbulb, Network, ClipboardList, ChevronDown, Lock, Loader2
 } from 'lucide-react';
 import { cn, getSubjectColor } from '@/lib/utils';
 import { useAppStore } from '@/lib/store';
+import { useSubscription } from '@/hooks/useSubscription';
 import {
   Flashcards, Quiz, NotesViewer, PracticeQuestions,
   ActiveRecall, SummarySheetViewer, MindMapViewer,
@@ -96,7 +97,7 @@ export function TopicPageClient({ subject, topic, subtopics, initialContent }: T
   const [selectedMethod, setSelectedMethod] = useState('notes');
   const [content, setContent] = useState(initialContent);
   const [loading, setLoading] = useState(false);
-  const { subscriptionTier } = useAppStore();
+  const { subscriptionTier } = useSubscription();
   const color = getSubjectColor(subject.slug);
   const isLocked = (index: number) => subscriptionTier === 'free' && index >= 2;
 
