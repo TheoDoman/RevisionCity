@@ -101,6 +101,11 @@ export function Footer() {
                   Support
                 </a>
               </li>
+              <li>
+                <a href="/feedback" className="hover:text-white transition-colors">
+                  Give Feedback
+                </a>
+              </li>
             </ul>
           </div>
 
