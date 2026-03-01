@@ -1,8 +1,9 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import type { Metadata } from 'next';
 import { ArrowLeft, ChevronRight } from 'lucide-react';
 import { getSubjectIcon, getSubjectColor } from '@/lib/utils';
-import { getSubjectWithTopics } from '@/lib/data';
+import { getSubjectWithTopics, getSubjectBySlug } from '@/lib/data';
 
 // Fallback data
 const fallbackTopics: Record<string, { name: string; slug: string; description: string; subtopic_count: number }[]> = {
@@ -37,6 +38,52 @@ const fallbackTopics: Record<string, { name: string; slug: string; description: 
 };
 
 const validSlugs = ['mathematics', 'english', 'biology', 'chemistry', 'physics', 'computer-science', 'business-studies', 'economics', 'history', 'geography'];
+
+const subjectDisplayNames: Record<string, string> = {
+  mathematics: 'Mathematics',
+  english: 'English',
+  biology: 'Biology',
+  chemistry: 'Chemistry',
+  physics: 'Physics',
+  'computer-science': 'Computer Science',
+  'business-studies': 'Business Studies',
+  economics: 'Economics',
+  history: 'History',
+  geography: 'Geography',
+};
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const subject = await getSubjectBySlug(slug);
+  const name = subject?.name || subjectDisplayNames[slug] || slug;
+
+  const title = `IGCSE ${name} Revision Notes & Practice | Revision City`;
+  const description = `Free IGCSE ${name} revision notes, flashcards, quizzes, and practice questions. Aligned to the Cambridge IGCSE ${name} syllabus. ${subject?.description || ''}`.trim();
+
+  return {
+    title,
+    description,
+    keywords: [
+      `IGCSE ${name}`,
+      `IGCSE ${name} revision`,
+      `IGCSE ${name} notes`,
+      `Cambridge IGCSE ${name}`,
+      `${name} past papers`,
+      `${name} exam prep`,
+      `${name} flashcards`,
+      `${name} quizzes`,
+    ],
+    openGraph: {
+      title,
+      description,
+      type: 'website',
+    },
+  };
+}
 
 export default async function SubjectPage({
   params,
@@ -75,8 +122,33 @@ export default async function SubjectPage({
   const color = getSubjectColor(slug);
   const icon = getSubjectIcon(slug);
 
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Course',
+    name: `IGCSE ${subject.name}`,
+    description: subject.description,
+    provider: {
+      '@type': 'EducationalOrganization',
+      name: 'Revision City',
+    },
+    educationalLevel: 'IGCSE',
+    about: {
+      '@type': 'Thing',
+      name: `Cambridge IGCSE ${subject.name}`,
+    },
+    hasCourseInstance: topics.map((topic) => ({
+      '@type': 'CourseInstance',
+      name: topic.name,
+      description: topic.description,
+    })),
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-brand-50 to-white">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       {/* Header */}
       <div className="relative overflow-hidden">
         <div className={`absolute inset-0 bg-gradient-to-br ${color} opacity-10`} />

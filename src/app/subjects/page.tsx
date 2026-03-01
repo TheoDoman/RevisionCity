@@ -1,8 +1,22 @@
 import Link from 'next/link';
+import type { Metadata } from 'next';
 import { ArrowRight, BookOpen, Loader2 } from 'lucide-react';
 import { getSubjectIcon, getSubjectColor } from '@/lib/utils';
 import { getSubjects } from '@/lib/data';
 import { Suspense } from 'react';
+
+export const metadata: Metadata = {
+  title: 'All IGCSE Subjects - Revision Notes & Resources',
+  description:
+    'Browse all 9 Cambridge IGCSE subjects. Free revision notes, flashcards, quizzes, and AI-powered practice for Mathematics, Biology, Chemistry, Physics, and more.',
+  keywords: [
+    'IGCSE subjects',
+    'Cambridge IGCSE revision',
+    'IGCSE notes',
+    'IGCSE revision materials',
+    'IGCSE study resources',
+  ],
+};
 
 // Force dynamic rendering - don't prerender during build
 export const dynamic = 'force-dynamic'

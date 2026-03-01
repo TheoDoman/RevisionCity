@@ -24,18 +24,30 @@ const jetbrainsMono = JetBrains_Mono({
   display: 'swap',
 });
 
+const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://revisioncity.com';
+
 export const metadata: Metadata = {
-  title: 'Revision City | IGCSE Revision Made Simple',
+  metadataBase: new URL(BASE_URL),
+  title: {
+    default: 'Revision City | IGCSE Revision Made Simple',
+    template: '%s | Revision City',
+  },
   description:
-    'The ultimate IGCSE revision platform. Master every subject with AI-powered notes, flashcards, quizzes, and more.',
+    'The ultimate IGCSE revision platform. Master every subject with AI-powered notes, flashcards, quizzes, and more. Aligned to the Cambridge IGCSE syllabus.',
   keywords: [
     'IGCSE',
-    'revision',
-    'Cambridge',
+    'IGCSE revision',
+    'Cambridge IGCSE',
+    'IGCSE notes',
+    'IGCSE past papers',
     'exam prep',
     'study',
     'flashcards',
     'quizzes',
+    'IGCSE Biology',
+    'IGCSE Chemistry',
+    'IGCSE Physics',
+    'IGCSE Maths',
   ],
   authors: [{ name: 'Revision City' }],
   openGraph: {
@@ -43,6 +55,16 @@ export const metadata: Metadata = {
     description:
       'The ultimate IGCSE revision platform. Master every subject with AI-powered notes, flashcards, quizzes, and more.',
     type: 'website',
+    siteName: 'Revision City',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Revision City | IGCSE Revision Made Simple',
+    description:
+      'Master every IGCSE subject with AI-powered notes, flashcards, quizzes, and more.',
+  },
+  alternates: {
+    canonical: BASE_URL,
   },
 };
 
@@ -60,6 +82,20 @@ export default function RootLayout({
         className={`${outfit.variable} ${spaceGrotesk.variable} ${jetbrainsMono.variable}`}
       >
         <body className="min-h-screen bg-surface-50 font-sans flex flex-col">
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{
+              __html: JSON.stringify({
+                '@context': 'https://schema.org',
+                '@type': 'EducationalOrganization',
+                name: 'Revision City',
+                url: BASE_URL,
+                description:
+                  'AI-powered IGCSE revision platform with notes, flashcards, quizzes, and practice questions for all Cambridge IGCSE subjects.',
+                sameAs: [],
+              }),
+            }}
+          />
           {gaId && <GoogleAnalytics measurementId={gaId} />}
           <Header />
           <main className="flex-1">{children}</main>

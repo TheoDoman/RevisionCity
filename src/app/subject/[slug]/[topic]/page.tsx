@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation';
-import { getTopicWithSubtopics, getAllRevisionContent } from '@/lib/data';
+import type { Metadata } from 'next';
+import { getTopicWithSubtopics, getTopicBySlug, getAllRevisionContent } from '@/lib/data';
 import { TopicPageClient } from '@/components/TopicPageClient';
 import type { Subject, Topic, Subtopic } from '@/types';
 
@@ -13,6 +14,43 @@ const fallbackSubtopics = [
 ];
 
 const validSubjects = ['mathematics', 'english', 'biology', 'chemistry', 'physics', 'computer-science', 'business-studies', 'economics', 'history', 'geography'];
+
+function formatSlug(slug: string): string {
+  return slug.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string; topic: string }>;
+}): Promise<Metadata> {
+  const { slug, topic: topicSlug } = await params;
+  const result = await getTopicBySlug(slug, topicSlug);
+
+  const subjectName = result?.subject.name || formatSlug(slug);
+  const topicName = result?.topic.name || formatSlug(topicSlug);
+
+  const title = `${topicName} - IGCSE ${subjectName} Revision | Revision City`;
+  const description = `Revise ${topicName} for IGCSE ${subjectName}. Notes, flashcards, quizzes, practice questions, and mind maps aligned to the Cambridge syllabus.${result?.topic.description ? ` ${result.topic.description}` : ''}`;
+
+  return {
+    title,
+    description,
+    keywords: [
+      `IGCSE ${subjectName} ${topicName}`,
+      `${topicName} revision`,
+      `${topicName} notes`,
+      `IGCSE ${topicName}`,
+      `${subjectName} ${topicName} flashcards`,
+      `${subjectName} ${topicName} quiz`,
+    ],
+    openGraph: {
+      title,
+      description,
+      type: 'website',
+    },
+  };
+}
 
 export default async function TopicPage({
   params,
@@ -72,12 +110,35 @@ export default async function TopicPage({
     }
   }
 
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'LearningResource',
+    name: `${topic.name} - IGCSE ${subject.name}`,
+    description: topic.description || `Revision materials for ${topic.name} in IGCSE ${subject.name}`,
+    educationalLevel: 'IGCSE',
+    learningResourceType: ['Notes', 'Flashcards', 'Quiz', 'Practice Questions'],
+    isPartOf: {
+      '@type': 'Course',
+      name: `IGCSE ${subject.name}`,
+      provider: {
+        '@type': 'EducationalOrganization',
+        name: 'Revision City',
+      },
+    },
+  };
+
   return (
-    <TopicPageClient
-      subject={subject}
-      topic={topic}
-      subtopics={subtopics}
-      initialContent={initialContent}
-    />
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <TopicPageClient
+        subject={subject}
+        topic={topic}
+        subtopics={subtopics}
+        initialContent={initialContent}
+      />
+    </>
   );
 }
