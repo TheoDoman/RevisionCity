@@ -5,6 +5,7 @@ import './globals.css';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import GoogleAnalytics from '@/components/GoogleAnalytics';
+import { PostHogProvider, PostHogPageView } from '@/components/PostHogProvider';
 
 const outfit = Outfit({
   subsets: ['latin'],
@@ -97,9 +98,12 @@ export default function RootLayout({
             }}
           />
           {gaId && <GoogleAnalytics measurementId={gaId} />}
-          <Header />
-          <main className="flex-1">{children}</main>
-          <Footer />
+          <PostHogProvider>
+            <PostHogPageView />
+            <Header />
+            <main className="flex-1">{children}</main>
+            <Footer />
+          </PostHogProvider>
         </body>
       </html>
     </ClerkProvider>

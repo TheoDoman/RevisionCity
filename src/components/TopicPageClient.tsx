@@ -10,10 +10,13 @@ import { cn, getSubjectColor } from '@/lib/utils';
 import { useAppStore } from '@/lib/store';
 import { useSubscription } from '@/hooks/useSubscription';
 import {
+  trackViewTopic, trackViewNote, trackContentUnlockAttempt, trackEvent,
+} from '@/lib/analytics';
+import {
   Flashcards, Quiz, NotesViewer, PracticeQuestions,
   ActiveRecall, SummarySheetViewer, MindMapViewer,
 } from '@/components/revision';
-import type { 
+import type {
   Subject, Topic, Subtopic, Note, Flashcard, QuizQuestion,
   PracticeQuestion, RecallPrompt, MindMap, SummarySheet
 } from '@/types';
@@ -100,6 +103,29 @@ export function TopicPageClient({ subject, topic, subtopics, initialContent }: T
   const { subscriptionTier } = useSubscription();
   const color = getSubjectColor(subject.slug);
   const isLocked = (index: number) => subscriptionTier === 'free' && index >= 2;
+
+  // Track topic view on mount
+  useEffect(() => {
+    trackViewTopic(topic.name, subject.name);
+  }, [topic.name, subject.name]);
+
+  // Track subtopic/note views when subtopic changes
+  useEffect(() => {
+    if (!selectedSubtopic) return;
+    const subtopic = subtopics.find(s => s.id === selectedSubtopic);
+    if (subtopic) {
+      trackViewNote(subtopic.name, topic.name, subject.name);
+    }
+  }, [selectedSubtopic, subtopics, topic.name, subject.name]);
+
+  // Track revision method switches
+  useEffect(() => {
+    trackEvent('switch_revision_method', {
+      method: selectedMethod,
+      topic_name: topic.name,
+      subject_name: subject.name,
+    });
+  }, [selectedMethod, topic.name, subject.name]);
 
   // Use real content if available, otherwise use mock
   console.log('TopicPageClient content:', {
@@ -190,7 +216,13 @@ export function TopicPageClient({ subject, topic, subtopics, initialContent }: T
                 return (
                   <button
                     key={subtopic.id}
-                    onClick={() => !locked && setSelectedSubtopic(subtopic.id)}
+                    onClick={() => {
+                      if (locked) {
+                        trackContentUnlockAttempt('subtopic', 'pro');
+                      } else {
+                        setSelectedSubtopic(subtopic.id);
+                      }
+                    }}
                     disabled={locked}
                     className={cn(
                       'w-full text-left p-4 rounded-xl border-2 transition-all',

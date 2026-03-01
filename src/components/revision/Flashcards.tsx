@@ -1,8 +1,9 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { RotateCcw, ChevronLeft, ChevronRight, Check, X, Shuffle } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { trackViewFlashcards } from '@/lib/analytics';
 import type { Flashcard } from '@/types';
 
 interface FlashcardsProps {
@@ -13,6 +14,11 @@ interface FlashcardsProps {
 export function Flashcards({ flashcards, onComplete }: FlashcardsProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
+
+  // Track flashcard views on mount
+  useEffect(() => {
+    trackViewFlashcards('flashcards', flashcards.length);
+  }, [flashcards.length]);
   const [results, setResults] = useState<Record<string, 'correct' | 'incorrect'>>({});
   const [shuffledCards, setShuffledCards] = useState(flashcards);
   const [showResults, setShowResults] = useState(false);

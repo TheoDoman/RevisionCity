@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { supabase } from '@/lib/supabase'
+import { trackGenerateTest, trackCompleteTest } from '@/lib/analytics'
 
 // Print styles
 const printStyles = `
@@ -149,6 +150,11 @@ export default function AIGeneratorPage() {
 
       setGeneratedTest(data.test)
 
+      // Track test generation
+      const subjectName = subjects.find(s => s.id === selectedSubject)?.name || selectedSubject
+      const topicName = topics.find(t => t.id === selectedTopic)?.name || selectedTopic
+      trackGenerateTest(subjectName, topicName, difficulty, questionCount)
+
       // Show confetti animation
       setShowConfetti(true)
       setTimeout(() => setShowConfetti(false), 3000)
@@ -203,6 +209,13 @@ export default function AIGeneratorPage() {
 
     setScore(earnedScore)
     setIsSubmitted(true)
+
+    // Track test completion
+    trackCompleteTest(
+      `ai-${selectedSubject}-${selectedTopic}`,
+      earnedScore,
+      generatedTest.questions.length
+    )
 
     // Scroll to results
     setTimeout(() => {

@@ -1,8 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { CheckCircle2, XCircle, ArrowRight, RotateCcw, Trophy } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { trackStartQuiz, trackCompleteQuiz } from '@/lib/analytics';
 import type { QuizQuestion } from '@/types';
 
 interface QuizProps {
@@ -13,6 +14,11 @@ interface QuizProps {
 export function Quiz({ questions, onComplete }: QuizProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
+
+  // Track quiz start on mount
+  useEffect(() => {
+    trackStartQuiz('quiz', questions.length);
+  }, [questions.length]);
   const [hasAnswered, setHasAnswered] = useState(false);
   const [score, setScore] = useState(0);
   const [showResults, setShowResults] = useState(false);
@@ -49,8 +55,10 @@ export function Quiz({ questions, onComplete }: QuizProps) {
       setSelectedAnswer(null);
       setHasAnswered(false);
     } else {
+      const finalScore = score + (isCorrect ? 1 : 0);
       setShowResults(true);
-      onComplete?.(score + (isCorrect ? 1 : 0), questions.length);
+      trackCompleteQuiz('quiz', finalScore, questions.length);
+      onComplete?.(finalScore, questions.length);
     }
   };
 
