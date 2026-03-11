@@ -16,10 +16,11 @@ import type {
 // SUBJECTS
 // ============================================
 
-export async function getSubjects(): Promise<Subject[]> {
+export async function getSubjects(examBoard: string = 'cambridge'): Promise<Subject[]> {
   const { data, error } = await supabase
     .from('subjects')
     .select('*')
+    .eq('exam_board', examBoard)
     .order('name');
 
   if (error) {
@@ -30,11 +31,12 @@ export async function getSubjects(): Promise<Subject[]> {
   return data || [];
 }
 
-export async function getSubjectBySlug(slug: string): Promise<Subject | null> {
+export async function getSubjectBySlug(slug: string, examBoard: string = 'cambridge'): Promise<Subject | null> {
   const { data, error } = await supabase
     .from('subjects')
     .select('*')
     .eq('slug', slug)
+    .eq('exam_board', examBoard)
     .maybeSingle();
 
   if (error) {
@@ -66,10 +68,11 @@ export async function getTopicsBySubject(subjectId: string): Promise<Topic[]> {
 
 export async function getTopicBySlug(
   subjectSlug: string,
-  topicSlug: string
+  topicSlug: string,
+  examBoard: string = 'cambridge'
 ): Promise<{ topic: Topic; subject: Subject } | null> {
   // First get the subject
-  const subject = await getSubjectBySlug(subjectSlug);
+  const subject = await getSubjectBySlug(subjectSlug, examBoard);
   if (!subject) return null;
 
   const { data, error } = await supabase
@@ -268,11 +271,11 @@ export async function getSummarySheetByTopic(topicId: string): Promise<SummarySh
 // COMBINED DATA FETCHING
 // ============================================
 
-export async function getSubjectWithTopics(slug: string): Promise<{
+export async function getSubjectWithTopics(slug: string, examBoard: string = 'cambridge'): Promise<{
   subject: Subject;
   topics: (Topic & { subtopic_count: number })[];
 } | null> {
-  const subject = await getSubjectBySlug(slug);
+  const subject = await getSubjectBySlug(slug, examBoard);
   if (!subject) return null;
 
   const topics = await getTopicsBySubject(subject.id);
@@ -297,13 +300,14 @@ export async function getSubjectWithTopics(slug: string): Promise<{
 
 export async function getTopicWithSubtopics(
   subjectSlug: string,
-  topicSlug: string
+  topicSlug: string,
+  examBoard: string = 'cambridge'
 ): Promise<{
   subject: Subject;
   topic: Topic;
   subtopics: Subtopic[];
 } | null> {
-  const result = await getTopicBySlug(subjectSlug, topicSlug);
+  const result = await getTopicBySlug(subjectSlug, topicSlug, examBoard);
   if (!result) return null;
 
   const subtopics = await getSubtopicsByTopic(result.topic.id);
