@@ -37,10 +37,10 @@ const fallbackSubjects: Record<string, { id: string; name: string; slug: string;
     { id: '9', name: 'Geography', slug: 'geography', description: 'Physical and human geography, environmental management.', topic_count: 10, icon: '🌍', color: 'from-lime-500 to-green-600', exam_board: 'cambridge', created_at: '' },
   ],
   edexcel: [
-    { id: 'e1', name: 'Mathematics A', slug: 'mathematics', description: 'Number, algebra, geometry, statistics and probability.', topic_count: 5, icon: '📐', color: 'from-blue-500 to-indigo-600', exam_board: 'edexcel', created_at: '' },
-    { id: 'e2', name: 'Biology', slug: 'biology', description: 'Living organisms, cell biology, genetics, ecology and biotechnology.', topic_count: 5, icon: '🧬', color: 'from-green-500 to-emerald-600', exam_board: 'edexcel', created_at: '' },
-    { id: 'e3', name: 'Chemistry', slug: 'chemistry', description: 'Principles of chemistry, organic chemistry and industrial processes.', topic_count: 5, icon: '⚗️', color: 'from-purple-500 to-violet-600', exam_board: 'edexcel', created_at: '' },
-    { id: 'e4', name: 'Physics', slug: 'physics', description: 'Forces, electricity, waves, energy, radioactivity and astrophysics.', topic_count: 8, icon: '⚛️', color: 'from-cyan-500 to-blue-600', exam_board: 'edexcel', created_at: '' },
+    { id: 'e1', name: 'Mathematics A', slug: 'mathematics', description: 'Number, algebra, geometry, statistics and probability.', topic_count: 6, icon: '📐', color: 'from-blue-500 to-indigo-600', exam_board: 'edexcel', created_at: '' },
+    { id: 'e2', name: 'Biology', slug: 'biology', description: 'Living organisms, cell biology, genetics, ecology and biological resources.', topic_count: 6, icon: '🧬', color: 'from-green-500 to-emerald-600', exam_board: 'edexcel', created_at: '' },
+    { id: 'e3', name: 'Chemistry', slug: 'chemistry', description: 'Principles of chemistry, organic chemistry and industrial processes.', topic_count: 6, icon: '⚗️', color: 'from-purple-500 to-violet-600', exam_board: 'edexcel', created_at: '' },
+    { id: 'e4', name: 'Physics', slug: 'physics', description: 'Forces, electricity, waves, energy, atomic physics and astrophysics.', topic_count: 6, icon: '⚛️', color: 'from-cyan-500 to-blue-600', exam_board: 'edexcel', created_at: '' },
   ],
 };
 

@@ -5,38 +5,39 @@ import { ArrowLeft, ChevronRight } from 'lucide-react';
 import { getSubjectIcon, getSubjectColor } from '@/lib/utils';
 import { getSubjectWithTopics, getSubjectBySlug } from '@/lib/data';
 
-// Edexcel IGCSE fallback topics per subject
+// Edexcel IGCSE fallback topics per subject — 6 topics × 6 subtopics each
 const fallbackTopics: Record<string, { name: string; slug: string; description: string; subtopic_count: number }[]> = {
   mathematics: [
-    { name: 'Number', slug: 'number', description: 'Integers, fractions, decimals, percentages, surds, standard form', subtopic_count: 8 },
-    { name: 'Algebra', slug: 'algebra', description: 'Expressions, equations, quadratics, inequalities, sequences', subtopic_count: 8 },
-    { name: 'Geometry', slug: 'geometry', description: 'Angles, polygons, circles, Pythagoras, trigonometry, 3D shapes', subtopic_count: 8 },
-    { name: 'Statistics and Probability', slug: 'statistics-and-probability', description: 'Data representation, averages, probability, combined events', subtopic_count: 6 },
-    { name: 'Vectors and Transformation Geometry', slug: 'vectors-and-transformation-geometry', description: 'Column vectors, transformations, matrices', subtopic_count: 5 },
+    { name: 'Number', slug: 'number', description: 'Integers, fractions, decimals, percentages, standard form and financial mathematics.', subtopic_count: 6 },
+    { name: 'Algebra', slug: 'algebra', description: 'Expressions, equations, inequalities, sequences and algebraic fractions.', subtopic_count: 6 },
+    { name: 'Geometry and Measures', slug: 'geometry-and-measures', description: 'Angles, polygons, circles, Pythagoras, trigonometry, 3D shapes and constructions.', subtopic_count: 6 },
+    { name: 'Statistics and Probability', slug: 'statistics-and-probability', description: 'Data representation, averages, spread, probability and statistical diagrams.', subtopic_count: 6 },
+    { name: 'Vectors and Transformations', slug: 'vectors-and-transformations', description: 'Column vectors, vector arithmetic, geometric transformations and matrices.', subtopic_count: 6 },
+    { name: 'Functions and Graphs', slug: 'functions-and-graphs', description: 'Coordinate geometry, curve sketching, calculus and graph transformations.', subtopic_count: 6 },
   ],
   biology: [
-    { name: 'The Nature and Variety of Living Organisms', slug: 'nature-and-variety-of-living-organisms', description: 'Characteristics of life, classification, unicellular organisms', subtopic_count: 5 },
-    { name: 'Structures and Functions in Living Organisms', slug: 'structures-and-functions', description: 'Cells, nutrition, respiration, gas exchange, excretion, nervous system', subtopic_count: 8 },
-    { name: 'Reproduction and Inheritance', slug: 'reproduction-and-inheritance', description: 'Cell division, sexual/asexual reproduction, genetics, evolution', subtopic_count: 6 },
-    { name: 'Ecology and the Environment', slug: 'ecology-and-the-environment', description: 'Ecosystems, energy flow, nutrient cycles, human impact', subtopic_count: 5 },
-    { name: 'Use of Biological Resources', slug: 'use-of-biological-resources', description: 'Food production, selective breeding, genetic engineering, microorganisms', subtopic_count: 5 },
+    { name: 'The Nature and Variety of Living Organisms', slug: 'nature-and-variety', description: 'Characteristics of life, classification, prokaryotes, viruses, adaptation and biodiversity.', subtopic_count: 6 },
+    { name: 'Structures and Functions in Living Organisms', slug: 'structures-and-functions', description: 'Cells, nutrition, respiration, gas exchange, excretion and transport systems.', subtopic_count: 6 },
+    { name: 'Nervous System and Homeostasis', slug: 'nervous-system-homeostasis', description: 'Nervous system, sense organs, hormones, homeostasis and plant responses.', subtopic_count: 6 },
+    { name: 'Reproduction and Inheritance', slug: 'reproduction-and-inheritance', description: 'Cell division, sexual and asexual reproduction, genetics and evolution.', subtopic_count: 6 },
+    { name: 'Ecology and the Environment', slug: 'ecology-and-environment', description: 'Ecosystems, energy flow, nutrient cycles and human impact on the environment.', subtopic_count: 6 },
+    { name: 'Use of Biological Resources', slug: 'use-of-biological-resources', description: 'Food production, selective breeding, genetic engineering and microorganisms.', subtopic_count: 6 },
   ],
   chemistry: [
-    { name: 'Principles of Chemistry', slug: 'principles-of-chemistry', description: 'Atomic structure, periodic table, bonding, formulae and equations', subtopic_count: 8 },
-    { name: 'Chemistry of the Elements', slug: 'chemistry-of-the-elements', description: 'Groups 1, 7 and 0, transition metals, acids, bases and salts', subtopic_count: 8 },
-    { name: 'Organic Chemistry', slug: 'organic-chemistry', description: 'Alkanes, alkenes, alcohols, carboxylic acids, polymers', subtopic_count: 6 },
-    { name: 'Physical Chemistry', slug: 'physical-chemistry', description: 'Energetics, rates of reaction, reversible reactions, electrochemistry', subtopic_count: 6 },
-    { name: 'Chemistry in Society', slug: 'chemistry-in-society', description: 'Extraction of metals, ammonia, water treatment, air pollution', subtopic_count: 5 },
+    { name: 'Principles of Chemistry', slug: 'principles-of-chemistry', description: 'States of matter, atomic structure, periodic table, bonding, equations and moles.', subtopic_count: 6 },
+    { name: 'Chemistry of the Elements', slug: 'chemistry-of-elements', description: 'Groups 1, 7 and 0, transition metals, reactivity series, acids, bases and redox.', subtopic_count: 6 },
+    { name: 'Organic Chemistry', slug: 'organic-chemistry', description: 'Hydrocarbons, functional groups, reactions and polymers.', subtopic_count: 6 },
+    { name: 'Physical Chemistry', slug: 'physical-chemistry', description: 'Energetics, reaction rates, equilibrium and electrochemistry.', subtopic_count: 6 },
+    { name: 'Chemistry in Society', slug: 'chemistry-in-society', description: 'Metal extraction, industrial processes, pollution and sustainability.', subtopic_count: 6 },
+    { name: 'Quantitative Chemistry and Analysis', slug: 'quantitative-chemistry-analysis', description: 'Mole calculations, empirical formulae, gas volumes and analytical techniques.', subtopic_count: 6 },
   ],
   physics: [
-    { name: 'Forces and Motion', slug: 'forces-and-motion', description: 'Speed, velocity, acceleration, Newton\'s laws, momentum', subtopic_count: 6 },
-    { name: 'Electricity', slug: 'electricity', description: 'Circuits, resistance, Ohm\'s law, series and parallel, electrical power', subtopic_count: 6 },
-    { name: 'Waves', slug: 'waves', description: 'Transverse and longitudinal waves, sound, light, electromagnetic spectrum', subtopic_count: 5 },
-    { name: 'Energy Resources and Energy Transfer', slug: 'energy-resources-and-transfer', description: 'Thermal energy, conduction, convection, radiation, renewable energy', subtopic_count: 5 },
-    { name: 'Solids, Liquids and Gases', slug: 'solids-liquids-and-gases', description: 'Density, pressure, gas laws, kinetic theory', subtopic_count: 5 },
-    { name: 'Magnetism and Electromagnetism', slug: 'magnetism-and-electromagnetism', description: 'Magnetic fields, electromagnets, motors, generators, transformers', subtopic_count: 5 },
-    { name: 'Radioactivity and Particles', slug: 'radioactivity-and-particles', description: 'Atomic model, nuclear radiation, half-life, fission, fusion', subtopic_count: 5 },
-    { name: 'Astrophysics', slug: 'astrophysics', description: 'Solar system, stars, galaxies, Big Bang, red-shift', subtopic_count: 4 },
+    { name: 'Forces and Motion', slug: 'forces-and-motion', description: 'Kinematics, Newton\'s laws, momentum, work, power and energy.', subtopic_count: 6 },
+    { name: 'Electricity and Magnetism', slug: 'electricity-magnetism', description: 'Circuits, electrical quantities, electrostatics, magnetism and electromagnetism.', subtopic_count: 6 },
+    { name: 'Waves and the EM Spectrum', slug: 'waves-em-spectrum', description: 'Wave properties, sound, light, optics and the electromagnetic spectrum.', subtopic_count: 6 },
+    { name: 'Energy and Thermal Physics', slug: 'energy-thermal-physics', description: 'Energy stores, thermal energy transfer, heat capacity and energy resources.', subtopic_count: 6 },
+    { name: 'Matter and Pressure', slug: 'matter-and-pressure', description: 'Density, kinetic theory, gas laws, changes of state and hydraulics.', subtopic_count: 6 },
+    { name: 'Atomic Physics and Space', slug: 'atomic-physics-space', description: 'Nuclear model, radiation, half-life, fission, fusion and astrophysics.', subtopic_count: 6 },
   ],
 };
 
