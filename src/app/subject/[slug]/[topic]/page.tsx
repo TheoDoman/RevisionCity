@@ -75,6 +75,7 @@ export default async function TopicPage({
     icon: '',
     color: '',
     topic_count: 0,
+    exam_board: 'cambridge',
     created_at: '',
   };
 
