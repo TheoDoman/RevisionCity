@@ -55,7 +55,13 @@
       "Bash(git log:*)",
       "Bash(grep:*)",
       "Bash(vercel --version:*)",
-      "Bash(npx vercel:*)"
+      "Bash(npx vercel:*)",
+      "Bash(psql:*)",
+      "Bash(if [ -f scripts/all-49-notes-content.ts ])",
+      "Bash(then wc -l scripts/all-49-notes-content.ts)",
+      "Bash(else echo \"File not created yet\")",
+      "Bash(fi)",
+      "Bash(pip3 install:*)"
     ]
   }
 }
