@@ -1,17 +1,19 @@
 import Link from 'next/link';
 import type { Metadata } from 'next';
-import { ArrowRight, BookOpen, Loader2 } from 'lucide-react';
+import { ArrowRight, BookOpen } from 'lucide-react';
 import { getSubjectIcon, getSubjectColor } from '@/lib/utils';
 import { getSubjects } from '@/lib/data';
 import { Suspense } from 'react';
+import ExamBoardToggle from '@/components/ExamBoardToggle';
 
 export const metadata: Metadata = {
-  title: 'All IGCSE Subjects - Revision Notes & Resources',
+  title: 'All IGCSE Subjects - Cambridge & Edexcel Revision Resources',
   description:
-    'Browse all 9 Cambridge IGCSE subjects. Free revision notes, flashcards, quizzes, and AI-powered practice for Mathematics, Biology, Chemistry, Physics, and more.',
+    'Browse all Cambridge IGCSE and Edexcel IGCSE subjects. Free revision notes, flashcards, quizzes, and AI-powered practice for Mathematics, Biology, Chemistry, Physics, and more.',
   keywords: [
     'IGCSE subjects',
     'Cambridge IGCSE revision',
+    'Edexcel IGCSE revision',
     'IGCSE notes',
     'IGCSE revision materials',
     'IGCSE study resources',
@@ -19,32 +21,50 @@ export const metadata: Metadata = {
 };
 
 // Force dynamic rendering - don't prerender during build
-export const dynamic = 'force-dynamic'
+export const dynamic = 'force-dynamic';
 
-// Fallback subjects for when database is empty - 9 core IGCSE subjects
-const fallbackSubjects = [
-  { id: '1', name: 'Mathematics', slug: 'mathematics', description: 'Numbers, algebra, geometry, statistics and more.', topic_count: 12, icon: '📐', color: 'from-blue-500 to-indigo-600', created_at: '' },
-  { id: '2', name: 'Biology', slug: 'biology', description: 'The study of living organisms and life processes.', topic_count: 15, icon: '🧬', color: 'from-green-500 to-emerald-600', created_at: '' },
-  { id: '3', name: 'Chemistry', slug: 'chemistry', description: 'Elements, compounds, reactions and matter.', topic_count: 14, icon: '⚗️', color: 'from-purple-500 to-violet-600', created_at: '' },
-  { id: '4', name: 'Physics', slug: 'physics', description: 'Forces, energy, waves, electricity and magnetism.', topic_count: 13, icon: '⚛️', color: 'from-cyan-500 to-blue-600', created_at: '' },
-  { id: '5', name: 'Computer Science', slug: 'computer-science', description: 'Programming, algorithms, data structures and computer systems.', topic_count: 10, icon: '💻', color: 'from-indigo-500 to-purple-600', created_at: '' },
-  { id: '6', name: 'Business Studies', slug: 'business', description: 'Business concepts, management, finance and enterprise.', topic_count: 8, icon: '💼', color: 'from-slate-500 to-gray-600', created_at: '' },
-  { id: '7', name: 'Economics', slug: 'economics', description: 'Micro and macroeconomics, markets and government policy.', topic_count: 9, icon: '📈', color: 'from-teal-500 to-cyan-600', created_at: '' },
-  { id: '8', name: 'History', slug: 'history', description: '20th century world history and historical skills.', topic_count: 11, icon: '🏛️', color: 'from-yellow-500 to-amber-600', created_at: '' },
-  { id: '9', name: 'Geography', slug: 'geography', description: 'Physical and human geography, environmental management.', topic_count: 10, icon: '🌍', color: 'from-lime-500 to-green-600', created_at: '' },
-];
+// Fallback subjects per board
+const fallbackSubjects: Record<string, { id: string; name: string; slug: string; description: string; topic_count: number; icon: string; color: string; exam_board: string; created_at: string }[]> = {
+  cambridge: [
+    { id: '1', name: 'Mathematics', slug: 'mathematics', description: 'Numbers, algebra, geometry, statistics and more.', topic_count: 12, icon: '📐', color: 'from-blue-500 to-indigo-600', exam_board: 'cambridge', created_at: '' },
+    { id: '2', name: 'Biology', slug: 'biology', description: 'The study of living organisms and life processes.', topic_count: 15, icon: '🧬', color: 'from-green-500 to-emerald-600', exam_board: 'cambridge', created_at: '' },
+    { id: '3', name: 'Chemistry', slug: 'chemistry', description: 'Elements, compounds, reactions and matter.', topic_count: 14, icon: '⚗️', color: 'from-purple-500 to-violet-600', exam_board: 'cambridge', created_at: '' },
+    { id: '4', name: 'Physics', slug: 'physics', description: 'Forces, energy, waves, electricity and magnetism.', topic_count: 13, icon: '⚛️', color: 'from-cyan-500 to-blue-600', exam_board: 'cambridge', created_at: '' },
+    { id: '5', name: 'Computer Science', slug: 'computer-science', description: 'Programming, algorithms, data structures and computer systems.', topic_count: 10, icon: '💻', color: 'from-indigo-500 to-purple-600', exam_board: 'cambridge', created_at: '' },
+    { id: '6', name: 'Business Studies', slug: 'business', description: 'Business concepts, management, finance and enterprise.', topic_count: 8, icon: '💼', color: 'from-slate-500 to-gray-600', exam_board: 'cambridge', created_at: '' },
+    { id: '7', name: 'Economics', slug: 'economics', description: 'Micro and macroeconomics, markets and government policy.', topic_count: 9, icon: '📈', color: 'from-teal-500 to-cyan-600', exam_board: 'cambridge', created_at: '' },
+    { id: '8', name: 'History', slug: 'history', description: '20th century world history and historical skills.', topic_count: 11, icon: '🏛️', color: 'from-yellow-500 to-amber-600', exam_board: 'cambridge', created_at: '' },
+    { id: '9', name: 'Geography', slug: 'geography', description: 'Physical and human geography, environmental management.', topic_count: 10, icon: '🌍', color: 'from-lime-500 to-green-600', exam_board: 'cambridge', created_at: '' },
+  ],
+  edexcel: [
+    { id: 'e1', name: 'Mathematics A', slug: 'mathematics', description: 'Number, algebra, geometry, statistics and probability.', topic_count: 5, icon: '📐', color: 'from-blue-500 to-indigo-600', exam_board: 'edexcel', created_at: '' },
+    { id: 'e2', name: 'Biology', slug: 'biology', description: 'Living organisms, cell biology, genetics, ecology and biotechnology.', topic_count: 5, icon: '🧬', color: 'from-green-500 to-emerald-600', exam_board: 'edexcel', created_at: '' },
+    { id: 'e3', name: 'Chemistry', slug: 'chemistry', description: 'Principles of chemistry, organic chemistry and industrial processes.', topic_count: 5, icon: '⚗️', color: 'from-purple-500 to-violet-600', exam_board: 'edexcel', created_at: '' },
+    { id: 'e4', name: 'Physics', slug: 'physics', description: 'Forces, electricity, waves, energy, radioactivity and astrophysics.', topic_count: 8, icon: '⚛️', color: 'from-cyan-500 to-blue-600', exam_board: 'edexcel', created_at: '' },
+  ],
+};
 
-export default async function SubjectsPage() {
+export default async function SubjectsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ board?: string }>;
+}) {
+  const { board = 'cambridge' } = await searchParams;
+  const examBoard = board === 'edexcel' ? 'edexcel' : 'cambridge';
+
   // Try to fetch from Supabase, fall back to mock data
-  let subjects = await getSubjects();
-  
+  let subjects = await getSubjects(examBoard);
+
   if (subjects.length === 0) {
-    subjects = fallbackSubjects;
+    subjects = fallbackSubjects[examBoard] || fallbackSubjects.cambridge;
   }
+
+  const boardLabel = examBoard === 'edexcel' ? 'Edexcel IGCSE' : 'Cambridge IGCSE';
+  const subjectLinkBase = examBoard === 'edexcel' ? '/edexcel/subject' : '/subject';
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-brand-50 to-white">
-      {/* Header - EXTRA ANIMATED */}
+      {/* Header */}
       <div className="bg-white border-b border-brand-100 relative overflow-hidden">
         <div className="absolute top-0 right-0 w-96 h-96 bg-brand-100 rounded-full blur-3xl opacity-30 animate-float-slow" />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -52,27 +72,30 @@ export default async function SubjectsPage() {
             <div className="p-2 bg-brand-100 rounded-xl hover-rotate animate-bounce-soft">
               <BookOpen className="h-6 w-6 text-brand-600" />
             </div>
-            <span className="text-sm font-medium text-brand-600">
-              Cambridge IGCSE
-            </span>
+            <span className="text-sm font-medium text-brand-600">{boardLabel}</span>
           </div>
           <h1 className="font-display text-4xl font-bold text-brand-950 mb-4 animate-slide-up">
             Choose Your Subject
           </h1>
           <p className="text-lg text-brand-600 max-w-2xl animate-slide-up animation-delay-100">
-            Select a subject to start revising. Each subject contains comprehensive
-            revision materials aligned to the Cambridge IGCSE syllabus.
+            Select a subject to start revising. Each subject contains comprehensive revision materials
+            aligned to the {boardLabel} syllabus.
           </p>
         </div>
       </div>
 
       {/* Subjects Grid */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        {/* Exam Board Toggle */}
+        <Suspense fallback={null}>
+          <ExamBoardToggle currentBoard={examBoard} />
+        </Suspense>
+
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {subjects.map((subject, index) => (
             <Link
               key={subject.id}
-              href={`/subject/${subject.slug}`}
+              href={`${subjectLinkBase}/${subject.slug}`}
               className="group relative bg-white rounded-2xl border-2 border-brand-100
                        overflow-hidden transition-all duration-300
                        hover-lift hover-glow hover:border-brand-200 animate-slide-up"
@@ -87,31 +110,27 @@ export default async function SubjectsPage() {
               <div className="relative p-6">
                 {/* Icon and title */}
                 <div className="flex items-start gap-4 mb-4">
-                  <div className={`text-4xl p-3 rounded-xl bg-gradient-to-br ${getSubjectColor(subject.slug)}
+                  <div
+                    className={`text-4xl p-3 rounded-xl bg-gradient-to-br ${getSubjectColor(subject.slug)}
                                 bg-opacity-10 group-hover:scale-125 group-hover:rotate-12
                                 transition-all duration-300 animate-float`}
-                       style={{ animationDelay: `${index * 100}ms` }}>
+                    style={{ animationDelay: `${index * 100}ms` }}
+                  >
                     {getSubjectIcon(subject.slug)}
                   </div>
                   <div className="flex-1">
-                    <h2 className="font-display text-xl font-semibold text-brand-900 
-                                 group-hover:text-brand-950 transition-colors">
+                    <h2 className="font-display text-xl font-semibold text-brand-900 group-hover:text-brand-950 transition-colors">
                       {subject.name}
                     </h2>
-                    <p className="text-sm text-brand-500">
-                      {subject.topic_count} topics
-                    </p>
+                    <p className="text-sm text-brand-500">{subject.topic_count} topics</p>
                   </div>
                 </div>
 
                 {/* Description */}
-                <p className="text-brand-600 text-sm leading-relaxed mb-4">
-                  {subject.description}
-                </p>
+                <p className="text-brand-600 text-sm leading-relaxed mb-4">{subject.description}</p>
 
                 {/* CTA */}
-                <div className="flex items-center text-brand-600 group-hover:text-brand-800 
-                              font-medium text-sm transition-colors">
+                <div className="flex items-center text-brand-600 group-hover:text-brand-800 font-medium text-sm transition-colors">
                   Start revising
                   <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
                 </div>

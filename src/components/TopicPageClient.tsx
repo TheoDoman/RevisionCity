@@ -197,7 +197,7 @@ export function TopicPageClient({ subject, topic, subtopics, initialContent }: T
       {/* Header */}
       <div className="bg-white border-b border-brand-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <Link href={`/subject/${subject.slug}`} className="inline-flex items-center text-sm text-brand-600 hover:text-brand-800 mb-4">
+          <Link href={subject.exam_board === 'edexcel' ? `/edexcel/subject/${subject.slug}` : `/subject/${subject.slug}`} className="inline-flex items-center text-sm text-brand-600 hover:text-brand-800 mb-4">
             <ArrowLeft className="h-4 w-4 mr-2" />Back to {subject.name}
           </Link>
           <h1 className="font-display text-3xl font-bold text-brand-950 mb-2">{topic.name}</h1>

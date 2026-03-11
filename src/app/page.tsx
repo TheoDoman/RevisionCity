@@ -71,7 +71,7 @@ export default function HomePage() {
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-white rounded-full shadow-md mb-8 animate-bounce-soft hover-glow">
               <GraduationCap className="h-5 w-5 text-brand-600 animate-wiggle" />
               <span className="text-sm font-medium text-brand-700">
-                Cambridge IGCSE Revision
+                Cambridge & Edexcel IGCSE
               </span>
             </div>
 
@@ -86,7 +86,7 @@ export default function HomePage() {
             {/* Subheading */}
             <p className="text-xl text-brand-700 mb-10 max-w-2xl mx-auto animate-slide-up animation-delay-100">
               The ultimate revision platform with AI-powered test generation, comprehensive notes, flashcards, quizzes,
-              and practice questions — all aligned to the Cambridge syllabus.
+              and practice questions — for both Cambridge and Edexcel IGCSE.
             </p>
 
             {/* CTAs - EXTRA ANIMATED */}
@@ -116,7 +116,7 @@ export default function HomePage() {
               </div>
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="h-5 w-5 text-success-500" />
-                <span>Cambridge Syllabus Aligned</span>
+                <span>Cambridge & Edexcel Aligned</span>
               </div>
             </div>
           </div>

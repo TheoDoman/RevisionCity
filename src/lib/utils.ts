@@ -26,6 +26,8 @@ export function getSubjectIcon(subjectSlug: string): string {
   const icons: Record<string, string> = {
     mathematics: '📐',
     english: '📚',
+    'english-language': '📝',
+    'english-literature': '📚',
     biology: '🧬',
     chemistry: '⚗️',
     physics: '⚛️',
@@ -35,6 +37,8 @@ export function getSubjectIcon(subjectSlug: string): string {
     economics: '📈',
     history: '🏛️',
     geography: '🌍',
+    'computer-science': '💻',
+    accounting: '🧾',
   };
   return icons[subjectSlug] || '📖';
 }
@@ -43,6 +47,8 @@ export function getSubjectColor(subjectSlug: string): string {
   const colors: Record<string, string> = {
     mathematics: 'from-blue-500 to-indigo-600',
     english: 'from-amber-500 to-orange-600',
+    'english-language': 'from-amber-500 to-orange-600',
+    'english-literature': 'from-rose-500 to-pink-600',
     biology: 'from-green-500 to-emerald-600',
     chemistry: 'from-purple-500 to-violet-600',
     physics: 'from-cyan-500 to-blue-600',
@@ -52,6 +58,8 @@ export function getSubjectColor(subjectSlug: string): string {
     economics: 'from-teal-500 to-cyan-600',
     history: 'from-yellow-500 to-amber-600',
     geography: 'from-lime-500 to-green-600',
+    'computer-science': 'from-indigo-500 to-purple-600',
+    accounting: 'from-emerald-500 to-teal-600',
   };
   return colors[subjectSlug] || 'from-gray-500 to-slate-600';
 }

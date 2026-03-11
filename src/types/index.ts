@@ -7,6 +7,7 @@ export interface Subject {
   icon: string;
   color: string;
   topic_count: number;
+  exam_board: string;
   created_at: string;
 }
 
