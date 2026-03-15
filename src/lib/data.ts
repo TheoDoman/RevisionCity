@@ -20,6 +20,7 @@ export async function getSubjects(): Promise<Subject[]> {
   const { data, error } = await supabase
     .from('subjects')
     .select('*')
+    .eq('exam_board', 'cambridge')
     .order('name');
 
   if (error) {
