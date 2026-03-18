@@ -1,5 +1,5 @@
 'use client';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 
 interface ExamBoardToggleProps {
   current: string;
@@ -9,6 +9,9 @@ export function ExamBoardToggle({ current }: ExamBoardToggleProps) {
   const router = useRouter();
 
   const select = (board: string) => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('examBoard', board);
+    }
     router.push(board === 'cambridge' ? '/subjects' : `/subjects?board=${board}`);
   };
 
