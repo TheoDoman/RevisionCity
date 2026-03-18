@@ -14,6 +14,7 @@ const fallbackSubtopics = [
 ];
 
 const validSubjects = ['mathematics', 'english', 'biology', 'chemistry', 'physics', 'computer-science', 'business-studies', 'economics', 'history', 'geography'];
+const isValidSubjectSlug = (s: string) => validSubjects.includes(s) || s.endsWith('-edexcel');
 
 function formatSlug(slug: string): string {
   return slug.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
@@ -59,7 +60,7 @@ export default async function TopicPage({
 }) {
   const { slug, topic: topicSlug } = await params;
 
-  if (!validSubjects.includes(slug)) {
+  if (!isValidSubjectSlug(slug)) {
     notFound();
   }
 

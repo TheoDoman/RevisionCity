@@ -16,11 +16,11 @@ import type {
 // SUBJECTS
 // ============================================
 
-export async function getSubjects(): Promise<Subject[]> {
+export async function getSubjects(examBoard = 'cambridge'): Promise<Subject[]> {
   const { data, error } = await supabase
     .from('subjects')
     .select('*')
-    .eq('exam_board', 'cambridge')
+    .eq('exam_board', examBoard)
     .order('name');
 
   if (error) {

@@ -39,6 +39,11 @@ const fallbackTopics: Record<string, { name: string; slug: string; description: 
 
 const validSlugs = ['mathematics', 'english', 'biology', 'chemistry', 'physics', 'computer-science', 'business-studies', 'economics', 'history', 'geography'];
 
+// Allow Edexcel variants (slug ends with -edexcel)
+function isValidSlug(slug: string) {
+  return validSlugs.includes(slug) || slug.endsWith('-edexcel');
+}
+
 const subjectDisplayNames: Record<string, string> = {
   mathematics: 'Mathematics',
   english: 'English',
@@ -92,7 +97,7 @@ export default async function SubjectPage({
 }) {
   const { slug } = await params;
 
-  if (!validSlugs.includes(slug)) {
+  if (!isValidSlug(slug)) {
     notFound();
   }
 
