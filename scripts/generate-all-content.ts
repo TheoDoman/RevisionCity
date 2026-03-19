@@ -52,25 +52,39 @@ interface GeneratedContent {
   }>
 }
 
-async function callAPI(prompt: string): Promise<GeneratedContent | null> {
-  const message = await anthropic.messages.create({
-    model: 'claude-3-haiku-20240307',
-    max_tokens: 4096,
-    messages: [{ role: 'user', content: prompt }]
-  })
+async function callAPI(prompt: string, retries = 3): Promise<GeneratedContent | null> {
+  for (let attempt = 1; attempt <= retries; attempt++) {
+    try {
+      const message = await anthropic.messages.create({
+        model: 'claude-3-haiku-20240307',
+        max_tokens: 4096,
+        messages: [{ role: 'user', content: prompt }]
+      })
 
-  const text = message.content[0].type === 'text' ? message.content[0].text : ''
-  const jsonMatch = text.match(/\{[\s\S]*\}/)
-  if (!jsonMatch) return null
+      const text = message.content[0].type === 'text' ? message.content[0].text : ''
+      const jsonMatch = text.match(/\{[\s\S]*\}/)
+      if (!jsonMatch) return null
 
-  try {
-    return JSON.parse(jsonMatch[0]) as GeneratedContent
-  } catch {
-    const cleaned = jsonMatch[0]
-      .replace(/,(\s*[}\]])/g, '$1')
-      .replace(/[\x00-\x1F\x7F-\x9F]/g, ' ')
-    return JSON.parse(cleaned) as GeneratedContent
+      try {
+        return JSON.parse(jsonMatch[0]) as GeneratedContent
+      } catch {
+        const cleaned = jsonMatch[0]
+          .replace(/,(\s*[}\]])/g, '$1')
+          .replace(/[\x00-\x1F\x7F-\x9F]/g, ' ')
+        return JSON.parse(cleaned) as GeneratedContent
+      }
+    } catch (err: any) {
+      const isRetryable = err?.status === 529 || err?.error?.error?.type === 'overloaded_error' || err?.status === 429
+      if (isRetryable && attempt < retries) {
+        const wait = attempt * 15000  // 15s, 30s
+        process.stdout.write(`    ⏳ Retry ${attempt}/${retries - 1} after ${wait / 1000}s...\n`)
+        await new Promise(r => setTimeout(r, wait))
+      } else {
+        throw err
+      }
+    }
   }
+  return null
 }
 
 async function generateAllContent(gap: Gap): Promise<GeneratedContent | null> {
@@ -318,7 +332,7 @@ async function main() {
     const needsNotes = !notesSet.has(s.id)
     const needsFlashcards = (flashMap.get(s.id) || 0) < 10
     const needsQuiz = (quizMap.get(s.id) || 0) < 15
-    const needsPractice = (practiceMap.get(s.id) || 0) < 10
+    const needsPractice = (practiceMap.get(s.id) || 0) < 8   // script generates 8
     const needsRecall = (recallMap.get(s.id) || 0) < 5
 
     if (needsNotes || needsFlashcards || needsQuiz || needsPractice || needsRecall) {
@@ -345,43 +359,38 @@ async function main() {
   })
 
   const toProcess = gaps.slice(0, maxSubtopics)
-  console.log(`Found ${gaps.length} subtopics with gaps. Processing ${toProcess.length}.\n`)
+  console.log(`Found ${gaps.length} subtopics with gaps. Processing ${toProcess.length} with concurrency ${batchSize}.\n`)
 
   let stats = { processed: 0, notesAdded: 0, flashcardsAdded: 0, quizAdded: 0, practiceAdded: 0, recallAdded: 0, errors: 0 }
+  let completed = 0
 
-  for (let i = 0; i < toProcess.length; i++) {
-    const gap = toProcess[i]
-    const pct = Math.round((i / toProcess.length) * 100)
+  // Process in parallel batches
+  for (let i = 0; i < toProcess.length; i += batchSize) {
+    const batch = toProcess.slice(i, i + batchSize)
     const elapsed = Math.round((Date.now() - startTime) / 1000)
-    const eta = i > 0 ? Math.round((elapsed / i) * (toProcess.length - i)) : '?'
+    const eta = completed > 0 ? Math.round((elapsed / completed) * (toProcess.length - completed)) : '?'
+    console.log(`\n🔄 Batch ${Math.floor(i / batchSize) + 1} | Progress: ${completed}/${toProcess.length} (${Math.round(completed / toProcess.length * 100)}%) | ETA: ${eta}s`)
 
-    console.log(`\n[${i + 1}/${toProcess.length}] (${pct}%) ${gap.subject} > ${gap.topic} > ${gap.name}`)
-    console.log(`  Board: ${gap.exam_board} | Missing: ${[
-      gap.needsNotes ? 'notes' : '',
-      gap.needsFlashcards ? 'flashcards' : '',
-      gap.needsQuiz ? 'quiz' : '',
-      gap.needsPractice ? 'practice' : '',
-      gap.needsRecall ? 'recall' : ''
-    ].filter(Boolean).join(', ')} | ETA: ${eta}s`)
+    await Promise.all(batch.map(async (gap) => {
+      const label = `${gap.subject} > ${gap.topic} > ${gap.name}`
+      process.stdout.write(`  ⏳ ${label}\n`)
 
-    const content = await generateAllContent(gap)
-    if (!content) {
-      stats.errors++
-      await new Promise(r => setTimeout(r, 2000))
-      continue
-    }
+      const content = await generateAllContent(gap)
+      if (!content) {
+        stats.errors++
+        return
+      }
 
-    const results = await insertContent(gap, content)
-
-    if (results.notes) stats.notesAdded++
-    if (results.flashcards) stats.flashcardsAdded++
-    if (results.quiz) stats.quizAdded++
-    if (results.practice) stats.practiceAdded++
-    if (results.recall) stats.recallAdded++
-    stats.processed++
-
-    // Rate limiting - 1 second between API calls
-    await new Promise(r => setTimeout(r, 1000))
+      const results = await insertContent(gap, content)
+      if (results.notes) stats.notesAdded++
+      if (results.flashcards) stats.flashcardsAdded++
+      if (results.quiz) stats.quizAdded++
+      if (results.practice) stats.practiceAdded++
+      if (results.recall) stats.recallAdded++
+      stats.processed++
+      completed++
+      process.stdout.write(`  ✅ ${label}\n`)
+    }))
   }
 
   const totalTime = Math.round((Date.now() - startTime) / 1000)
