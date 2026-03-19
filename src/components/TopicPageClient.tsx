@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import {
   ArrowLeft, BookOpen, Brain, HelpCircle, FileText,
-  Lightbulb, Network, ClipboardList, ChevronDown, Lock, Loader2
+  Lightbulb, Network, ClipboardList, ChevronDown, Lock, Loader2, Sparkles
 } from 'lucide-react';
 import { cn, getSubjectColor } from '@/lib/utils';
 import { useAppStore } from '@/lib/store';
@@ -14,7 +14,7 @@ import {
 } from '@/lib/analytics';
 import {
   Flashcards, Quiz, NotesViewer, PracticeQuestions,
-  ActiveRecall, SummarySheetViewer, MindMapViewer,
+  ActiveRecall, SummarySheetViewer, MindMapViewer, AiTutor,
 } from '@/components/revision';
 import type {
   Subject, Topic, Subtopic, Note, Flashcard, QuizQuestion,
@@ -29,6 +29,7 @@ const revisionMethods = [
   { id: 'recall', name: 'Recall', icon: Lightbulb },
   { id: 'mindmap', name: 'Mind Map', icon: Network },
   { id: 'summary', name: 'Summary', icon: ClipboardList },
+  { id: 'tutor', name: 'Ask Claude', icon: Sparkles },
 ];
 
 // Fallback mock data
@@ -188,6 +189,15 @@ export function TopicPageClient({ subject, topic, subtopics, initialContent }: T
         return mindMap ? <MindMapViewer mindMap={mindMap} /> : <div className="text-center py-12 text-brand-500">Mind map not yet available for this topic. Check back soon!</div>;
       case 'summary':
         return summarySheet ? <SummarySheetViewer summarySheet={summarySheet} /> : <div className="text-center py-12 text-brand-500">Summary sheet not yet available for this topic. Check back soon!</div>;
+      case 'tutor':
+        return (
+          <AiTutor
+            subject={subject.name}
+            topic={topic.name}
+            examBoard={subject.slug.endsWith('-edexcel') ? 'edexcel' : 'cambridge'}
+            subscriptionTier={subscriptionTier}
+          />
+        );
       default: return null;
     }
   };

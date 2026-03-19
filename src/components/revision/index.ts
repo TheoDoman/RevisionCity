@@ -5,3 +5,4 @@ export { PracticeQuestions } from './PracticeQuestions';
 export { ActiveRecall } from './ActiveRecall';
 export { SummarySheetViewer } from './SummarySheet';
 export { MindMapViewer } from './MindMap';
+export { AiTutor } from './AiTutor';
