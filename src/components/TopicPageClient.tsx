@@ -29,7 +29,7 @@ const revisionMethods = [
   { id: 'recall', name: 'Recall', icon: Lightbulb },
   { id: 'mindmap', name: 'Mind Map', icon: Network },
   { id: 'summary', name: 'Summary', icon: ClipboardList },
-  { id: 'tutor', name: 'Ask Claude', icon: Sparkles },
+  { id: 'tutor', name: 'AI Tutor', icon: Sparkles },
 ];
 
 // Fallback mock data

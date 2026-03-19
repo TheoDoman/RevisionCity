@@ -15,8 +15,8 @@ import { HomepageSubjectsGrid } from '@/components/HomepageSubjectsGrid';
 const features = [
   {
     icon: Sparkles,
-    title: 'AI Test Generator',
-    description: 'Generate unlimited unique practice tests with AI. Every test includes answer keys and explanations.',
+    title: 'AI Tutor',
+    description: 'Chat with your personal AI tutor. Ask any question and get guided to the answer through Socratic questions — the method proven to make knowledge stick.',
     featured: true,
   },
   {
@@ -101,7 +101,7 @@ export default function HomePage() {
               </div>
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="h-5 w-5 text-success-500" />
-                <span>AI-Powered Tests</span>
+                <span>AI Tutor Included</span>
               </div>
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="h-5 w-5 text-success-500" />
@@ -125,6 +125,106 @@ export default function HomePage() {
           </div>
 
           <HomepageSubjectsGrid />
+        </div>
+      </section>
+
+      {/* AI Tutor Spotlight */}
+      <section className="py-20 bg-gradient-to-br from-violet-50 via-purple-50 to-indigo-50 relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-purple-200 rounded-full blur-3xl opacity-20 animate-float-slow" />
+        <div className="absolute bottom-0 left-0 w-64 h-64 bg-violet-200 rounded-full blur-3xl opacity-20 animate-float animation-delay-500" />
+
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            {/* Text */}
+            <div>
+              <div className="inline-flex items-center gap-2 px-4 py-2 bg-white rounded-full shadow-sm mb-6">
+                <Sparkles className="h-4 w-4 text-violet-600" />
+                <span className="text-sm font-medium text-violet-700">New Feature</span>
+              </div>
+              <h2 className="font-display text-3xl sm:text-4xl font-bold text-brand-950 mb-4">
+                Meet Your Personal{' '}
+                <span className="bg-gradient-to-r from-violet-600 to-purple-600 bg-clip-text text-transparent">
+                  AI Tutor
+                </span>
+              </h2>
+              <p className="text-lg text-brand-600 mb-6">
+                Struggling with a concept? Your AI tutor never just gives you the answer — it asks you the right questions so you genuinely understand and remember.
+              </p>
+              <ul className="space-y-3 mb-8">
+                {[
+                  'Guides you with questions, not lectures',
+                  'Available for every subject and topic',
+                  'Suggests flashcards as you learn',
+                  'Adapts when you get stuck',
+                ].map(item => (
+                  <li key={item} className="flex items-center gap-3 text-brand-700">
+                    <div className="w-5 h-5 rounded-full bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center shrink-0">
+                      <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                      </svg>
+                    </div>
+                    {item}
+                  </li>
+                ))}
+              </ul>
+              <Link
+                href="/subjects"
+                className="inline-flex items-center gap-2 bg-gradient-to-r from-violet-600 to-purple-600 text-white font-medium px-6 py-3 rounded-xl hover:opacity-90 transition-opacity"
+              >
+                Try AI Tutor
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+            </div>
+
+            {/* Mock chat UI */}
+            <div className="bg-white rounded-2xl shadow-xl border border-violet-100 p-5 max-w-md mx-auto lg:mx-0">
+              <div className="flex items-center gap-2 pb-4 border-b border-brand-100 mb-4">
+                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center">
+                  <Sparkles className="h-4 w-4 text-white" />
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-brand-900">AI Tutor</p>
+                  <p className="text-xs text-brand-500">Biology · Photosynthesis</p>
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                <div className="flex gap-2">
+                  <div className="w-7 h-7 rounded-full bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center shrink-0 mt-0.5">
+                    <Sparkles className="h-3.5 w-3.5 text-white" />
+                  </div>
+                  <div className="bg-brand-50 rounded-2xl rounded-tl-sm px-4 py-2.5 text-sm text-brand-800 max-w-[85%]">
+                    Hi! What would you like to understand better today?
+                  </div>
+                </div>
+
+                <div className="flex gap-2 flex-row-reverse">
+                  <div className="w-7 h-7 rounded-full bg-brand-200 flex items-center justify-center shrink-0 mt-0.5">
+                    <GraduationCap className="h-3.5 w-3.5 text-brand-600" />
+                  </div>
+                  <div className="bg-violet-600 rounded-2xl rounded-tr-sm px-4 py-2.5 text-sm text-white max-w-[85%]">
+                    What is photosynthesis?
+                  </div>
+                </div>
+
+                <div className="flex gap-2">
+                  <div className="w-7 h-7 rounded-full bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center shrink-0 mt-0.5">
+                    <Sparkles className="h-3.5 w-3.5 text-white" />
+                  </div>
+                  <div className="bg-brand-50 rounded-2xl rounded-tl-sm px-4 py-2.5 text-sm text-brand-800 max-w-[85%]">
+                    Great question! The word has two parts — &apos;photo&apos; and &apos;synthesis&apos;. What do you think each part means?
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-4 flex items-center gap-2 border border-brand-200 rounded-xl px-3 py-2">
+                <span className="text-sm text-brand-400 flex-1">Ask a question...</span>
+                <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center">
+                  <ArrowRight className="h-3 w-3 text-white" />
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
