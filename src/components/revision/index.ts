@@ -6,3 +6,4 @@ export { ActiveRecall } from './ActiveRecall';
 export { SummarySheetViewer } from './SummarySheet';
 export { MindMapViewer } from './MindMap';
 export { AiTutor } from './AiTutor';
+export { AnalyticsDashboard } from './AnalyticsDashboard';

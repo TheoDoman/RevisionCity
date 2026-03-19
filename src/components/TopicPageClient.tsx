@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import {
   ArrowLeft, BookOpen, Brain, HelpCircle, FileText,
-  Lightbulb, Network, ClipboardList, ChevronDown, Lock, Loader2, Sparkles
+  Lightbulb, Network, ClipboardList, ChevronDown, Lock, Loader2, Sparkles, BarChart2
 } from 'lucide-react';
 import { cn, getSubjectColor } from '@/lib/utils';
 import { useAppStore } from '@/lib/store';
@@ -14,7 +14,7 @@ import {
 } from '@/lib/analytics';
 import {
   Flashcards, Quiz, NotesViewer, PracticeQuestions,
-  ActiveRecall, SummarySheetViewer, MindMapViewer, AiTutor,
+  ActiveRecall, SummarySheetViewer, MindMapViewer, AiTutor, AnalyticsDashboard,
 } from '@/components/revision';
 import type {
   Subject, Topic, Subtopic, Note, Flashcard, QuizQuestion,
@@ -30,6 +30,7 @@ const revisionMethods = [
   { id: 'mindmap', name: 'Mind Map', icon: Network },
   { id: 'summary', name: 'Summary', icon: ClipboardList },
   { id: 'tutor', name: 'AI Tutor', icon: Sparkles },
+  { id: 'analytics', name: 'Analytics', icon: BarChart2 },
 ];
 
 // Fallback mock data
@@ -196,6 +197,14 @@ export function TopicPageClient({ subject, topic, subtopics, initialContent }: T
             topic={topic.name}
             examBoard={subject.slug.endsWith('-edexcel') ? 'edexcel' : 'cambridge'}
             subscriptionTier={subscriptionTier}
+          />
+        );
+      case 'analytics':
+        return (
+          <AnalyticsDashboard
+            subject={subject}
+            topic={topic}
+            subtopics={subtopics}
           />
         );
       default: return null;
