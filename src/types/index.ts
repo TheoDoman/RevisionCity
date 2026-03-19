@@ -149,6 +149,57 @@ export interface UsageTracker {
   last_reset: string;
 }
 
+// Revision Plan types
+export type IGCSEGrade = 'A*' | 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'U';
+export type ContentType = 'notes' | 'flashcards' | 'quiz' | 'practice' | 'recall';
+export type TopicPriority = 'high' | 'medium' | 'low';
+
+export interface TopicAllocation {
+  topicId: string;
+  topicName: string;
+  hours: number;
+  contentTypes: ContentType[];
+  priority: TopicPriority;
+}
+
+export interface WeekPlan {
+  week: number;
+  estimatedGrade: IGCSEGrade;
+  estimatedPercentage: number;
+  isCheckpoint: boolean;
+  topicAllocations: TopicAllocation[];
+}
+
+export interface PlanCheckpoint {
+  week: number;
+  focusTopicIds: string[];
+  description: string;
+}
+
+export interface GradeProgressionPoint {
+  week: number;
+  grade: IGCSEGrade;
+  percentage: number;
+}
+
+export interface RevisionPlan {
+  id: string;
+  userId: string;
+  subjectId: string;
+  subjectName: string;
+  examBoard: string;
+  examDate: string;
+  createdAt: string;
+  updatedAt: string;
+  totalWeeks: number;
+  estimatedFinalGrade: IGCSEGrade;
+  targetGrade: IGCSEGrade;
+  hoursPerWeek: number;
+  weeks: WeekPlan[];
+  checkpoints: PlanCheckpoint[];
+  gradeProgression: GradeProgressionPoint[];
+}
+
 // UI State types
 export interface RevisionProgress {
   subtopic_id: string;

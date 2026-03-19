@@ -4,6 +4,7 @@ import type { Metadata } from 'next';
 import { ArrowLeft, ChevronRight } from 'lucide-react';
 import { getSubjectIcon, getSubjectColor } from '@/lib/utils';
 import { getSubjectWithTopics, getSubjectBySlug } from '@/lib/data';
+import { RevisionPlanBuilder } from '@/components/revision';
 
 // Fallback data
 const fallbackTopics: Record<string, { name: string; slug: string; description: string; subtopic_count: number }[]> = {
@@ -226,6 +227,9 @@ export default async function SubjectPage({
             </Link>
           ))}
         </div>
+
+        {/* AI Revision Plan */}
+        <RevisionPlanBuilder subject={subject} topics={topics} />
       </div>
     </div>
   );
