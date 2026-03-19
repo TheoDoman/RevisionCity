@@ -52,78 +52,98 @@ interface GeneratedContent {
   }>
 }
 
-async function generateAllContent(gap: Gap): Promise<GeneratedContent | null> {
-  const specNote = gap.exam_board === 'edexcel' ? 'Edexcel IGCSE' : 'Cambridge IGCSE'
+async function callAPI(prompt: string): Promise<GeneratedContent | null> {
+  const message = await anthropic.messages.create({
+    model: 'claude-3-haiku-20240307',
+    max_tokens: 4096,
+    messages: [{ role: 'user', content: prompt }]
+  })
 
-  const sections: string[] = []
-
-  if (gap.needsNotes) {
-    sections.push(`"notes": "## ${gap.name}\\n\\n### Key Concepts\\n- [concept 1]\\n- [concept 2]\\n\\n### Important Details\\n- [detail]\\n\\n### Examples\\n- [example]\\n\\n### Exam Tips\\n- [tip]"`)
-  }
-
-  if (gap.needsFlashcards) {
-    sections.push(`"flashcards": [{"front":"Q","back":"A","difficulty":"easy"},...]`)
-  }
-
-  if (gap.needsQuiz) {
-    sections.push(`"quiz_questions": [{"question":"Q","question_type":"multiple_choice","options":["A","B","C","D"],"correct_answer":"A","explanation":"...","difficulty":"medium"},...]`)
-  }
-
-  if (gap.needsPractice) {
-    sections.push(`"practice_questions": [{"question":"Q [X marks]","marks":4,"mark_scheme":["point 1 [1]","point 2 [1]"],"example_answer":"...","difficulty":"medium"},...]`)
-  }
-
-  if (gap.needsRecall) {
-    sections.push(`"recall_prompts": [{"prompt":"Explain...","hints":["hint1","hint2"],"model_answer":"...","key_points_to_include":["point1","point2"]},...]`)
-  }
-
-  const prompt = `You are an expert ${specNote} teacher. Generate revision content for the subtopic "${gap.name}" within topic "${gap.topic}" in subject "${gap.subject}".
-
-Return ONLY a valid JSON object with these fields (include only what's requested):
-{
-${gap.needsNotes ? `  "notes": "Comprehensive markdown revision notes (use ## headings, bullet points, include: key definitions, important facts, examples, exam tips). Minimum 300 words.",` : ''}
-${gap.needsFlashcards ? `  "flashcards": [12 objects with {front: "question", back: "answer", difficulty: "easy|medium|hard"}],` : ''}
-${gap.needsQuiz ? `  "quiz_questions": [18 objects with {question: "...", question_type: "multiple_choice", options: ["A text","B text","C text","D text"], correct_answer: "A|B|C|D", explanation: "...", difficulty: "easy|medium|hard"}],` : ''}
-${gap.needsPractice ? `  "practice_questions": [12 objects with {question: "exam-style question [X marks]", marks: number(2-6), mark_scheme: ["marking point [1]",...], example_answer: "full model answer", difficulty: "easy|medium|hard"}],` : ''}
-${gap.needsRecall ? `  "recall_prompts": [8 objects with {prompt: "Explain/Describe/Outline...", hints: ["hint1","hint2","hint3"], model_answer: "detailed answer", key_points_to_include: ["point1","point2","point3"]}]` : ''}
-}
-
-Requirements:
-- Specific to ${specNote} specification
-- IGCSE exam level appropriate
-- Accurate scientific/academic content
-- Include proper terminology
-- Do NOT include trailing commas in JSON`
+  const text = message.content[0].type === 'text' ? message.content[0].text : ''
+  const jsonMatch = text.match(/\{[\s\S]*\}/)
+  if (!jsonMatch) return null
 
   try {
-    const message = await anthropic.messages.create({
-      model: 'claude-3-haiku-20240307',
-      max_tokens: 4000,
-      messages: [{ role: 'user', content: prompt }]
-    })
+    return JSON.parse(jsonMatch[0]) as GeneratedContent
+  } catch {
+    const cleaned = jsonMatch[0]
+      .replace(/,(\s*[}\]])/g, '$1')
+      .replace(/[\x00-\x1F\x7F-\x9F]/g, ' ')
+    return JSON.parse(cleaned) as GeneratedContent
+  }
+}
 
-    const text = message.content[0].type === 'text' ? message.content[0].text : ''
+async function generateAllContent(gap: Gap): Promise<GeneratedContent | null> {
+  const specNote = gap.exam_board === 'edexcel' ? 'Edexcel IGCSE' : 'Cambridge IGCSE'
+  const context = `subtopic "${gap.name}" in topic "${gap.topic}", subject "${gap.subject}" (${specNote})`
+  const baseReq = `Return ONLY valid JSON. Be concise. No trailing commas. Specific to ${specNote} IGCSE level.`
 
-    // Extract JSON from response
-    const jsonMatch = text.match(/\{[\s\S]*\}/)
-    if (!jsonMatch) {
-      console.error(`  ❌ No JSON found in response for ${gap.name}`)
-      return null
-    }
+  const result: GeneratedContent = {}
+
+  // Call 1: notes + flashcards
+  if (gap.needsNotes || gap.needsFlashcards) {
+    const prompt = `You are an expert ${specNote} teacher. Generate revision content for ${context}.
+
+${baseReq}
+
+Return a JSON object with:
+${gap.needsNotes ? `"notes": "Markdown notes with ## headings and bullet points covering key definitions, facts, examples, exam tips. Keep under 200 words."` : ''}
+${gap.needsNotes && gap.needsFlashcards ? ',' : ''}
+${gap.needsFlashcards ? `"flashcards": [exactly 10 objects: {front: "question", back: "concise answer", difficulty: "easy|medium|hard"}]` : ''}`
 
     try {
-      return JSON.parse(jsonMatch[0]) as GeneratedContent
-    } catch {
-      // Try to clean up common JSON issues
-      const cleaned = jsonMatch[0]
-        .replace(/,(\s*[}\]])/g, '$1')
-        .replace(/[\x00-\x1F\x7F-\x9F]/g, ' ')
-      return JSON.parse(cleaned) as GeneratedContent
+      const data = await callAPI(prompt)
+      if (data?.notes) result.notes = data.notes
+      if (data?.flashcards) result.flashcards = data.flashcards
+    } catch (error) {
+      console.error(`  ❌ Call 1 error for ${gap.name}:`, error)
     }
-  } catch (error) {
-    console.error(`  ❌ API error for ${gap.name}:`, error)
-    return null
   }
+
+  // Call 2: quiz questions only
+  if (gap.needsQuiz) {
+    const prompt = `You are an expert ${specNote} teacher. Generate revision content for ${context}.
+
+${baseReq}
+
+Return a JSON object with exactly this field:
+"quiz_questions": [exactly 15 objects: {question: "...", question_type: "multiple_choice", options: ["A ...","B ...","C ...","D ..."], correct_answer: "A|B|C|D", explanation: "one sentence", difficulty: "easy|medium|hard"}]
+
+Wrap in { }.`
+
+    try {
+      const data = await callAPI(prompt)
+      if (data?.quiz_questions) result.quiz_questions = data.quiz_questions
+    } catch (error) {
+      console.error(`  ❌ Call 2 error for ${gap.name}:`, error)
+    }
+  }
+
+  // Call 3: practice + recall
+  if (gap.needsPractice || gap.needsRecall) {
+    const parts: string[] = []
+    if (gap.needsPractice) parts.push(`"practice_questions": [exactly 8 objects: {question: "exam-style [X marks]", marks: 2-6, mark_scheme: ["point 1","point 2"], example_answer: "brief model answer", difficulty: "easy|medium|hard"}]`)
+    if (gap.needsRecall) parts.push(`"recall_prompts": [exactly 5 objects: {prompt: "Explain/Describe...", hints: ["h1","h2"], model_answer: "brief", key_points_to_include: ["p1","p2"]}]`)
+
+    const prompt = `You are an expert ${specNote} teacher. Generate revision content for ${context}.
+
+${baseReq}
+
+Return a JSON object with:
+${parts.join(',\n')}
+
+Wrap in { }.`
+
+    try {
+      const data = await callAPI(prompt)
+      if (data?.practice_questions) result.practice_questions = data.practice_questions
+      if (data?.recall_prompts) result.recall_prompts = data.recall_prompts
+    } catch (error) {
+      console.error(`  ❌ Call 3 error for ${gap.name}:`, error)
+    }
+  }
+
+  return Object.keys(result).length > 0 ? result : null
 }
 
 async function insertContent(gap: Gap, content: GeneratedContent) {
@@ -143,16 +163,27 @@ async function insertContent(gap: Gap, content: GeneratedContent) {
 
   // Insert flashcards
   if (content.flashcards && gap.needsFlashcards && content.flashcards.length > 0) {
-    // Create flashcard set first
-    const { data: setData, error: setError } = await supabase
+    // Get or create flashcard set
+    let setId: string | null = null
+    const { data: existing } = await supabase
       .from('flashcard_sets')
-      .insert({ subtopic_id: gap.id, name: `${gap.name} - Flashcards` })
       .select('id')
-      .single()
+      .eq('subtopic_id', gap.id)
+      .maybeSingle()
+    if (existing) {
+      setId = existing.id
+    } else {
+      const { data: setData } = await supabase
+        .from('flashcard_sets')
+        .insert({ subtopic_id: gap.id, name: `${gap.name} - Flashcards` })
+        .select('id')
+        .single()
+      setId = setData?.id || null
+    }
 
-    if (!setError && setData) {
+    if (setId) {
       const flashcardRows = content.flashcards.map(fc => ({
-        flashcard_set_id: setData.id,
+        flashcard_set_id: setId,
         subtopic_id: gap.id,
         front: fc.front,
         back: fc.back,
@@ -161,21 +192,30 @@ async function insertContent(gap: Gap, content: GeneratedContent) {
       const { error } = await supabase.from('flashcards').insert(flashcardRows)
       if (!error) { results.flashcards = true; console.log(`    ✅ ${content.flashcards.length} Flashcards`) }
       else console.error('    ❌ Flashcards insert error:', error.message)
-    } else {
-      console.error('    ❌ Flashcard set create error:', setError?.message)
     }
   }
 
   // Insert quiz questions
   if (content.quiz_questions && gap.needsQuiz && content.quiz_questions.length > 0) {
-    // Create quiz first
-    const { data: quizData, error: quizError } = await supabase
+    // Get or create quiz
+    let quizId: string | null = null
+    const { data: existingQuiz } = await supabase
       .from('quizzes')
-      .insert({ subtopic_id: gap.id, name: `${gap.name} - Quiz` })
       .select('id')
-      .single()
-
-    if (!quizError && quizData) {
+      .eq('subtopic_id', gap.id)
+      .maybeSingle()
+    if (existingQuiz) {
+      quizId = existingQuiz.id
+    } else {
+      const { data: quizData } = await supabase
+        .from('quizzes')
+        .insert({ subtopic_id: gap.id, name: `${gap.name} - Quiz` })
+        .select('id')
+        .single()
+      quizId = quizData?.id || null
+    }
+    const quizData = quizId ? { id: quizId } : null
+    if (quizData) {
       const quizRows = content.quiz_questions.map(q => ({
         quiz_id: quizData.id,
         subtopic_id: gap.id,
@@ -189,8 +229,6 @@ async function insertContent(gap: Gap, content: GeneratedContent) {
       const { error } = await supabase.from('quiz_questions').insert(quizRows)
       if (!error) { results.quiz = true; console.log(`    ✅ ${content.quiz_questions.length} Quiz questions`) }
       else console.error('    ❌ Quiz questions insert error:', error.message)
-    } else {
-      console.error('    ❌ Quiz create error:', quizError?.message)
     }
   }
 

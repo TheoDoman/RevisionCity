@@ -16,6 +16,7 @@ export function HomepageExamBoardSelector() {
   const select = (b: 'cambridge' | 'edexcel') => {
     setBoard(b);
     localStorage.setItem('examBoard', b);
+    window.dispatchEvent(new CustomEvent('examBoardChange', { detail: b }));
   };
 
   const subjectsHref = board === 'cambridge' ? '/subjects' : '/subjects?board=edexcel';
