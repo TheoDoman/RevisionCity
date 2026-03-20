@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import {
   ArrowLeft, BookOpen, Brain, HelpCircle, FileText,
-  Lightbulb, Network, ClipboardList, ChevronDown, Lock, Loader2, Sparkles, BarChart2
+  Lightbulb, Network, ClipboardList, ChevronDown, Lock, Loader2, Sparkles, BarChart2, Calendar
 } from 'lucide-react';
 import { cn, getSubjectColor } from '@/lib/utils';
 import { useAppStore } from '@/lib/store';
@@ -31,6 +31,7 @@ const revisionMethods = [
   { id: 'summary', name: 'Summary', icon: ClipboardList },
   { id: 'tutor', name: 'AI Tutor', icon: Sparkles },
   { id: 'analytics', name: 'Analytics', icon: BarChart2 },
+  { id: 'plan', name: 'Study Plan', icon: Calendar, isLink: true },
 ];
 
 // Fallback mock data
@@ -280,20 +281,30 @@ export function TopicPageClient({ subject, topic, subtopics, initialContent }: T
             <div className="mb-6">
               <h2 className="font-display text-lg font-semibold text-brand-900 mb-4">Revision Method</h2>
               <div className="flex flex-wrap gap-2">
-                {revisionMethods.map((method) => (
-                  <button
-                    key={method.id}
-                    onClick={() => setSelectedMethod(method.id)}
-                    className={cn(
-                      'flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all',
-                      selectedMethod === method.id
-                        ? `bg-gradient-to-r ${color} text-white shadow-lg`
-                        : 'bg-white border-2 border-brand-100 text-brand-700 hover:border-brand-200'
-                    )}
-                  >
-                    <method.icon className="h-4 w-4" />{method.name}
-                  </button>
-                ))}
+                {revisionMethods.map((method) =>
+                  (method as { isLink?: boolean }).isLink ? (
+                    <Link
+                      key={method.id}
+                      href={`/subject/${subject.slug}#revision-plan`}
+                      className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all bg-white border-2 border-violet-200 text-violet-700 hover:bg-violet-50"
+                    >
+                      <method.icon className="h-4 w-4" />{method.name}
+                    </Link>
+                  ) : (
+                    <button
+                      key={method.id}
+                      onClick={() => setSelectedMethod(method.id)}
+                      className={cn(
+                        'flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all',
+                        selectedMethod === method.id
+                          ? `bg-gradient-to-r ${color} text-white shadow-lg`
+                          : 'bg-white border-2 border-brand-100 text-brand-700 hover:border-brand-200'
+                      )}
+                    >
+                      <method.icon className="h-4 w-4" />{method.name}
+                    </button>
+                  )
+                )}
               </div>
             </div>
 

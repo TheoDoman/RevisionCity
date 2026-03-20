@@ -9,6 +9,7 @@ import {
   CheckCircle2,
   GraduationCap,
   BarChart2,
+  Calendar,
 } from 'lucide-react';
 import { HomepageExamBoardSelector } from '@/components/HomepageExamBoardSelector';
 import { HomepageSubjectsGrid } from '@/components/HomepageSubjectsGrid';
@@ -19,6 +20,13 @@ const features = [
     title: 'AI Tutor',
     description: 'Chat with your personal AI tutor. Ask any question and get guided to the answer through Socratic questions — the method proven to make knowledge stick.',
     featured: true,
+  },
+  {
+    icon: Calendar,
+    title: 'Smart Study Plan',
+    description: 'AI builds a personalised week-by-week revision schedule based on your exam date and quiz scores — with spaced repetition, grade predictions, and a downloadable calendar.',
+    href: '/revision-plan',
+    planFeature: true,
   },
   {
     icon: BookOpen,
@@ -93,6 +101,10 @@ export default function HomePage() {
             <div className="mt-4 flex flex-wrap justify-center gap-3 animate-slide-up animation-delay-250">
               <Link href="/pricing" className="btn-secondary px-8 py-3 text-base hover-lift">
                 View Pricing
+              </Link>
+              <Link href="/revision-plan" className="inline-flex items-center gap-2 px-8 py-3 text-base font-medium rounded-xl border-2 border-violet-200 text-violet-700 bg-violet-50 hover:bg-violet-100 hover:border-violet-300 transition-all hover-lift">
+                <Calendar className="h-5 w-5" />
+                Smart Study Plan
               </Link>
               <Link href="/analytics" className="inline-flex items-center gap-2 px-8 py-3 text-base font-medium rounded-xl border-2 border-emerald-200 text-emerald-700 bg-emerald-50 hover:bg-emerald-100 hover:border-emerald-300 transition-all hover-lift">
                 <BarChart2 className="h-5 w-5" />
@@ -239,6 +251,90 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Revision Plan Spotlight */}
+      <section className="py-20 bg-gradient-to-br from-violet-50 via-fuchsia-50 to-white relative overflow-hidden">
+        <div className="absolute top-0 left-0 w-96 h-96 bg-violet-200 rounded-full blur-3xl opacity-20 animate-float-slow" />
+        <div className="absolute bottom-0 right-0 w-64 h-64 bg-fuchsia-200 rounded-full blur-3xl opacity-20 animate-float animation-delay-500" />
+
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            {/* Mock plan preview */}
+            <div className="bg-white rounded-2xl shadow-xl border border-violet-100 p-5 max-w-md mx-auto lg:mx-0 order-2 lg:order-1">
+              <div className="flex items-center gap-2 pb-4 border-b border-brand-100 mb-4">
+                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-violet-500 to-fuchsia-600 flex items-center justify-center">
+                  <Calendar className="h-4 w-4 text-white" />
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-brand-900">Biology Revision Plan</p>
+                  <p className="text-xs text-brand-500">12 weeks · Predicted Grade B</p>
+                </div>
+              </div>
+              <div className="space-y-2 mb-4">
+                {[
+                  { week: 'Week 1', topic: 'Cells & Diffusion', hours: '4h', priority: 'high', grade: 'E' },
+                  { week: 'Week 2', topic: 'Human Biology', hours: '3h', priority: 'high', grade: 'E' },
+                  { week: 'Week 3', topic: 'Checkpoint Mini-Test', hours: '2h', priority: 'checkpoint', grade: 'D' },
+                  { week: 'Week 4', topic: 'Plant Biology', hours: '3h', priority: 'medium', grade: 'D' },
+                ].map((item) => (
+                  <div key={item.week} className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm ${item.priority === 'checkpoint' ? 'bg-amber-50 border border-amber-200' : 'bg-brand-50'}`}>
+                    <div className={`w-2 h-2 rounded-full shrink-0 ${item.priority === 'high' ? 'bg-red-400' : item.priority === 'checkpoint' ? 'bg-amber-400' : 'bg-green-400'}`} />
+                    <span className="font-medium text-brand-700 w-14 shrink-0">{item.week}</span>
+                    <span className="text-brand-600 flex-1">{item.topic}</span>
+                    <span className="text-brand-400 text-xs">{item.hours}</span>
+                    <span className="text-xs font-bold px-1.5 py-0.5 rounded bg-violet-100 text-violet-700">{item.grade}</span>
+                  </div>
+                ))}
+              </div>
+              <div className="flex gap-2">
+                <div className="flex-1 h-8 bg-violet-100 rounded-lg flex items-center justify-center text-xs text-violet-600 font-medium">📅 Download .ics</div>
+                <div className="flex-1 h-8 bg-brand-100 rounded-lg flex items-center justify-center text-xs text-brand-600 font-medium">📄 Export PDF</div>
+              </div>
+            </div>
+
+            {/* Text */}
+            <div className="order-1 lg:order-2">
+              <div className="inline-flex items-center gap-2 px-4 py-2 bg-white rounded-full shadow-sm mb-6">
+                <Calendar className="h-4 w-4 text-violet-600" />
+                <span className="text-sm font-medium text-violet-700">New Feature</span>
+              </div>
+              <h2 className="font-display text-3xl sm:text-4xl font-bold text-brand-950 mb-4">
+                Your Personalised{' '}
+                <span className="bg-gradient-to-r from-violet-600 to-fuchsia-600 bg-clip-text text-transparent">
+                  Study Schedule
+                </span>
+              </h2>
+              <p className="text-lg text-brand-600 mb-6">
+                Tell us your exam date and target grade. Claude AI analyses your quiz performance and builds a week-by-week plan that adjusts as you improve.
+              </p>
+              <ul className="space-y-3 mb-8">
+                {[
+                  'Front-loads weak topics in the first 4 weeks',
+                  'Checkpoint mini-tests at weeks 3, 6, and 9',
+                  'Grade prediction chart — see your trajectory',
+                  'Download as calendar (.ics), spreadsheet, or PDF',
+                ].map(item => (
+                  <li key={item} className="flex items-center gap-3 text-brand-700">
+                    <div className="w-5 h-5 rounded-full bg-gradient-to-br from-violet-500 to-fuchsia-600 flex items-center justify-center shrink-0">
+                      <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                      </svg>
+                    </div>
+                    {item}
+                  </li>
+                ))}
+              </ul>
+              <Link
+                href="/revision-plan"
+                className="inline-flex items-center gap-2 bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white font-medium px-6 py-3 rounded-xl hover:opacity-90 transition-opacity"
+              >
+                Create My Study Plan
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Features */}
       <section className="py-20 bg-gradient-to-b from-white to-brand-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -265,6 +361,8 @@ export default function HomePage() {
                   className={`group p-6 bg-white rounded-2xl border transition-all duration-300 animate-slide-up h-full ${
                     feature.featured
                       ? 'border-indigo-200 bg-gradient-to-br from-indigo-50 to-purple-50 shadow-lg'
+                      : feature.planFeature
+                      ? 'border-violet-200 bg-gradient-to-br from-violet-50 to-fuchsia-50 hover:shadow-lg cursor-pointer'
                       : feature.href
                       ? 'border-emerald-200 bg-gradient-to-br from-emerald-50 to-teal-50 hover:shadow-lg cursor-pointer'
                       : 'border-brand-100 hover:border-brand-200 hover:shadow-lg'
@@ -279,7 +377,15 @@ export default function HomePage() {
                       </span>
                     </div>
                   )}
-                  {feature.href && (
+                  {feature.planFeature && (
+                    <div className="mb-2">
+                      <span className="inline-flex items-center gap-1 px-2 py-1 bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white text-xs font-medium rounded-full">
+                        <Calendar className="h-3 w-3" />
+                        AI Powered
+                      </span>
+                    </div>
+                  )}
+                  {feature.href && !feature.planFeature && (
                     <div className="mb-2">
                       <span className="inline-flex items-center gap-1 px-2 py-1 bg-gradient-to-r from-emerald-500 to-teal-500 text-white text-xs font-medium rounded-full">
                         <BarChart2 className="h-3 w-3" />
@@ -290,6 +396,8 @@ export default function HomePage() {
                   <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 ${
                     feature.featured
                       ? 'bg-gradient-to-br from-indigo-500 to-purple-600 animate-glow'
+                      : feature.planFeature
+                      ? 'bg-gradient-to-br from-violet-500 to-fuchsia-600'
                       : feature.href
                       ? 'bg-gradient-to-br from-emerald-500 to-teal-600'
                       : 'bg-gradient-to-br from-brand-500 to-brand-600'
@@ -302,7 +410,12 @@ export default function HomePage() {
                   <p className="text-brand-600 text-sm leading-relaxed">
                     {feature.description}
                   </p>
-                  {feature.href && (
+                  {feature.planFeature && (
+                    <div className="mt-4 flex items-center gap-1 text-violet-600 text-sm font-medium">
+                      Create my plan <ArrowRight className="h-3.5 w-3.5" />
+                    </div>
+                  )}
+                  {feature.href && !feature.planFeature && (
                     <div className="mt-4 flex items-center gap-1 text-emerald-600 text-sm font-medium">
                       View your dashboard <ArrowRight className="h-3.5 w-3.5" />
                     </div>

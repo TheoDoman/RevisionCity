@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { useState } from 'react';
-import { Menu, X, Sparkles, BookOpen, BarChart2 } from 'lucide-react';
+import { Menu, X, Sparkles, BarChart2, Calendar } from 'lucide-react';
 import { SignInButton, SignUpButton, UserButton, useUser } from '@clerk/nextjs';
 import { cn } from '@/lib/utils';
 import { useAppStore } from '@/lib/store';
@@ -16,6 +16,7 @@ export function Header() {
   const navigation = [
     { name: 'Subjects', href: '/subjects' },
     { name: 'AI Test Generator', href: '/ai-generator', highlight: true },
+    { name: 'Revision Plan', href: '/revision-plan', plan: true },
     { name: 'Pricing', href: '/pricing' },
   ];
 
@@ -50,10 +51,13 @@ export function Header() {
                   "text-sm font-medium transition-colors",
                   item.highlight
                     ? "bg-gradient-to-r from-indigo-500 to-purple-500 text-white px-4 py-2 rounded-lg hover:from-indigo-600 hover:to-purple-600 flex items-center gap-2"
+                    : item.plan
+                    ? "flex items-center gap-1.5 text-violet-700 hover:text-violet-900"
                     : "text-brand-700 hover:text-brand-900"
                 )}
               >
                 {item.highlight && <Sparkles className="h-4 w-4" />}
+                {item.plan && <Calendar className="h-4 w-4" />}
                 {item.name}
               </Link>
             ))}
@@ -120,9 +124,15 @@ export function Header() {
             <Link
               key={item.name}
               href={item.href}
-              className="block px-4 py-2 text-base font-medium text-brand-700 hover:bg-brand-50 rounded-lg transition-colors"
+              className={cn(
+                'flex items-center gap-2 px-4 py-2 text-base font-medium rounded-lg transition-colors',
+                item.plan
+                  ? 'text-violet-700 hover:bg-violet-50'
+                  : 'text-brand-700 hover:bg-brand-50',
+              )}
               onClick={() => setMobileMenuOpen(false)}
             >
+              {item.plan && <Calendar className="h-4 w-4" />}
               {item.name}
             </Link>
           ))}

@@ -229,7 +229,9 @@ export default async function SubjectPage({
         </div>
 
         {/* AI Revision Plan */}
-        <RevisionPlanBuilder subject={subject} topics={topics} />
+        <div id="revision-plan">
+          <RevisionPlanBuilder subject={subject} topics={topics} />
+        </div>
       </div>
     </div>
   );
