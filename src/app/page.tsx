@@ -44,7 +44,7 @@ const features = [
     icon: BarChart2,
     title: 'Progress Analytics',
     description: 'Track your scores, spot weak topics, and see your predicted IGCSE grade — with a heatmap and 7-day trend chart.',
-    href: '/dashboard',
+    href: '/analytics',
   },
 ];
 
@@ -90,9 +90,13 @@ export default function HomePage() {
             {/* Exam board selector + CTA */}
             <HomepageExamBoardSelector />
 
-            <div className="mt-4 animate-slide-up animation-delay-250">
+            <div className="mt-4 flex flex-wrap justify-center gap-3 animate-slide-up animation-delay-250">
               <Link href="/pricing" className="btn-secondary px-8 py-3 text-base hover-lift">
                 View Pricing
+              </Link>
+              <Link href="/analytics" className="inline-flex items-center gap-2 px-8 py-3 text-base font-medium rounded-xl border-2 border-emerald-200 text-emerald-700 bg-emerald-50 hover:bg-emerald-100 hover:border-emerald-300 transition-all hover-lift">
+                <BarChart2 className="h-5 w-5" />
+                My Progress
               </Link>
             </div>
 
@@ -313,6 +317,102 @@ export default function HomePage() {
                 <div key={feature.title}>{card}</div>
               );
             })}
+          </div>
+        </div>
+      </section>
+
+      {/* Analytics Spotlight */}
+      <section className="py-20 bg-gradient-to-br from-emerald-50 via-teal-50 to-white relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-72 h-72 bg-emerald-200 rounded-full blur-3xl opacity-20 animate-float-slow" />
+        <div className="absolute bottom-0 left-0 w-48 h-48 bg-teal-200 rounded-full blur-3xl opacity-20 animate-float animation-delay-500" />
+
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <div>
+              <div className="inline-flex items-center gap-2 px-4 py-2 bg-white rounded-full shadow-sm mb-6">
+                <BarChart2 className="h-4 w-4 text-emerald-600" />
+                <span className="text-sm font-medium text-emerald-700">Progress Analytics</span>
+              </div>
+              <h2 className="font-display text-3xl sm:text-4xl font-bold text-brand-950 mb-4">
+                Know Exactly{' '}
+                <span className="bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
+                  Where You Stand
+                </span>
+              </h2>
+              <p className="text-lg text-brand-600 mb-6">
+                See your predicted IGCSE grade, spot weak topics before the exam, and track your improvement day by day.
+              </p>
+              <ul className="space-y-3 mb-8">
+                {[
+                  'Topic heatmap — green, yellow, or red at a glance',
+                  'Grade predictor — current and projected grade',
+                  'Study streak and flashcard progress',
+                  'Class comparison with percentile rank',
+                ].map((item) => (
+                  <li key={item} className="flex items-center gap-3 text-brand-700">
+                    <div className="w-5 h-5 rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center shrink-0">
+                      <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                      </svg>
+                    </div>
+                    {item}
+                  </li>
+                ))}
+              </ul>
+              <Link
+                href="/analytics"
+                className="inline-flex items-center gap-2 bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-medium px-6 py-3 rounded-xl hover:opacity-90 transition-opacity"
+              >
+                View My Progress
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+            </div>
+
+            {/* Mock dashboard preview */}
+            <div className="bg-white rounded-2xl shadow-xl border border-emerald-100 p-5 max-w-md mx-auto lg:mx-0">
+              <div className="flex items-center gap-2 pb-4 border-b border-brand-100 mb-4">
+                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center">
+                  <BarChart2 className="h-4 w-4 text-white" />
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-brand-900">My Progress</p>
+                  <p className="text-xs text-brand-500">Biology · Topic Analytics</p>
+                </div>
+              </div>
+
+              {/* Mini score */}
+              <div className="flex items-center gap-4 mb-4">
+                <div className="text-4xl font-bold text-emerald-600">72<span className="text-xl text-brand-400">%</span></div>
+                <div className="flex-1">
+                  <div className="w-full bg-brand-100 rounded-full h-2.5">
+                    <div className="h-2.5 rounded-full bg-emerald-500" style={{ width: '72%' }} />
+                  </div>
+                  <p className="text-xs text-brand-500 mt-1">Grade 7 → projected Grade 8</p>
+                </div>
+              </div>
+
+              {/* Mini heatmap */}
+              <div className="grid grid-cols-4 gap-1.5 mb-4">
+                {[85, 72, 91, 48, 63, 77, 34, 80].map((score, i) => (
+                  <div
+                    key={i}
+                    className="h-8 rounded-lg flex items-center justify-center text-xs font-bold text-white"
+                    style={{ backgroundColor: score >= 70 ? '#10B981' : score >= 50 ? '#F59E0B' : '#EF4444' }}
+                  >
+                    {score}%
+                  </div>
+                ))}
+              </div>
+
+              {/* Streak */}
+              <div className="flex items-center gap-3 bg-orange-50 rounded-xl px-3 py-2">
+                <span className="text-lg">🔥</span>
+                <div>
+                  <p className="text-sm font-semibold text-orange-700">5-day streak</p>
+                  <p className="text-xs text-orange-500">Longest: 12 days</p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>

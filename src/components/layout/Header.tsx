@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { useState } from 'react';
-import { Menu, X, Sparkles, BookOpen } from 'lucide-react';
+import { Menu, X, Sparkles, BookOpen, BarChart2 } from 'lucide-react';
 import { SignInButton, SignUpButton, UserButton, useUser } from '@clerk/nextjs';
 import { cn } from '@/lib/utils';
 import { useAppStore } from '@/lib/store';
@@ -64,6 +64,10 @@ export function Header() {
                 <Link href="/dashboard" className="text-sm font-medium text-brand-700 hover:text-brand-900">
                   Dashboard
                 </Link>
+                <Link href="/analytics" className="flex items-center gap-1.5 text-sm font-medium text-emerald-700 hover:text-emerald-900">
+                  <BarChart2 className="h-4 w-4" />
+                  Progress
+                </Link>
                 <UserButton
                   afterSignOutUrl="/"
                   appearance={{
@@ -123,13 +127,23 @@ export function Header() {
             </Link>
           ))}
           {isSignedIn ? (
-            <Link
-              href="/dashboard"
-              className="block px-4 py-2 text-base font-medium text-brand-700 hover:bg-brand-50 rounded-lg transition-colors"
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              Dashboard
-            </Link>
+            <>
+              <Link
+                href="/dashboard"
+                className="block px-4 py-2 text-base font-medium text-brand-700 hover:bg-brand-50 rounded-lg transition-colors"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Dashboard
+              </Link>
+              <Link
+                href="/analytics"
+                className="flex items-center gap-2 px-4 py-2 text-base font-medium text-emerald-700 hover:bg-emerald-50 rounded-lg transition-colors"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                <BarChart2 className="h-4 w-4" />
+                My Progress
+              </Link>
+            </>
           ) : (
             <>
               <SignInButton mode="modal">
