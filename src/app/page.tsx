@@ -8,6 +8,7 @@ import {
   ArrowRight,
   CheckCircle2,
   GraduationCap,
+  BarChart2,
 } from 'lucide-react';
 import { HomepageExamBoardSelector } from '@/components/HomepageExamBoardSelector';
 import { HomepageSubjectsGrid } from '@/components/HomepageSubjectsGrid';
@@ -38,6 +39,12 @@ const features = [
     icon: Zap,
     title: 'Practice Questions',
     description: 'Exam-style questions with detailed mark schemes and example answers.',
+  },
+  {
+    icon: BarChart2,
+    title: 'Progress Analytics',
+    description: 'Track your scores, spot weak topics, and see your predicted IGCSE grade — with a heatmap and 7-day trend chart.',
+    href: '/dashboard',
   },
 ];
 
@@ -168,7 +175,7 @@ export default function HomePage() {
                 ))}
               </ul>
               <Link
-                href="/subjects"
+                href="/ai-tutor"
                 className="inline-flex items-center gap-2 bg-gradient-to-r from-violet-600 to-purple-600 text-white font-medium px-6 py-3 rounded-xl hover:opacity-90 transition-opacity"
               >
                 Try AI Tutor
@@ -247,39 +254,65 @@ export default function HomePage() {
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {features.map((feature, index) => (
-              <div
-                key={feature.title}
-                className={`group p-6 bg-white rounded-2xl border transition-all duration-300 animate-slide-up ${
-                  feature.featured
-                    ? 'border-indigo-200 bg-gradient-to-br from-indigo-50 to-purple-50 shadow-lg'
-                    : 'border-brand-100 hover:border-brand-200 hover:shadow-lg'
-                }`}
-                style={{ animationDelay: `${index * 100}ms` }}
-              >
-                {feature.featured && (
-                  <div className="mb-2">
-                    <span className="inline-flex items-center gap-1 px-2 py-1 bg-gradient-to-r from-indigo-500 to-purple-500 text-white text-xs font-medium rounded-full">
-                      <Sparkles className="h-3 w-3" />
-                      New
-                    </span>
+            {features.map((feature, index) => {
+              const card = (
+                <div
+                  key={feature.title}
+                  className={`group p-6 bg-white rounded-2xl border transition-all duration-300 animate-slide-up h-full ${
+                    feature.featured
+                      ? 'border-indigo-200 bg-gradient-to-br from-indigo-50 to-purple-50 shadow-lg'
+                      : feature.href
+                      ? 'border-emerald-200 bg-gradient-to-br from-emerald-50 to-teal-50 hover:shadow-lg cursor-pointer'
+                      : 'border-brand-100 hover:border-brand-200 hover:shadow-lg'
+                  }`}
+                  style={{ animationDelay: `${index * 100}ms` }}
+                >
+                  {feature.featured && (
+                    <div className="mb-2">
+                      <span className="inline-flex items-center gap-1 px-2 py-1 bg-gradient-to-r from-indigo-500 to-purple-500 text-white text-xs font-medium rounded-full">
+                        <Sparkles className="h-3 w-3" />
+                        New
+                      </span>
+                    </div>
+                  )}
+                  {feature.href && (
+                    <div className="mb-2">
+                      <span className="inline-flex items-center gap-1 px-2 py-1 bg-gradient-to-r from-emerald-500 to-teal-500 text-white text-xs font-medium rounded-full">
+                        <BarChart2 className="h-3 w-3" />
+                        Track Progress
+                      </span>
+                    </div>
+                  )}
+                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 ${
+                    feature.featured
+                      ? 'bg-gradient-to-br from-indigo-500 to-purple-600 animate-glow'
+                      : feature.href
+                      ? 'bg-gradient-to-br from-emerald-500 to-teal-600'
+                      : 'bg-gradient-to-br from-brand-500 to-brand-600'
+                  }`}>
+                    <feature.icon className="h-6 w-6 text-white group-hover:animate-wiggle" />
                   </div>
-                )}
-                <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 ${
-                  feature.featured
-                    ? 'bg-gradient-to-br from-indigo-500 to-purple-600 animate-glow'
-                    : 'bg-gradient-to-br from-brand-500 to-brand-600'
-                }`}>
-                  <feature.icon className="h-6 w-6 text-white group-hover:animate-wiggle" />
+                  <h3 className="font-display text-lg font-semibold text-brand-900 mb-2">
+                    {feature.title}
+                  </h3>
+                  <p className="text-brand-600 text-sm leading-relaxed">
+                    {feature.description}
+                  </p>
+                  {feature.href && (
+                    <div className="mt-4 flex items-center gap-1 text-emerald-600 text-sm font-medium">
+                      View your dashboard <ArrowRight className="h-3.5 w-3.5" />
+                    </div>
+                  )}
                 </div>
-                <h3 className="font-display text-lg font-semibold text-brand-900 mb-2">
-                  {feature.title}
-                </h3>
-                <p className="text-brand-600 text-sm leading-relaxed">
-                  {feature.description}
-                </p>
-              </div>
-            ))}
+              );
+              return feature.href ? (
+                <Link key={feature.title} href={feature.href} className="block">
+                  {card}
+                </Link>
+              ) : (
+                <div key={feature.title}>{card}</div>
+              );
+            })}
           </div>
         </div>
       </section>
