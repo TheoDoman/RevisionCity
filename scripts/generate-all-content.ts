@@ -246,8 +246,9 @@ async function insertContent(gap: Gap, content: GeneratedContent) {
     }
   }
 
-  // Insert practice questions
+  // Insert practice questions — delete existing first to prevent stacking duplicates
   if (content.practice_questions && gap.needsPractice && content.practice_questions.length > 0) {
+    await supabase.from('practice_questions').delete().eq('subtopic_id', gap.id)
     const rows = content.practice_questions.map(q => ({
       subtopic_id: gap.id,
       question: q.question,
@@ -261,8 +262,9 @@ async function insertContent(gap: Gap, content: GeneratedContent) {
     else console.error('    ❌ Practice insert error:', error.message)
   }
 
-  // Insert recall prompts
+  // Insert recall prompts — delete existing first to prevent stacking duplicates
   if (content.recall_prompts && gap.needsRecall && content.recall_prompts.length > 0) {
+    await supabase.from('recall_prompts').delete().eq('subtopic_id', gap.id)
     const rows = content.recall_prompts.map(r => ({
       subtopic_id: gap.id,
       prompt: r.prompt,
@@ -295,29 +297,41 @@ async function main() {
 
   if (!subtopics) { console.log('No subtopics found'); return }
 
-  // Get all existing content counts per subtopic
+  // Get all existing content — count via the SAME relationships the app uses
   const [
     { data: notesData },
-    { data: flashData },
-    { data: quizData },
+    { data: flashSets },
+    { data: flashCards },
+    { data: quizzes },
+    { data: quizQs },
     { data: practiceData },
     { data: recallData }
   ] = await Promise.all([
     supabase.from('notes').select('subtopic_id'),
-    supabase.from('flashcards').select('subtopic_id'),
-    supabase.from('quiz_questions').select('subtopic_id'),
+    supabase.from('flashcard_sets').select('id, subtopic_id'),
+    supabase.from('flashcards').select('flashcard_set_id'),
+    supabase.from('quizzes').select('id, subtopic_id'),
+    supabase.from('quiz_questions').select('quiz_id'),
     supabase.from('practice_questions').select('subtopic_id'),
     supabase.from('recall_prompts').select('subtopic_id')
   ])
 
   const notesSet = new Set(notesData?.map(r => r.subtopic_id) || [])
-  const flashMap = new Map<string, number>()
-  const quizMap = new Map<string, number>()
+
+  // Count flashcards via set relationship (matches app query path)
+  const cardsPerSet = new Map<string, number>()
+  for (const r of flashCards || []) cardsPerSet.set(r.flashcard_set_id, (cardsPerSet.get(r.flashcard_set_id) || 0) + 1)
+  const flashMap = new Map<string, number>() // subtopic_id → card count
+  for (const s of flashSets || []) flashMap.set(s.subtopic_id, cardsPerSet.get(s.id) || 0)
+
+  // Count quiz questions via quiz relationship (matches app query path)
+  const questionsPerQuiz = new Map<string, number>()
+  for (const r of quizQs || []) questionsPerQuiz.set(r.quiz_id, (questionsPerQuiz.get(r.quiz_id) || 0) + 1)
+  const quizMap = new Map<string, number>() // subtopic_id → question count
+  for (const q of quizzes || []) quizMap.set(q.subtopic_id, questionsPerQuiz.get(q.id) || 0)
+
   const practiceMap = new Map<string, number>()
   const recallMap = new Map<string, number>()
-
-  for (const r of flashData || []) flashMap.set(r.subtopic_id, (flashMap.get(r.subtopic_id) || 0) + 1)
-  for (const r of quizData || []) quizMap.set(r.subtopic_id, (quizMap.get(r.subtopic_id) || 0) + 1)
   for (const r of practiceData || []) practiceMap.set(r.subtopic_id, (practiceMap.get(r.subtopic_id) || 0) + 1)
   for (const r of recallData || []) recallMap.set(r.subtopic_id, (recallMap.get(r.subtopic_id) || 0) + 1)
 
@@ -330,9 +344,9 @@ async function main() {
     if (!subject || !topic) continue
 
     const needsNotes = !notesSet.has(s.id)
-    const needsFlashcards = (flashMap.get(s.id) || 0) < 10
-    const needsQuiz = (quizMap.get(s.id) || 0) < 15
-    const needsPractice = (practiceMap.get(s.id) || 0) < 8   // script generates 8
+    const needsFlashcards = (flashMap.get(s.id) ?? -1) < 10  // -1 = no set at all
+    const needsQuiz = (quizMap.get(s.id) ?? -1) < 15
+    const needsPractice = (practiceMap.get(s.id) || 0) < 8
     const needsRecall = (recallMap.get(s.id) || 0) < 5
 
     if (needsNotes || needsFlashcards || needsQuiz || needsPractice || needsRecall) {
