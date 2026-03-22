@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "node scripts/migrate.mjs && next build",
     "start": "next start",
     "lint": "next lint",
     "db:generate": "npx supabase gen types typescript --project-id $SUPABASE_PROJECT_ID > src/types/database.ts",
@@ -16,6 +16,7 @@
     "db:status": "node scripts/check-db.js"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.24.3",
     "@clerk/nextjs": "^5.7.0",
     "@stripe/stripe-js": "^4.1.0",
     "@supabase/supabase-js": "^2.45.0",
@@ -30,8 +31,7 @@
     "recharts": "^3.8.0",
     "stripe": "^16.12.0",
     "tailwind-merge": "^2.4.0",
-    "zustand": "^4.5.4",
-    "@anthropic-ai/sdk": "^0.24.3"
+    "zustand": "^4.5.4"
   },
   "devDependencies": {
     "@types/node": "^20.14.12",
@@ -41,6 +41,7 @@
     "eslint": "^8.57.0",
     "eslint-config-next": "14.2.5",
     "postcss": "^8.4.40",
+    "postgres": "^3.4.8",
     "tailwindcss": "^3.4.7",
     "tsx": "^4.16.2",
     "typescript": "^5.5.4"
