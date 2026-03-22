@@ -124,41 +124,18 @@ export function AiTutor({ subject, topic, examBoard, subscriptionTier = 'free' }
         return;
       }
 
-      if (!res.ok || !res.body) {
-        throw new Error('Failed to connect to tutor');
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error ?? 'Failed to connect to tutor');
       }
 
       // Increment free-tier usage
       const newCount = incrementUsage();
       setQuestionsToday(newCount);
 
-      // Stream response
-      const reader = res.body.getReader();
-      const decoder = new TextDecoder();
-      let full = '';
-
-      const assistantMsg: Message = { role: 'assistant', content: '', flashcard: null };
-      setMessages(prev => [...prev, assistantMsg]);
-
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        full += decoder.decode(value, { stream: true });
-        // Update last message in place
-        setMessages(prev => {
-          const updated = [...prev];
-          updated[updated.length - 1] = { role: 'assistant', content: full, flashcard: null };
-          return updated;
-        });
-      }
-
-      // Parse flashcard from final text
-      const { content, flashcard } = parseFlashcard(full);
-      setMessages(prev => {
-        const updated = [...prev];
-        updated[updated.length - 1] = { role: 'assistant', content, flashcard };
-        return updated;
-      });
+      const { content, flashcard } = parseFlashcard(data.reply ?? '');
+      setMessages(prev => [...prev, { role: 'assistant', content, flashcard }]);
     } catch (err) {
       console.error('[AiTutor]', err);
       setMessages(prev => [

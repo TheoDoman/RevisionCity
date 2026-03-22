@@ -55,7 +55,9 @@
       "Bash(git log:*)",
       "Bash(grep:*)",
       "Bash(vercel --version:*)",
-      "Bash(npx vercel:*)"
+      "Bash(npx vercel:*)",
+      "Bash(wc:*)",
+      "Bash(git stash:*)"
     ]
   }
 }

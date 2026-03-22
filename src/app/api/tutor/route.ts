@@ -1,4 +1,4 @@
-import { NextRequest } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import Anthropic from '@anthropic-ai/sdk'
 
 // ── In-memory rate limiter: 5 req/min per IP ─────────────────────────────
@@ -47,7 +47,7 @@ Example: [FLASHCARD: What is the role of mitochondria? | To produce ATP through 
 
 Only include ONE flashcard per response, and only when a clear concept has been fully understood. Do NOT include it if the explanation is still ongoing.
 
-TONE: Encouraging, patient, conversational. You are a friendly tutor, not a textbook. Use plain language.
+TONE: Encouraging, patient, conversational. You are a friendly tutor, not a textbook. Use plain language. Keep responses concise — 3-5 sentences max per turn.
 
 Example interaction:
 Student: "What is photosynthesis?"
@@ -63,15 +63,9 @@ export async function POST(request: NextRequest) {
 
   const { allowed, retryAfter } = checkRateLimit(ip)
   if (!allowed) {
-    return new Response(
-      JSON.stringify({ error: 'Rate limit exceeded', retryAfter }),
-      {
-        status: 429,
-        headers: {
-          'Content-Type': 'application/json',
-          'Retry-After': String(retryAfter),
-        },
-      }
+    return NextResponse.json(
+      { error: 'Rate limit exceeded', retryAfter },
+      { status: 429, headers: { 'Retry-After': String(retryAfter) } }
     )
   }
 
@@ -87,34 +81,36 @@ export async function POST(request: NextRequest) {
   try {
     body = await request.json()
   } catch {
-    return new Response(JSON.stringify({ error: 'Invalid JSON body' }), {
-      status: 400,
-      headers: { 'Content-Type': 'application/json' },
-    })
+    return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 })
   }
 
   const { question, subject, topic, difficulty, examBoard, messages = [] } = body
 
   if (!question?.trim() || !subject || !topic) {
-    return new Response(
-      JSON.stringify({ error: 'question, subject, and topic are required' }),
-      { status: 400, headers: { 'Content-Type': 'application/json' } }
+    return NextResponse.json(
+      { error: 'question, subject, and topic are required' },
+      { status: 400 }
     )
   }
 
   if (question.length > 500) {
-    return new Response(
-      JSON.stringify({ error: 'Question exceeds 500 character limit' }),
-      { status: 400, headers: { 'Content-Type': 'application/json' } }
+    return NextResponse.json(
+      { error: 'Question exceeds 500 character limit' },
+      { status: 400 }
     )
   }
 
-  const apiKey = process.env.ANTHROPIC_API_KEY
+  // Use env var first; fall back to the same key pattern the rest of the app uses
+  const apiKey =
+    process.env.ANTHROPIC_API_KEY ||
+    process.env.NEXT_PUBLIC_ANTHROPIC_API_KEY
+
   if (!apiKey) {
-    return new Response(JSON.stringify({ error: 'AI tutor unavailable' }), {
-      status: 503,
-      headers: { 'Content-Type': 'application/json' },
-    })
+    console.error('[AI Tutor] No API key configured')
+    return NextResponse.json(
+      { error: 'AI Tutor is temporarily unavailable. Please try again later.' },
+      { status: 503 }
+    )
   }
 
   const anthropic = new Anthropic({ apiKey })
@@ -131,49 +127,47 @@ CURRENT SESSION CONTEXT:
 Focus all your questions and explanations on this specific topic and exam board.`
 
   // Build conversation history — keep last 10 turns to limit tokens
-  const recentMessages = messages.slice(-10)
   const anthropicMessages: Array<{ role: 'user' | 'assistant'; content: string }> = [
-    ...recentMessages,
+    ...messages.slice(-10),
     { role: 'user', content: question },
   ]
 
+  console.log('[AI Tutor] Request:', { subject, topic, examBoard, questionLength: question.length })
+
   try {
-    const stream = anthropic.messages.stream({
+    const message = await anthropic.messages.create({
       model: 'claude-3-haiku-20240307',
       max_tokens: 800,
       system: contextualSystem,
       messages: anthropicMessages,
     })
 
-    const readable = new ReadableStream({
-      async start(controller) {
-        try {
-          for await (const chunk of stream) {
-            if (
-              chunk.type === 'content_block_delta' &&
-              chunk.delta.type === 'text_delta'
-            ) {
-              controller.enqueue(new TextEncoder().encode(chunk.delta.text))
-            }
-          }
-        } finally {
-          controller.close()
-        }
-      },
-    })
+    const reply =
+      message.content[0]?.type === 'text' ? message.content[0].text : ''
 
-    return new Response(readable, {
-      headers: {
-        'Content-Type': 'text/plain; charset=utf-8',
-        'X-Content-Type-Options': 'nosniff',
-        'Cache-Control': 'no-cache',
-      },
-    })
-  } catch (err) {
-    console.error('[AI Tutor] Error:', err)
-    return new Response(
-      JSON.stringify({ error: 'Failed to get tutor response. Please try again.' }),
-      { status: 500, headers: { 'Content-Type': 'application/json' } }
+    console.log('[AI Tutor] Success, reply length:', reply.length)
+
+    return NextResponse.json({ reply })
+  } catch (err: unknown) {
+    const msg = err instanceof Error ? err.message : String(err)
+    console.error('[AI Tutor] Anthropic API error:', msg)
+
+    if (msg.includes('credit') || msg.includes('billing')) {
+      return NextResponse.json(
+        { error: 'AI Tutor is temporarily unavailable due to a billing issue. Please contact support.' },
+        { status: 503 }
+      )
+    }
+    if (msg.includes('authentication') || msg.includes('api_key') || msg.includes('invalid')) {
+      return NextResponse.json(
+        { error: 'AI Tutor configuration error. Please contact support.' },
+        { status: 503 }
+      )
+    }
+
+    return NextResponse.json(
+      { error: 'Failed to get a response. Please try again.' },
+      { status: 500 }
     )
   }
 }
