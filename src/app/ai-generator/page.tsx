@@ -68,6 +68,7 @@ interface Topic {
 }
 
 export default function AIGeneratorPage() {
+  const [board, setBoard] = useState<'cambridge' | 'edexcel'>('cambridge')
   const [subjects, setSubjects] = useState<Subject[]>([])
   const [topics, setTopics] = useState<Topic[]>([])
   const [selectedSubject, setSelectedSubject] = useState<string>('')
@@ -82,27 +83,21 @@ export default function AIGeneratorPage() {
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [score, setScore] = useState<number>(0)
 
-  // Load subjects
+  // Load subjects when board changes
   useEffect(() => {
     async function loadSubjects() {
-      console.log('Loading subjects...')
       try {
-        const response = await fetch('/api/subjects')
+        const response = await fetch(`/api/subjects?board=${board}`)
         const result = await response.json()
-
-        console.log('Subjects loaded:', result)
         if (result.subjects) {
-          console.log('Setting subjects:', result.subjects)
           setSubjects(result.subjects)
-        } else if (result.error) {
-          console.error('Error loading subjects:', result.error)
         }
       } catch (error) {
         console.error('Failed to fetch subjects:', error)
       }
     }
     loadSubjects()
-  }, [])
+  }, [board])
 
   // Load topics when subject changes
   useEffect(() => {
@@ -138,7 +133,8 @@ export default function AIGeneratorPage() {
           subjectId: selectedSubject,
           topicId: selectedTopic,
           difficulty,
-          questionCount
+          questionCount,
+          board
         })
       })
 
@@ -273,6 +269,33 @@ export default function AIGeneratorPage() {
 
         {/* Generator Form */}
         <div className="bg-white rounded-3xl shadow-xl p-6 md:p-8 mb-8 border border-gray-100 hover:shadow-2xl transition-shadow duration-300">
+          {/* Board Toggle */}
+          <div className="mb-6">
+            <label className="block text-sm font-semibold text-gray-700 mb-2">Exam Board</label>
+            <div className="inline-flex rounded-xl overflow-hidden border-2 border-gray-200">
+              <button
+                onClick={() => { setBoard('cambridge'); setSelectedSubject(''); setSelectedTopic('') }}
+                className={`px-5 py-2.5 text-sm font-medium transition-all ${
+                  board === 'cambridge'
+                    ? 'bg-[#003865] text-white'
+                    : 'text-gray-600 hover:bg-gray-50'
+                }`}
+              >
+                Cambridge
+              </button>
+              <button
+                onClick={() => { setBoard('edexcel'); setSelectedSubject(''); setSelectedTopic('') }}
+                className={`px-5 py-2.5 text-sm font-medium transition-all ${
+                  board === 'edexcel'
+                    ? 'bg-[#6A0DAD] text-white'
+                    : 'text-gray-600 hover:bg-gray-50'
+                }`}
+              >
+                Edexcel
+              </button>
+            </div>
+          </div>
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
             {/* Subject Select */}
             <div className="transform hover:scale-[1.02] transition-transform duration-200">

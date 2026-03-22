@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 
-const subjects = [
+const cambridgeSubjects = [
   { name: 'Physics', slug: 'physics', icon: '⚛️', color: 'from-cyan-500 to-blue-600' },
   { name: 'Chemistry', slug: 'chemistry', icon: '⚗️', color: 'from-purple-500 to-violet-600' },
   { name: 'Biology', slug: 'biology', icon: '🧬', color: 'from-green-500 to-emerald-600' },
@@ -13,6 +13,13 @@ const subjects = [
   { name: 'Economics', slug: 'economics', icon: '📈', color: 'from-teal-500 to-cyan-600' },
   { name: 'Geography', slug: 'geography', icon: '🌍', color: 'from-lime-500 to-green-600' },
   { name: 'History', slug: 'history', icon: '🏛️', color: 'from-yellow-500 to-amber-600' },
+];
+
+const edexcelSubjects = [
+  { name: 'Physics', slug: 'physics', icon: '⚛️', color: 'from-cyan-500 to-blue-600' },
+  { name: 'Chemistry', slug: 'chemistry', icon: '⚗️', color: 'from-purple-500 to-violet-600' },
+  { name: 'Biology', slug: 'biology', icon: '🧬', color: 'from-green-500 to-emerald-600' },
+  { name: 'Mathematics', slug: 'mathematics', icon: '📐', color: 'from-blue-500 to-indigo-600' },
 ];
 
 export function HomepageSubjectsGrid() {
@@ -32,18 +39,17 @@ export function HomepageSubjectsGrid() {
     return () => window.removeEventListener('examBoardChange', handleBoardChange);
   }, []);
 
-  const getHref = (slug: string) =>
-    board === 'edexcel' ? `/subject/${slug}-edexcel` : `/subject/${slug}`;
-
+  const subjects = board === 'edexcel' ? edexcelSubjects : cambridgeSubjects;
   const viewAllHref = board === 'edexcel' ? '/subjects?board=edexcel' : '/subjects';
+  const subjectCount = subjects.length;
 
   return (
     <>
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
         {subjects.map((subject, index) => (
           <Link
-            key={subject.name}
-            href={getHref(subject.slug)}
+            key={subject.slug}
+            href={`/subject/${board}/${subject.slug}`}
             className="group relative p-6 bg-white rounded-2xl border-2 border-brand-100
                      hover:border-transparent hover:shadow-xl transition-all duration-300
                      hover-lift hover-glow animate-slide-up"
@@ -71,7 +77,7 @@ export function HomepageSubjectsGrid() {
           href={viewAllHref}
           className="inline-flex items-center text-brand-600 hover:text-brand-800 font-medium transition-colors group"
         >
-          View all 9 subjects
+          View all {subjectCount} subjects
           <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
         </Link>
       </div>

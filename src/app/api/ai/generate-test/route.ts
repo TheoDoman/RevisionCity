@@ -3,29 +3,25 @@ import { createClient } from '@supabase/supabase-js'
 import Anthropic from '@anthropic-ai/sdk'
 import { trackServerTestGeneration } from '@/lib/analytics-server'
 
+// ROOT CAUSE (fixed 2026-03-22): Model 'claude-3-haiku-20240307' was deprecated.
+// Updated to 'claude-haiku-4-5-20251001'. Removed hardcoded API key fallback.
+export const maxDuration = 60
+
 export async function POST(request: NextRequest) {
   try {
-    const { subjectId, topicId, difficulty, questionCount } = await request.json()
+    const { subjectId, topicId, difficulty, questionCount, board } = await request.json()
 
-    // Get API key - try env var first, then fallback (same approach that worked before)
-    const apiKey = process.env.ANTHROPIC_API_KEY || [
-      'sk-ant',
-      'api03',
-      'WZTE5Dc9zsVcyKCnrcp4huM7TYOkGme_Yvy',
-      'DCIhb9Ww0YiBG7v8n2iY8xA_gelUbttZQkwT5CyEAxJdOuBySQ',
-      'DqhxJQAA'
-    ].join('-')
-
-    console.log('[AI Generator] API Key loaded:', apiKey ? `${apiKey.substring(0, 15)}...` : 'MISSING')
-    console.log('[AI Generator] API Key length:', apiKey?.length)
-    console.log('[AI Generator] Environment:', process.env.NODE_ENV)
+    const apiKey = process.env.ANTHROPIC_API_KEY
+    if (!apiKey) {
+      return NextResponse.json({ error: 'API key not configured', type: 'auth_error' }, { status: 500 })
+    }
 
     // Initialize clients
     const anthropic = new Anthropic({ apiKey })
 
     const supabase = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+      process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
     )
 
     // Get subject and topic names
@@ -53,7 +49,9 @@ export async function POST(request: NextRequest) {
                                   difficulty <= 7 ? 'Intermediate' :
                                   'Higher/Challenging'
 
-    const prompt = `You are an expert Cambridge IGCSE ${subject.name} examiner. Generate a practice test with exactly ${questionCount} questions on the topic "${topic.name}".
+    const boardLabel = board === 'edexcel' ? 'Edexcel IGCSE' : 'Cambridge IGCSE'
+
+    const prompt = `You are an expert ${boardLabel} ${subject.name} examiner. Generate a practice test with exactly ${questionCount} questions on the topic "${topic.name}".
 
 Topic Description: ${topic.description || 'IGCSE level content'}
 
@@ -114,7 +112,7 @@ Return ONLY valid JSON in this exact format (no markdown, no explanation):
     })
 
     const message = await anthropic.messages.create({
-      model: 'claude-3-haiku-20240307', // Using Haiku - fast and reliable
+      model: 'claude-haiku-4-5-20251001', // Using Haiku - fast and reliable
       max_tokens: maxTokens,
       temperature: 0.7, // Add some creativity while maintaining consistency
       messages: [{

@@ -56,6 +56,10 @@ export function getSubjectColor(subjectSlug: string): string {
   return colors[subjectSlug] || 'from-gray-500 to-slate-600';
 }
 
+export function getDbSlug(board: string, slug: string): string {
+  return board === 'edexcel' ? `${slug}-edexcel` : slug;
+}
+
 // Free tier limits
 export const FREE_TIER_LIMITS = {
   subtopicsPerSubject: 2,

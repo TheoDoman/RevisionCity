@@ -96,9 +96,11 @@ interface TopicPageClientProps {
     mindMap: MindMap | null;
     summarySheet: SummarySheet | null;
   } | null;
+  board?: 'cambridge' | 'edexcel';
 }
 
-export function TopicPageClient({ subject, topic, subtopics, initialContent }: TopicPageClientProps) {
+export function TopicPageClient({ subject, topic, subtopics, initialContent, board }: TopicPageClientProps) {
+  const resolvedBoard = board ?? (subject.slug.endsWith('-edexcel') ? 'edexcel' : 'cambridge');
   const [selectedSubtopic, setSelectedSubtopic] = useState<string | null>(subtopics[0]?.id || null);
   const [selectedMethod, setSelectedMethod] = useState('notes');
   const [content, setContent] = useState(initialContent);
@@ -196,7 +198,7 @@ export function TopicPageClient({ subject, topic, subtopics, initialContent }: T
           <AiTutor
             subject={subject.name}
             topic={topic.name}
-            examBoard={subject.slug.endsWith('-edexcel') ? 'edexcel' : 'cambridge'}
+            examBoard={resolvedBoard}
             subscriptionTier={subscriptionTier}
           />
         );
@@ -217,10 +219,22 @@ export function TopicPageClient({ subject, topic, subtopics, initialContent }: T
       {/* Header */}
       <div className="bg-white border-b border-brand-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <Link href={`/subject/${subject.slug}`} className="inline-flex items-center text-sm text-brand-600 hover:text-brand-800 mb-4">
+          <Link
+            href={`/subject/${resolvedBoard}/${subject.slug.replace(/-edexcel$/, '')}`}
+            className="inline-flex items-center text-sm hover:opacity-80 mb-4"
+            style={{ color: resolvedBoard === 'edexcel' ? '#6A0DAD' : '#003865' }}
+          >
             <ArrowLeft className="h-4 w-4 mr-2" />Back to {subject.name}
           </Link>
-          <h1 className="font-display text-3xl font-bold text-brand-950 mb-2">{topic.name}</h1>
+          <div className="flex items-center gap-3 mb-2">
+            <h1 className="font-display text-3xl font-bold text-brand-950">{topic.name}</h1>
+            <span
+              className="px-2.5 py-0.5 rounded-full text-xs font-semibold text-white"
+              style={{ backgroundColor: resolvedBoard === 'edexcel' ? '#6A0DAD' : '#003865' }}
+            >
+              {resolvedBoard === 'edexcel' ? 'Edexcel' : 'Cambridge'}
+            </span>
+          </div>
           <p className="text-brand-600">{subtopics.length} subtopics</p>
         </div>
       </div>

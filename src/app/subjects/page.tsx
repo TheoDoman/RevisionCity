@@ -98,10 +98,15 @@ export default async function SubjectsPage({
           </div>
         ) : (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {subjects.map((subject, index) => (
+            {subjects.map((subject, index) => {
+              const baseSlug = subject.slug.endsWith('-edexcel')
+                ? subject.slug.replace(/-edexcel$/, '')
+                : subject.slug;
+              const cardHref = `/subject/${examBoard}/${baseSlug}`;
+              return (
               <Link
                 key={subject.id}
-                href={`/subject/${subject.slug}`}
+                href={cardHref}
                 className="group relative bg-white rounded-2xl border-2 border-brand-100
                          overflow-hidden transition-all duration-300
                          hover-lift hover-glow hover:border-brand-200 animate-slide-up"
@@ -109,20 +114,27 @@ export default async function SubjectsPage({
               >
                 {/* Gradient overlay on hover */}
                 <div
-                  className={`absolute inset-0 bg-gradient-to-br ${getSubjectColor(subject.slug)}
+                  className={`absolute inset-0 bg-gradient-to-br ${getSubjectColor(baseSlug)}
                             opacity-0 group-hover:opacity-10 transition-opacity duration-300`}
                 />
+
+                {/* Board badge */}
+                <div className={`absolute top-3 right-3 px-2 py-0.5 rounded-full text-xs font-semibold text-white ${
+                  examBoard === 'edexcel' ? 'bg-[#6A0DAD]' : 'bg-[#003865]'
+                }`}>
+                  {examBoard === 'edexcel' ? 'Edexcel' : 'Cambridge'}
+                </div>
 
                 <div className="relative p-6">
                   {/* Icon and title */}
                   <div className="flex items-start gap-4 mb-4">
                     <div
-                      className={`text-4xl p-3 rounded-xl bg-gradient-to-br ${getSubjectColor(subject.slug)}
+                      className={`text-4xl p-3 rounded-xl bg-gradient-to-br ${getSubjectColor(baseSlug)}
                                   bg-opacity-10 group-hover:scale-125 group-hover:rotate-12
                                   transition-all duration-300 animate-float`}
                       style={{ animationDelay: `${index * 100}ms` }}
                     >
-                      {getSubjectIcon(subject.slug)}
+                      {getSubjectIcon(baseSlug)}
                     </div>
                     <div className="flex-1">
                       <h2 className="font-display text-xl font-semibold text-brand-900
@@ -146,7 +158,8 @@ export default async function SubjectsPage({
                   </div>
                 </div>
               </Link>
-            ))}
+              );
+            })}
           </div>
         )}
       </div>

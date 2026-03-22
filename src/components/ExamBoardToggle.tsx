@@ -21,7 +21,7 @@ export function ExamBoardToggle({ current }: ExamBoardToggleProps) {
         onClick={() => select('cambridge')}
         className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-all ${
           current === 'cambridge'
-            ? 'bg-white text-brand-900 shadow-sm'
+            ? 'bg-[#003865] text-white shadow-sm'
             : 'text-brand-600 hover:text-brand-800'
         }`}
       >
@@ -31,7 +31,7 @@ export function ExamBoardToggle({ current }: ExamBoardToggleProps) {
         onClick={() => select('edexcel')}
         className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-all ${
           current === 'edexcel'
-            ? 'bg-white text-brand-900 shadow-sm'
+            ? 'bg-[#6A0DAD] text-white shadow-sm'
             : 'text-brand-600 hover:text-brand-800'
         }`}
       >

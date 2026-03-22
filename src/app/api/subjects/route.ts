@@ -3,6 +3,8 @@ import { createClient } from '@supabase/supabase-js'
 
 export async function GET(request: NextRequest) {
   try {
+    const board = request.nextUrl.searchParams.get('board') || 'cambridge'
+
     const supabase = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
@@ -11,6 +13,7 @@ export async function GET(request: NextRequest) {
     const { data, error } = await supabase
       .from('subjects')
       .select('id, name, slug')
+      .eq('exam_board', board)
       .order('name')
 
     if (error) {

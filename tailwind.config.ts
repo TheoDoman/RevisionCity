@@ -51,6 +51,17 @@ const config: Config = {
           900: '#064e3b',
           950: '#022c22',
         },
+        // Exam board colors
+        cambridge: {
+          DEFAULT: '#003865',
+          light: '#1a5c8a',
+          bg: '#e8f0f8',
+        },
+        edexcel: {
+          DEFAULT: '#6A0DAD',
+          light: '#8b35c8',
+          bg: '#f3e8ff',
+        },
         // Background colors
         surface: {
           50: '#fafafa',

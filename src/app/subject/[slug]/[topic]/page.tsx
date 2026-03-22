@@ -1,145 +1,15 @@
-import { notFound } from 'next/navigation';
-import type { Metadata } from 'next';
-import { getTopicWithSubtopics, getTopicBySlug, getAllRevisionContent } from '@/lib/data';
-import { TopicPageClient } from '@/components/TopicPageClient';
-import type { Subject, Topic, Subtopic } from '@/types';
+import { redirect } from 'next/navigation';
 
-// Fallback data for when database is empty
-const fallbackSubtopics = [
-  { id: '1', name: 'Introduction & Key Concepts', slug: 'introduction', description: 'Core definitions and fundamental principles', order_index: 0, learning_objectives: [], created_at: '' },
-  { id: '2', name: 'Main Theory', slug: 'main-theory', description: 'Detailed explanation of the main theory', order_index: 1, learning_objectives: [], created_at: '' },
-  { id: '3', name: 'Applications', slug: 'applications', description: 'Real-world applications and examples', order_index: 2, learning_objectives: [], created_at: '' },
-  { id: '4', name: 'Calculations & Formulas', slug: 'calculations', description: 'Key formulas and how to use them', order_index: 3, learning_objectives: [], created_at: '' },
-  { id: '5', name: 'Exam Techniques', slug: 'exam-techniques', description: 'How to answer exam questions', order_index: 4, learning_objectives: [], created_at: '' },
-];
-
-const validSubjects = ['mathematics', 'english', 'biology', 'chemistry', 'physics', 'computer-science', 'business-studies', 'economics', 'history', 'geography'];
-const isValidSubjectSlug = (s: string) => validSubjects.includes(s) || s.endsWith('-edexcel');
-
-function formatSlug(slug: string): string {
-  return slug.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
-}
-
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ slug: string; topic: string }>;
-}): Promise<Metadata> {
-  const { slug, topic: topicSlug } = await params;
-  const result = await getTopicBySlug(slug, topicSlug);
-
-  const subjectName = result?.subject.name || formatSlug(slug);
-  const topicName = result?.topic.name || formatSlug(topicSlug);
-
-  const title = `${topicName} - IGCSE ${subjectName} Revision | Revision City`;
-  const description = `Revise ${topicName} for IGCSE ${subjectName}. Notes, flashcards, quizzes, practice questions, and mind maps aligned to the Cambridge syllabus.${result?.topic.description ? ` ${result.topic.description}` : ''}`;
-
-  return {
-    title,
-    description,
-    keywords: [
-      `IGCSE ${subjectName} ${topicName}`,
-      `${topicName} revision`,
-      `${topicName} notes`,
-      `IGCSE ${topicName}`,
-      `${subjectName} ${topicName} flashcards`,
-      `${subjectName} ${topicName} quiz`,
-    ],
-    openGraph: {
-      title,
-      description,
-      type: 'website',
-    },
-  };
-}
-
-export default async function TopicPage({
+export default async function LegacyTopicPage({
   params,
 }: {
   params: Promise<{ slug: string; topic: string }>;
 }) {
-  const { slug, topic: topicSlug } = await params;
+  const { slug, topic } = await params;
 
-  if (!isValidSubjectSlug(slug)) {
-    notFound();
+  if (slug.endsWith('-edexcel')) {
+    redirect(`/subject/edexcel/${slug.replace(/-edexcel$/, '')}/${topic}`);
+  } else {
+    redirect(`/subject/cambridge/${slug}/${topic}`);
   }
-
-  // Try to fetch from Supabase
-  const data = await getTopicWithSubtopics(slug, topicSlug);
-
-  // Create fallback subject and topic if not found
-  const subject: Subject = data?.subject || {
-    id: slug,
-    name: slug.charAt(0).toUpperCase() + slug.slice(1),
-    slug,
-    description: '',
-    icon: '',
-    color: '',
-    topic_count: 0,
-    created_at: '',
-  };
-
-  const topic: Topic = data?.topic || {
-    id: topicSlug,
-    subject_id: slug,
-    name: topicSlug.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' '),
-    slug: topicSlug,
-    description: '',
-    order_index: 0,
-    subtopic_count: 5,
-    created_at: '',
-  };
-
-  const subtopics: Subtopic[] = data?.subtopics?.length 
-    ? data.subtopics 
-    : fallbackSubtopics.map(s => ({ ...s, topic_id: topic.id }));
-
-  // Fetch revision content for the first subtopic
-  let initialContent = null;
-  if (subtopics.length > 0) {
-    try {
-      initialContent = await getAllRevisionContent(subtopics[0].id, topic.id);
-      console.log('SERVER: Fetched content for', subtopics[0].name, ':', {
-        notes: !!initialContent?.notes,
-        flashcards: initialContent?.flashcards?.length || 0,
-        quizQuestions: initialContent?.quizQuestions?.length || 0,
-        practiceQuestions: initialContent?.practiceQuestions?.length || 0,
-        recallPrompts: initialContent?.recallPrompts?.length || 0,
-      });
-    } catch (error) {
-      console.error('Error fetching initial content:', error);
-    }
-  }
-
-  const jsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'LearningResource',
-    name: `${topic.name} - IGCSE ${subject.name}`,
-    description: topic.description || `Revision materials for ${topic.name} in IGCSE ${subject.name}`,
-    educationalLevel: 'IGCSE',
-    learningResourceType: ['Notes', 'Flashcards', 'Quiz', 'Practice Questions'],
-    isPartOf: {
-      '@type': 'Course',
-      name: `IGCSE ${subject.name}`,
-      provider: {
-        '@type': 'EducationalOrganization',
-        name: 'Revision City',
-      },
-    },
-  };
-
-  return (
-    <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
-      <TopicPageClient
-        subject={subject}
-        topic={topic}
-        subtopics={subtopics}
-        initialContent={initialContent}
-      />
-    </>
-  );
 }
