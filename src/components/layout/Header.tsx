@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { useState } from 'react';
-import { Menu, X, Sparkles, BarChart2, Calendar } from 'lucide-react';
+import { Menu, X, Sparkles, BarChart2, Calendar, ClipboardList } from 'lucide-react';
 import { SignInButton, SignUpButton, UserButton, useUser } from '@clerk/nextjs';
 import { cn } from '@/lib/utils';
 import { useAppStore } from '@/lib/store';
@@ -17,6 +17,7 @@ export function Header() {
     { name: 'Subjects', href: '/subjects' },
     { name: 'AI Test Generator', href: '/ai-generator', highlight: true },
     { name: 'Revision Plan', href: '/revision-plan', plan: true },
+    { name: 'Mock Exams', href: '/exam', exam: true },
     { name: 'Pricing', href: '/pricing' },
   ];
 
@@ -53,11 +54,14 @@ export function Header() {
                     ? "bg-gradient-to-r from-indigo-500 to-purple-500 text-white px-4 py-2 rounded-lg hover:from-indigo-600 hover:to-purple-600 flex items-center gap-2"
                     : item.plan
                     ? "flex items-center gap-1.5 text-violet-700 hover:text-violet-900"
+                    : (item as { exam?: boolean }).exam
+                    ? "flex items-center gap-1.5 text-emerald-700 hover:text-emerald-900 font-medium"
                     : "text-brand-700 hover:text-brand-900"
                 )}
               >
                 {item.highlight && <Sparkles className="h-4 w-4" />}
                 {item.plan && <Calendar className="h-4 w-4" />}
+                {(item as { exam?: boolean }).exam && <ClipboardList className="h-4 w-4" />}
                 {item.name}
               </Link>
             ))}
@@ -128,11 +132,14 @@ export function Header() {
                 'flex items-center gap-2 px-4 py-2 text-base font-medium rounded-lg transition-colors',
                 item.plan
                   ? 'text-violet-700 hover:bg-violet-50'
+                  : (item as { exam?: boolean }).exam
+                  ? 'text-emerald-700 hover:bg-emerald-50'
                   : 'text-brand-700 hover:bg-brand-50',
               )}
               onClick={() => setMobileMenuOpen(false)}
             >
               {item.plan && <Calendar className="h-4 w-4" />}
+              {(item as { exam?: boolean }).exam && <ClipboardList className="h-4 w-4" />}
               {item.name}
             </Link>
           ))}

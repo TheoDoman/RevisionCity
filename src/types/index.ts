@@ -200,6 +200,117 @@ export interface RevisionPlan {
   gradeProgression: GradeProgressionPoint[];
 }
 
+// Mock Exam types
+export type ExamQuestionType = 'multiple_choice' | 'short_answer' | 'extended_response'
+export type ExamDifficulty = 'easy' | 'medium' | 'hard' | 'mixed'
+
+export interface ExamQuestion {
+  id: string
+  type: ExamQuestionType
+  text: string
+  marks: number
+  topic: string
+  options?: string[]       // MC only — 4 options like "A. ...", "B. ..."
+  correctAnswer?: string   // Stored in DB, NOT sent to client during exam
+  markScheme: string[]
+  modelAnswer?: string
+}
+
+// Version sent to the client — no correct answers exposed
+export type ExamQuestionPublic = Omit<ExamQuestion, 'correctAnswer' | 'markScheme' | 'modelAnswer'>
+
+export interface ExamSection {
+  id: string
+  name: string
+  timeMinutes: number
+  totalMarks: number
+  questions: ExamQuestion[]
+}
+
+export interface ExamSectionPublic extends Omit<ExamSection, 'questions'> {
+  questions: ExamQuestionPublic[]
+}
+
+export interface MockExam {
+  id: string
+  subjectId: string
+  subjectName: string
+  examBoard: string
+  difficulty: ExamDifficulty
+  sections: ExamSection[]
+  totalMarks: number
+  totalTimeMinutes: number
+  createdBy?: string
+  createdAt: string
+  totalAttempts: number
+}
+
+export interface MockExamPublic extends Omit<MockExam, 'sections'> {
+  sections: ExamSectionPublic[]
+}
+
+export interface TopicScore {
+  topic: string
+  score: number
+  maxScore: number
+  accuracy: number
+}
+
+export interface SectionScore {
+  section: string
+  score: number
+  maxScore: number
+  accuracy: number
+}
+
+export interface QuestionTiming {
+  questionId: string
+  questionNum: number
+  timeSpent: number     // seconds
+  marksAwarded: number
+  efficiency: number    // marks per minute
+}
+
+export interface ExamAnalysis {
+  overallScore: number
+  maxScore: number
+  percentage: number
+  gradePrediction: IGCSEGrade
+  gradeForImprovement: IGCSEGrade
+  marksNeeded: number
+  byTopic: TopicScore[]
+  bySection: SectionScore[]
+  timingAnalysis: QuestionTiming[]
+  weakAreas: string[]
+  strengths: string[]
+  confidenceAccuracy: {
+    markedForReview: { attempted: number; correct: number; accuracy: number }
+    notMarked: { attempted: number; correct: number; accuracy: number }
+  }
+  nextSteps: string[]
+  classComparison?: {
+    yourScore: number
+    classAverage: number
+    percentile: number
+    totalStudents: number
+  }
+}
+
+export interface ExamAttempt {
+  id: string
+  userId: string
+  examId: string
+  answers: Record<string, string>
+  timingData: Record<string, number>
+  markedForReview: string[]
+  score?: number
+  maxScore?: number
+  grade?: IGCSEGrade
+  analysis?: ExamAnalysis
+  startedAt: string
+  completedAt?: string
+}
+
 // UI State types
 export interface RevisionProgress {
   subtopic_id: string;

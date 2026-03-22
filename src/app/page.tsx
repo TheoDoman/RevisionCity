@@ -10,6 +10,7 @@ import {
   GraduationCap,
   BarChart2,
   Calendar,
+  ClipboardList,
 } from 'lucide-react';
 import { HomepageExamBoardSelector } from '@/components/HomepageExamBoardSelector';
 import { HomepageSubjectsGrid } from '@/components/HomepageSubjectsGrid';
@@ -47,6 +48,13 @@ const features = [
     icon: Zap,
     title: 'Practice Questions',
     description: 'Exam-style questions with detailed mark schemes and example answers.',
+  },
+  {
+    icon: ClipboardList,
+    title: 'Mock Exam Simulator',
+    description: 'Full-length timed mock exams with AI grading. Get a detailed breakdown by topic, time efficiency, and grade prediction.',
+    href: '/exam',
+    examFeature: true,
   },
   {
     icon: BarChart2,
@@ -363,6 +371,8 @@ export default function HomePage() {
                       ? 'border-indigo-200 bg-gradient-to-br from-indigo-50 to-purple-50 shadow-lg'
                       : feature.planFeature
                       ? 'border-violet-200 bg-gradient-to-br from-violet-50 to-fuchsia-50 hover:shadow-lg cursor-pointer'
+                      : (feature as { examFeature?: boolean }).examFeature
+                      ? 'border-green-200 bg-gradient-to-br from-green-50 to-emerald-50 hover:shadow-lg cursor-pointer'
                       : feature.href
                       ? 'border-emerald-200 bg-gradient-to-br from-emerald-50 to-teal-50 hover:shadow-lg cursor-pointer'
                       : 'border-brand-100 hover:border-brand-200 hover:shadow-lg'
@@ -385,7 +395,15 @@ export default function HomePage() {
                       </span>
                     </div>
                   )}
-                  {feature.href && !feature.planFeature && (
+                  {(feature as { examFeature?: boolean }).examFeature && (
+                    <div className="mb-2">
+                      <span className="inline-flex items-center gap-1 px-2 py-1 bg-gradient-to-r from-green-500 to-emerald-500 text-white text-xs font-medium rounded-full">
+                        <ClipboardList className="h-3 w-3" />
+                        Mock Exams
+                      </span>
+                    </div>
+                  )}
+                  {feature.href && !feature.planFeature && !(feature as { examFeature?: boolean }).examFeature && (
                     <div className="mb-2">
                       <span className="inline-flex items-center gap-1 px-2 py-1 bg-gradient-to-r from-emerald-500 to-teal-500 text-white text-xs font-medium rounded-full">
                         <BarChart2 className="h-3 w-3" />
@@ -398,6 +416,8 @@ export default function HomePage() {
                       ? 'bg-gradient-to-br from-indigo-500 to-purple-600 animate-glow'
                       : feature.planFeature
                       ? 'bg-gradient-to-br from-violet-500 to-fuchsia-600'
+                      : (feature as { examFeature?: boolean }).examFeature
+                      ? 'bg-gradient-to-br from-green-500 to-emerald-600'
                       : feature.href
                       ? 'bg-gradient-to-br from-emerald-500 to-teal-600'
                       : 'bg-gradient-to-br from-brand-500 to-brand-600'
@@ -415,7 +435,12 @@ export default function HomePage() {
                       Create my plan <ArrowRight className="h-3.5 w-3.5" />
                     </div>
                   )}
-                  {feature.href && !feature.planFeature && (
+                  {(feature as { examFeature?: boolean }).examFeature && (
+                    <div className="mt-4 flex items-center gap-1 text-green-600 text-sm font-medium">
+                      Take a mock exam <ArrowRight className="h-3.5 w-3.5" />
+                    </div>
+                  )}
+                  {feature.href && !feature.planFeature && !(feature as { examFeature?: boolean }).examFeature && (
                     <div className="mt-4 flex items-center gap-1 text-emerald-600 text-sm font-medium">
                       View your dashboard <ArrowRight className="h-3.5 w-3.5" />
                     </div>
