@@ -150,13 +150,12 @@ export async function POST(request: NextRequest) {
     .single()
 
   const isPremium =
-    subscription?.status === 'active' &&
-    (subscription?.tier === 'pro' || subscription?.tier === 'premium')
+    subscription?.status === 'active' && subscription?.tier === 'premium'
 
   if (!isPremium && recentExams && recentExams.length >= 1) {
     return NextResponse.json(
       {
-        error: 'Free tier allows 1 mock exam per month. Upgrade to Premium for unlimited exams.',
+        error: "You've taken 1 mock this month. Upgrade to Premium (£14.99/mo) for unlimited exams.",
         upgradeRequired: true,
       },
       { status: 403 }

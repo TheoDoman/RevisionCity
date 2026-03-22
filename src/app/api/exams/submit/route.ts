@@ -247,7 +247,7 @@ Student answer: ${studentAnswer}`
     .not('max_score', 'is', null)
 
   let classComparison: ExamAnalysis['classComparison'] | undefined
-  if (classData && classData.length >= 5) {
+  if (classData && classData.length > 10) {
     const classScores = classData.map((r) => (r.max_score > 0 ? (r.score / r.max_score) * 100 : 0))
     const classAvg = Math.round(classScores.reduce((a, b) => a + b, 0) / classScores.length)
     const rank = classScores.filter((s) => s < percentage).length

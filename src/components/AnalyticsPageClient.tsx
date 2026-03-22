@@ -435,6 +435,25 @@ export function AnalyticsPageClient() {
           </div>
         </PremiumGate>
 
+        {/* CTA: Take a mock exam */}
+        <div className="bg-gradient-to-br from-emerald-600 to-teal-700 rounded-2xl p-6 text-white">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div>
+              <h3 className="font-display text-lg font-bold mb-1">Test Yourself Under Exam Conditions</h3>
+              <p className="text-emerald-100 text-sm">
+                Take a timed mock exam and get detailed AI analysis by topic, timing, and grade prediction.
+              </p>
+            </div>
+            <Link
+              href="/exam"
+              className="flex-shrink-0 flex items-center gap-2 bg-white text-emerald-800 font-semibold px-5 py-2.5 rounded-xl hover:bg-emerald-50 transition-colors text-sm"
+            >
+              <Target className="h-4 w-4" />
+              Take a Mock Exam
+            </Link>
+          </div>
+        </div>
+
         {/* CTA: Go deeper per topic */}
         <div className="bg-gradient-to-br from-brand-600 to-brand-800 rounded-2xl p-6 text-white">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">

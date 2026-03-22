@@ -74,7 +74,7 @@ export const SUBSCRIPTION_PRICES = {
     yearly: 39.99,  // 33% discount (~€3.33/month)
   },
   premium: {
-    monthly: 7.99, // Premium tier with AI tutor
-    yearly: 63.99, // 33% discount (~€5.33/month)
+    monthly: 14.99, // Premium tier with AI tutor + mock exams
+    yearly: 119.99, // 33% discount (~£10/month)
   },
 };

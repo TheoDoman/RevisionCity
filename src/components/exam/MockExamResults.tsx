@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-  LineChart, Line, ReferenceLine,
+  LineChart, Line, ReferenceLine, Cell,
 } from 'recharts'
 import {
   Trophy, Target, TrendingUp, Clock, Brain, AlertTriangle,
@@ -149,7 +149,7 @@ export function MockExamResults({ analysis, examId, subjectName, examBoard }: Pr
               <Tooltip formatter={(v) => [`${v}%`, 'Accuracy']} />
               <Bar dataKey="accuracy" radius={[4, 4, 0, 0]}>
                 {byTopic.map((t, i) => (
-                  <rect key={i} fill={scoreColor(t.accuracy)} />
+                  <Cell key={i} fill={scoreColor(t.accuracy)} />
                 ))}
               </Bar>
             </BarChart>

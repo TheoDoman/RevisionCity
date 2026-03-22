@@ -258,7 +258,7 @@ export default function ExamPage() {
                   </button>
 
                   <p className="text-xs text-brand-400 text-center">
-                    Free: 1 exam per month · Premium: unlimited exams
+                    Free: 1 exam per month · Premium (£14.99/mo): unlimited exams + full AI analytics
                   </p>
                 </div>
               )}
