@@ -87,6 +87,10 @@ export interface PracticeQuestion {
   mark_scheme: string[];
   example_answer: string;
   difficulty: 'foundation' | 'higher' | 'extended';
+  /** 'short' = 1-mark exact-match question; 'extended' = long-form self-assessed */
+  question_type?: 'short' | 'extended';
+  /** Only set for question_type === 'short' */
+  correct_answer?: string;
   created_at: string;
 }
 
