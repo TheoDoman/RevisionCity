@@ -52,6 +52,21 @@ interface GeneratedContent {
   }>
 }
 
+async function fetchAll<T>(table: string, select: string): Promise<T[]> {
+  let all: T[] = []
+  let from = 0
+  const batchSize = 1000
+  while (true) {
+    const { data, error } = await supabase.from(table).select(select).range(from, from + batchSize - 1)
+    if (error) throw error
+    if (!data || data.length === 0) break
+    all = all.concat(data as T[])
+    if (data.length < batchSize) break
+    from += batchSize
+  }
+  return all
+}
+
 async function callAPI(prompt: string, retries = 3): Promise<GeneratedContent | null> {
   for (let attempt = 1; attempt <= retries; attempt++) {
     try {
@@ -297,23 +312,15 @@ async function main() {
 
   if (!subtopics) { console.log('No subtopics found'); return }
 
-  // Get all existing content — count via the SAME relationships the app uses
-  const [
-    { data: notesData },
-    { data: flashSets },
-    { data: flashCards },
-    { data: quizzes },
-    { data: quizQs },
-    { data: practiceData },
-    { data: recallData }
-  ] = await Promise.all([
-    supabase.from('notes').select('subtopic_id'),
-    supabase.from('flashcard_sets').select('id, subtopic_id'),
-    supabase.from('flashcards').select('flashcard_set_id'),
-    supabase.from('quizzes').select('id, subtopic_id'),
-    supabase.from('quiz_questions').select('quiz_id'),
-    supabase.from('practice_questions').select('subtopic_id'),
-    supabase.from('recall_prompts').select('subtopic_id')
+  // Get all existing content — paginated to avoid 1000-row Supabase default limit
+  const [notesData, flashSets, flashCards, quizzes, quizQs, practiceData, recallData] = await Promise.all([
+    fetchAll<{ subtopic_id: string }>('notes', 'subtopic_id'),
+    fetchAll<{ id: string; subtopic_id: string }>('flashcard_sets', 'id, subtopic_id'),
+    fetchAll<{ flashcard_set_id: string }>('flashcards', 'flashcard_set_id'),
+    fetchAll<{ id: string; subtopic_id: string }>('quizzes', 'id, subtopic_id'),
+    fetchAll<{ quiz_id: string }>('quiz_questions', 'quiz_id'),
+    fetchAll<{ subtopic_id: string }>('practice_questions', 'subtopic_id'),
+    fetchAll<{ subtopic_id: string }>('recall_prompts', 'subtopic_id'),
   ])
 
   const notesSet = new Set(notesData?.map(r => r.subtopic_id) || [])
