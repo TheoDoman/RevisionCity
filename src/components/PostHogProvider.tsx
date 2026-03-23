@@ -7,6 +7,9 @@ import { usePathname, useSearchParams } from 'next/navigation'
 
 export function PostHogProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
+    // Only initialise PostHog after the user has accepted analytics cookies
+    if (localStorage.getItem('cookie_consent') !== 'accepted') return
+
     const key = process.env.NEXT_PUBLIC_POSTHOG_KEY
     const host = process.env.NEXT_PUBLIC_POSTHOG_HOST || 'https://us.i.posthog.com'
 

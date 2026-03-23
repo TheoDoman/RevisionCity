@@ -1,8 +1,17 @@
 'use client'
 
 import Script from 'next/script'
+import { useState, useEffect } from 'react'
 
 export default function GoogleAnalytics({ measurementId }: { measurementId: string }) {
+  const [consented, setConsented] = useState(false)
+
+  useEffect(() => {
+    setConsented(localStorage.getItem('cookie_consent') === 'accepted')
+  }, [])
+
+  if (!consented) return null
+
   return (
     <>
       <Script

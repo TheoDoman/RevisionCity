@@ -6,6 +6,8 @@ import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import GoogleAnalytics from '@/components/GoogleAnalytics';
 import { PostHogProvider, PostHogPageView } from '@/components/PostHogProvider';
+import { CookieConsent } from '@/components/CookieConsent';
+import { AgeAcknowledgementSync } from '@/components/AgeAcknowledgementSync';
 
 const outfit = Outfit({
   subsets: ['latin'],
@@ -101,8 +103,10 @@ export default function RootLayout({
           <PostHogProvider>
             <PostHogPageView />
             <Header />
+            <AgeAcknowledgementSync />
             <main className="flex-1">{children}</main>
             <Footer />
+            <CookieConsent />
           </PostHogProvider>
         </body>
       </html>

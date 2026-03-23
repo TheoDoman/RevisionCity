@@ -1,4 +1,5 @@
 import { SignUp } from '@clerk/nextjs'
+import { AgeGate } from '@/components/AgeGate'
 
 export default function SignUpPage() {
   return (
@@ -12,14 +13,16 @@ export default function SignUpPage() {
             Create an account to ace your IGCSEs
           </p>
         </div>
-        <SignUp
-          appearance={{
-            elements: {
-              rootBox: 'mx-auto',
-              card: 'shadow-xl',
-            },
-          }}
-        />
+        <AgeGate>
+          <SignUp
+            appearance={{
+              elements: {
+                rootBox: 'mx-auto',
+                card: 'shadow-xl',
+              },
+            }}
+          />
+        </AgeGate>
       </div>
     </div>
   )
