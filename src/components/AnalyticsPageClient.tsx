@@ -64,12 +64,28 @@ export function AnalyticsPageClient() {
   const isPremium = subscriptionTier !== 'free';
 
   const entries = Object.values(progress);
-  const attempted = entries.filter((p) => p.quiz_best_score > 0);
+
+  // Equal-weight score across all 5 content types per subtopic
+  function computeScore(p: typeof entries[0]): number {
+    return Math.round((
+      (p.notes_read ? 100 : 0) +
+      (p.flashcards_reviewed > 0 ? 100 : 0) +
+      p.quiz_best_score +
+      (p.practice_questions_completed > 0 ? 100 : 0) +
+      (p.recall_prompts_completed > 0 ? 100 : 0)
+    ) / 5);
+  }
+
+  const attempted = entries.filter((p) =>
+    p.notes_read || p.flashcards_reviewed > 0 || p.quiz_best_score > 0 ||
+    p.practice_questions_completed > 0 || p.recall_prompts_completed > 0
+  );
 
   const overallScore = useMemo(() => {
     if (attempted.length === 0) return 0;
-    return Math.round(attempted.reduce((sum, p) => sum + p.quiz_best_score, 0) / attempted.length);
-  }, [attempted]);
+    return Math.round(attempted.reduce((sum, p) => sum + computeScore(p), 0) / attempted.length);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [attempted.length, entries]);
 
   const currentGrade = scoreToGrade(overallScore);
   const nextGrade = parseInt(currentGrade) < 9 ? String(parseInt(currentGrade) + 1) : null;
@@ -80,14 +96,14 @@ export function AnalyticsPageClient() {
     ? Math.max(1, Math.round(((nextGradeThreshold[nextGrade] ?? 100) - overallScore) * 0.8))
     : 0;
 
-  // Weak areas: lowest scoring subtopics
+  // Weak areas: lowest scoring subtopics (by composite score)
   const weakEntries = [...attempted]
-    .sort((a, b) => a.quiz_best_score - b.quiz_best_score)
+    .sort((a, b) => computeScore(a) - computeScore(b))
     .slice(0, 5);
 
-  // Strong areas: highest scoring
+  // Strong areas: highest scoring (by composite score)
   const strongEntries = [...attempted]
-    .sort((a, b) => b.quiz_best_score - a.quiz_best_score)
+    .sort((a, b) => computeScore(b) - computeScore(a))
     .slice(0, 3);
 
   // Streak based on flashcard activity
@@ -99,13 +115,13 @@ export function AnalyticsPageClient() {
   const classAverage = 62;
   const percentile = overallScore > 0 ? Math.min(99, Math.max(1, Math.round((overallScore / classAverage) * 50))) : 0;
 
-  // Score distribution for bar chart
+  // Score distribution for bar chart (using composite score)
   const distribution = [
-    { range: '0–20', count: entries.filter((p) => p.quiz_best_score > 0 && p.quiz_best_score <= 20).length },
-    { range: '21–40', count: entries.filter((p) => p.quiz_best_score > 20 && p.quiz_best_score <= 40).length },
-    { range: '41–60', count: entries.filter((p) => p.quiz_best_score > 40 && p.quiz_best_score <= 60).length },
-    { range: '61–80', count: entries.filter((p) => p.quiz_best_score > 60 && p.quiz_best_score <= 80).length },
-    { range: '81–100', count: entries.filter((p) => p.quiz_best_score > 80).length },
+    { range: '0–20', count: attempted.filter((p) => { const s = computeScore(p); return s > 0 && s <= 20; }).length },
+    { range: '21–40', count: attempted.filter((p) => { const s = computeScore(p); return s > 20 && s <= 40; }).length },
+    { range: '41–60', count: attempted.filter((p) => { const s = computeScore(p); return s > 40 && s <= 60; }).length },
+    { range: '61–80', count: attempted.filter((p) => { const s = computeScore(p); return s > 60 && s <= 80; }).length },
+    { range: '81–100', count: attempted.filter((p) => computeScore(p) > 80).length },
   ];
 
   // 7-day trend (simulated from current score)
@@ -334,11 +350,11 @@ export function AnalyticsPageClient() {
                         <div className="w-full bg-red-100 rounded-full h-2">
                           <div
                             className="h-2 rounded-full bg-red-400"
-                            style={{ width: `${entry.quiz_best_score}%` }}
+                            style={{ width: `${computeScore(entry)}%` }}
                           />
                         </div>
                       </div>
-                      <span className="text-sm font-bold text-red-600">{entry.quiz_best_score}%</span>
+                      <span className="text-sm font-bold text-red-600">{computeScore(entry)}%</span>
                     </div>
                   ))}
                   <p className="text-xs text-brand-400 mt-2">Open a topic&apos;s Analytics tab to see subtopic names</p>
@@ -368,11 +384,11 @@ export function AnalyticsPageClient() {
                       <div className="w-full bg-green-100 rounded-full h-2">
                         <div
                           className="h-2 rounded-full bg-green-500"
-                          style={{ width: `${entry.quiz_best_score}%` }}
+                          style={{ width: `${computeScore(entry)}%` }}
                         />
                       </div>
                     </div>
-                    <span className="text-sm font-bold text-green-600">{entry.quiz_best_score}%</span>
+                    <span className="text-sm font-bold text-green-600">{computeScore(entry)}%</span>
                   </div>
                 ))}
               </div>

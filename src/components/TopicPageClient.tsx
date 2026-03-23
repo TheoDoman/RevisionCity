@@ -1,6 +1,6 @@
 'use client';
 import { getAllRevisionContent } from '@/lib/data';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import Link from 'next/link';
 import {
   ArrowLeft, BookOpen, Brain, HelpCircle, FileText,
@@ -106,8 +106,31 @@ export function TopicPageClient({ subject, topic, subtopics, initialContent, boa
   const [content, setContent] = useState(initialContent);
   const [loading, setLoading] = useState(false);
   const { subscriptionTier } = useSubscription();
+  const { updateProgress, progress } = useAppStore();
   const color = getSubjectColor(subject.slug);
   const isLocked = (index: number) => subscriptionTier === 'free' && index >= 2;
+
+  // Track which subtopics have had notes marked as read (avoid double-writes)
+  const notesReadRef = useRef<Set<string>>(new Set());
+
+  // Fire-and-forget Supabase activity log (for dashboard page)
+  const logActivity = useCallback((
+    activityType: 'note' | 'flashcard' | 'quiz' | 'practice' | 'recall',
+    score?: number,
+  ) => {
+    if (!selectedSubtopic) return;
+    fetch('/api/activity', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        activity_type: activityType,
+        subject_id: subject.id,
+        topic_id: topic.id,
+        subtopic_id: selectedSubtopic,
+        score,
+      }),
+    }).catch(() => {/* ignore — analytics should never break the study flow */});
+  }, [selectedSubtopic, subject.id, topic.id]);
 
   // Track topic view on mount
   useEffect(() => {
@@ -150,6 +173,15 @@ export function TopicPageClient({ subject, topic, subtopics, initialContent, boa
   const mindMap = content?.mindMap || null;
   const summarySheet = content?.summarySheet || null;
 
+  // Mark notes as read when user views the notes tab (once per subtopic)
+  useEffect(() => {
+    if (selectedMethod !== 'notes' || !notes || !selectedSubtopic) return;
+    if (notesReadRef.current.has(selectedSubtopic)) return;
+    notesReadRef.current.add(selectedSubtopic);
+    updateProgress(selectedSubtopic, { notes_read: true });
+    logActivity('note');
+  }, [selectedMethod, notes, selectedSubtopic, updateProgress, logActivity]);
+
   // Fetch content when subtopic changes
   useEffect(() => {
     if (!selectedSubtopic) return;
@@ -182,13 +214,55 @@ export function TopicPageClient({ subject, topic, subtopics, initialContent, boa
       case 'notes':
         return notes ? <NotesViewer note={notes} /> : <div className="text-center py-12 text-brand-500">Notes not yet available for this topic. Check back soon!</div>;
       case 'flashcards':
-        return flashcards.length > 0 ? <Flashcards flashcards={flashcards} /> : <div className="text-center py-12 text-brand-500">Flashcards not yet available for this topic. Check back soon!</div>;
+        return flashcards.length > 0 ? (
+          <Flashcards
+            flashcards={flashcards}
+            onComplete={({ correct, incorrect }) => {
+              if (!selectedSubtopic) return;
+              const reviewed = correct + incorrect;
+              updateProgress(selectedSubtopic, { flashcards_reviewed: reviewed });
+              logActivity('flashcard');
+            }}
+          />
+        ) : <div className="text-center py-12 text-brand-500">Flashcards not yet available for this topic. Check back soon!</div>;
       case 'quiz':
-        return quizQuestions.length > 0 ? <Quiz questions={quizQuestions} /> : <div className="text-center py-12 text-brand-500">Quiz questions not yet available for this topic. Check back soon!</div>;
+        return quizQuestions.length > 0 ? (
+          <Quiz
+            questions={quizQuestions}
+            onComplete={(score, total) => {
+              if (!selectedSubtopic) return;
+              const pct = Math.round((score / total) * 100);
+              // Only update if it's a new best score
+              const currentBest = progress[selectedSubtopic]?.quiz_best_score ?? 0;
+              if (pct > currentBest) {
+                updateProgress(selectedSubtopic, { quiz_best_score: pct });
+              }
+              logActivity('quiz', pct);
+            }}
+          />
+        ) : <div className="text-center py-12 text-brand-500">Quiz questions not yet available for this topic. Check back soon!</div>;
       case 'practice':
-        return practiceQuestions.length > 0 ? <PracticeQuestions questions={practiceQuestions} /> : <div className="text-center py-12 text-brand-500">Practice questions not yet available for this topic. Check back soon!</div>;
+        return practiceQuestions.length > 0 ? (
+          <PracticeQuestions
+            questions={practiceQuestions}
+            onComplete={(completed) => {
+              if (!selectedSubtopic) return;
+              updateProgress(selectedSubtopic, { practice_questions_completed: completed });
+              logActivity('practice');
+            }}
+          />
+        ) : <div className="text-center py-12 text-brand-500">Practice questions not yet available for this topic. Check back soon!</div>;
       case 'recall':
-        return recallPrompts.length > 0 ? <ActiveRecall prompts={recallPrompts} /> : <div className="text-center py-12 text-brand-500">Recall prompts not yet available for this topic. Check back soon!</div>;
+        return recallPrompts.length > 0 ? (
+          <ActiveRecall
+            prompts={recallPrompts}
+            onComplete={(completed) => {
+              if (!selectedSubtopic) return;
+              updateProgress(selectedSubtopic, { recall_prompts_completed: completed });
+              logActivity('recall');
+            }}
+          />
+        ) : <div className="text-center py-12 text-brand-500">Recall prompts not yet available for this topic. Check back soon!</div>;
       case 'mindmap':
         return mindMap ? <MindMapViewer mindMap={mindMap} /> : <div className="text-center py-12 text-brand-500">Mind map not yet available for this topic. Check back soon!</div>;
       case 'summary':

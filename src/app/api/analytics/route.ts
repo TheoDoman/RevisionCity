@@ -58,19 +58,42 @@ export async function GET(request: NextRequest) {
   const subtopicList = subtopics || [];
 
   // Parse client-side progress data
-  const progress: Record<string, { quiz_best_score: number; flashcards_reviewed: number; notes_read: boolean }> =
-    progressJson ? JSON.parse(progressJson) : {};
+  const progress: Record<string, {
+    notes_read?: boolean;
+    flashcards_reviewed?: number;
+    quiz_best_score?: number;
+    practice_questions_completed?: number;
+    recall_prompts_completed?: number;
+  }> = progressJson ? JSON.parse(progressJson) : {};
+
+  // Equal-weight score across all 5 content types
+  function computeScore(p: typeof progress[string]): number {
+    if (!p) return 0;
+    return Math.round((
+      (p.notes_read ? 100 : 0) +
+      ((p.flashcards_reviewed ?? 0) > 0 ? 100 : 0) +
+      (p.quiz_best_score ?? 0) +
+      ((p.practice_questions_completed ?? 0) > 0 ? 100 : 0) +
+      ((p.recall_prompts_completed ?? 0) > 0 ? 100 : 0)
+    ) / 5);
+  }
+
+  function hasActivity(p: typeof progress[string]): boolean {
+    if (!p) return false;
+    return !!(p.notes_read || (p.flashcards_reviewed ?? 0) > 0 || (p.quiz_best_score ?? 0) > 0 ||
+              (p.practice_questions_completed ?? 0) > 0 || (p.recall_prompts_completed ?? 0) > 0);
+  }
 
   // Build topic breakdown from progress
   const topicBreakdown = subtopicList.map((s) => {
     const p = progress[s.id];
-    const avg = p?.quiz_best_score ?? 0;
-    const hasAttempt = avg > 0;
+    const avg = computeScore(p);
+    const active = hasActivity(p);
     return {
       subtopicId: s.id,
       topic: s.name,
       avg,
-      attempts: hasAttempt ? Math.max(1, Math.round(p.flashcards_reviewed / 3)) : 0,
+      attempts: active ? 1 : 0,
       trend: avg > 70 ? 'up' : avg > 40 ? 'stable' : 'down',
     };
   });
@@ -104,13 +127,14 @@ export async function GET(request: NextRequest) {
     projectedGrade = isImproving && scoreGap <= 15 ? nextTarget.grade : currentGrade;
   }
 
-  // Simulate streaks based on flashcard activity
+  // Derive streaks from total activity across all content types
   const totalFlashcardsReviewed = Object.values(progress).reduce(
     (sum, p) => sum + (p.flashcards_reviewed ?? 0),
     0
   );
-  const currentStreak = Math.min(30, Math.floor(totalFlashcardsReviewed / 5));
-  const longestStreak = Math.max(currentStreak, Math.floor(totalFlashcardsReviewed / 3));
+  const activeSubtopics = Object.values(progress).filter(hasActivity).length;
+  const currentStreak = Math.min(30, activeSubtopics);
+  const longestStreak = Math.max(currentStreak, Math.floor(activeSubtopics * 1.5));
   const quizzesToday = Object.values(progress).filter((p) => (p.quiz_best_score ?? 0) > 0).length;
 
   // Class comparison
