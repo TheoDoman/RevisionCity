@@ -1,22 +1,11 @@
 // API Configuration
-// This file is gitignored and contains fallback API keys for development/production
+// The Anthropic API key must be set via the ANTHROPIC_API_KEY environment variable.
+// Never add hardcoded fallback keys here.
 
 export const getAnthropicApiKey = (): string => {
-  // Try environment variable first
-  if (process.env.ANTHROPIC_API_KEY) {
-    console.log('[API Config] Using env var ANTHROPIC_API_KEY')
-    return process.env.ANTHROPIC_API_KEY
+  const key = process.env.ANTHROPIC_API_KEY
+  if (!key) {
+    throw new Error('ANTHROPIC_API_KEY environment variable is not set')
   }
-
-  // Fallback for production (will be replaced by Vercel env vars eventually)
-  console.log('[API Config] Using fallback key (env var not set)')
-  const fallbackKey = [
-    'sk-ant',
-    'api03',
-    'WZTE5Dc9zsVcyKCnrcp4huM7TYOkGme_Yvy',
-    'DCIhb9Ww0YiBG7v8n2iY8xA_gelUbttZQkwT5CyEAxJdOuBySQ',
-    'DqhxJQAA'
-  ].join('-')
-
-  return fallbackKey
+  return key
 }

@@ -100,10 +100,7 @@ export async function POST(request: NextRequest) {
     )
   }
 
-  // Use env var first; fall back to the same key pattern the rest of the app uses
-  const apiKey =
-    process.env.ANTHROPIC_API_KEY ||
-    process.env.NEXT_PUBLIC_ANTHROPIC_API_KEY
+  const apiKey = process.env.ANTHROPIC_API_KEY
 
   if (!apiKey) {
     console.error('[AI Tutor] No API key configured')
