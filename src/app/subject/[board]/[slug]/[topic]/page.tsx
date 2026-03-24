@@ -5,6 +5,9 @@ import { getDbSlug } from '@/lib/utils';
 import { TopicPageClient } from '@/components/TopicPageClient';
 import type { Subject, Topic, Subtopic } from '@/types';
 
+// ISR: rebuild topic pages at most once per day
+export const revalidate = 86400;
+
 const validSlugs = ['mathematics', 'english', 'biology', 'chemistry', 'physics', 'computer-science', 'business-studies', 'economics', 'history', 'geography'];
 const validBoards = ['cambridge', 'edexcel'];
 
@@ -33,10 +36,16 @@ export async function generateMetadata({
   const subjectName = result?.subject.name || formatSlug(slug);
   const topicName = result?.topic.name || formatSlug(topicSlug);
 
-  const title = `${topicName} - ${boardLabel} IGCSE ${subjectName} Revision | Revision City`;
-  const description = `Revise ${topicName} for ${boardLabel} IGCSE ${subjectName}. Notes, flashcards, quizzes, practice questions, and mind maps.${result?.topic.description ? ` ${result.topic.description}` : ''}`;
+  const title = `${topicName} — ${boardLabel} IGCSE ${subjectName} Revision | RevisionCity`;
+  const description = `Revise ${topicName} for IGCSE ${subjectName}. Comprehensive notes, flashcards, practice questions, and quizzes to help you ace your exams.${result?.topic.description ? ` ${result.topic.description}` : ''}`;
+  const canonical = `/subject/${board}/${slug}/${topicSlug}`;
 
-  return { title, description };
+  return {
+    title,
+    description,
+    alternates: { canonical },
+    openGraph: { title, description, url: canonical },
+  };
 }
 
 export default async function BoardTopicPage({
@@ -88,19 +97,33 @@ export default async function BoardTopicPage({
     }
   }
 
-  const jsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'LearningResource',
-    name: `${topic.name} - IGCSE ${subject.name}`,
-    description: topic.description || `Revision materials for ${topic.name} in IGCSE ${subject.name}`,
-    educationalLevel: 'IGCSE',
-    learningResourceType: ['Notes', 'Flashcards', 'Quiz', 'Practice Questions'],
-    isPartOf: {
-      '@type': 'Course',
-      name: `IGCSE ${subject.name}`,
-      provider: { '@type': 'EducationalOrganization', name: 'Revision City' },
+  const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://revisioncity.net';
+  const boardLabel = board === 'edexcel' ? 'Edexcel' : 'Cambridge';
+
+  const jsonLd = [
+    {
+      '@context': 'https://schema.org',
+      '@type': 'LearningResource',
+      name: `${topic.name} — IGCSE ${subject.name}`,
+      description: topic.description || `Revision materials for ${topic.name} in IGCSE ${subject.name}`,
+      educationalLevel: 'IGCSE',
+      learningResourceType: ['Notes', 'Flashcards', 'Quiz', 'Practice Questions'],
+      isPartOf: {
+        '@type': 'Course',
+        name: `${boardLabel} IGCSE ${subject.name}`,
+        provider: { '@type': 'Organization', name: 'RevisionCity' },
+      },
     },
-  };
+    {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Home', item: BASE_URL },
+        { '@type': 'ListItem', position: 2, name: subject.name, item: `${BASE_URL}/subject/${board}/${slug}` },
+        { '@type': 'ListItem', position: 3, name: topic.name, item: `${BASE_URL}/subject/${board}/${slug}/${topicSlug}` },
+      ],
+    },
+  ];
 
   return (
     <>

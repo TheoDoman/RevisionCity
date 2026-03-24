@@ -3,6 +3,7 @@ import { currentUser } from '@clerk/nextjs/server'
 import { createClient } from '@supabase/supabase-js'
 import Anthropic from '@anthropic-ai/sdk'
 import type { ExamSection, ExamDifficulty } from '@/types'
+import { rateLimit, tooManyRequests } from '@/lib/rate-limit'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -133,6 +134,10 @@ Ensure questions are specific, realistic, and test different skills. Use precise
 export async function POST(request: NextRequest) {
   const user = await currentUser()
   if (!user) return NextResponse.json({ error: 'Unauthorised' }, { status: 401 })
+
+  // Rate limiting: 10 req/min per user (Anthropic route)
+  const { allowed, retryAfter } = rateLimit(`anthropic:${user.id}`, 10)
+  if (!allowed) return tooManyRequests(retryAfter)
 
   // Free tier: max 1 exam per month
   const monthAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString()

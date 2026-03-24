@@ -6,22 +6,37 @@ import { getSubjects } from '@/lib/data';
 import { Suspense } from 'react';
 import { ExamBoardToggle } from '@/components/ExamBoardToggle';
 
-export const metadata: Metadata = {
-  title: 'All IGCSE Subjects - Revision Notes & Resources',
-  description:
-    'Browse Cambridge and Edexcel IGCSE subjects. Free revision notes, flashcards, quizzes, and AI-powered practice for Mathematics, Biology, Chemistry, Physics, and more.',
-  keywords: [
-    'IGCSE subjects',
-    'Cambridge IGCSE revision',
-    'Edexcel IGCSE revision',
-    'IGCSE notes',
-    'IGCSE revision materials',
-    'IGCSE study resources',
-  ],
-};
+const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://revisioncity.com';
 
-// Force dynamic rendering - don't prerender during build
-export const dynamic = 'force-dynamic';
+// ISR: rebuild at most once per hour
+export const revalidate = 3600;
+
+export async function generateMetadata({
+  searchParams,
+}: {
+  searchParams: Promise<{ board?: string }>;
+}): Promise<Metadata> {
+  const { board } = await searchParams;
+  const examBoard = board === 'edexcel' ? 'edexcel' : 'cambridge';
+  const boardLabel = examBoard === 'edexcel' ? 'Edexcel' : 'Cambridge';
+
+  return {
+    title: `${boardLabel} IGCSE Subjects - Revision Notes & Resources`,
+    description:
+      `Browse ${boardLabel} IGCSE subjects. Free revision notes, flashcards, quizzes, and AI-powered practice for Mathematics, Biology, Chemistry, Physics, and more.`,
+    keywords: [
+      'IGCSE subjects',
+      `${boardLabel} IGCSE revision`,
+      'IGCSE notes',
+      'IGCSE revision materials',
+    ],
+    alternates: {
+      canonical: examBoard === 'edexcel'
+        ? `${BASE_URL}/subjects?board=edexcel`
+        : `${BASE_URL}/subjects`,
+    },
+  };
+}
 
 // Fallback subjects for when database is empty
 const fallbackSubjects = [

@@ -1,4 +1,11 @@
+import type { Metadata } from 'next';
 import { Mail, MessageSquare, HelpCircle } from 'lucide-react';
+
+export const metadata: Metadata = {
+  title: 'Contact Us',
+  description: 'Get in touch with the RevisionCity team. We\'re here to help with questions about your account, subscriptions, or IGCSE revision content.',
+  alternates: { canonical: '/contact' },
+};
 
 export default function ContactPage() {
   return (

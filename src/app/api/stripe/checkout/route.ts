@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { currentUser } from '@clerk/nextjs/server'
 import { createCheckoutSession } from '@/lib/stripe'
+import { rateLimit, tooManyRequests } from '@/lib/rate-limit'
 
 export async function POST(request: Request) {
   try {
@@ -12,6 +13,10 @@ export async function POST(request: Request) {
         { status: 401 }
       )
     }
+
+    // Rate limiting: 5 req/min per user (auth/payment route)
+    const { allowed, retryAfter } = rateLimit(`auth:${user.id}`, 5)
+    if (!allowed) return tooManyRequests(retryAfter)
 
     const body = await request.json()
     const { tier, interval } = body

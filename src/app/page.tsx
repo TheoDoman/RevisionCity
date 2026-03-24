@@ -1,4 +1,20 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
+
+export const metadata: Metadata = {
+  title: 'RevisionCity — Free IGCSE Revision Notes, Flashcards & Quizzes',
+  description:
+    'Revise for your IGCSE exams with free notes, flashcards, quizzes, and practice questions. Covering Cambridge and Edexcel subjects including Maths, Biology, Chemistry, Physics, and more.',
+  alternates: {
+    canonical: '/',
+  },
+  openGraph: {
+    title: 'RevisionCity — Free IGCSE Revision Notes, Flashcards & Quizzes',
+    description:
+      'Revise for your IGCSE exams with free notes, flashcards, quizzes, and practice questions. Covering Cambridge and Edexcel subjects.',
+    url: '/',
+  },
+};
 import {
   BookOpen,
   Brain,

@@ -1,7 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { currentUser } from '@clerk/nextjs/server'
+import { rateLimit, getIP, tooManyRequests } from '@/lib/rate-limit'
 
 export async function POST(request: NextRequest) {
+  // Rate limiting: 5 req/min per IP (auth-adjacent route — calls email service)
+  const ip = getIP(request)
+  const { allowed, retryAfter } = rateLimit(`auth:${ip}`, 5)
+  if (!allowed) return tooManyRequests(retryAfter)
+
   try {
     const { feedbackType, rating, message, email, subject } = await request.json()
 

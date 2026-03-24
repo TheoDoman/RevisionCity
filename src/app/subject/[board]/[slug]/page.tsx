@@ -6,8 +6,20 @@ import { getSubjectIcon, getSubjectColor, getDbSlug } from '@/lib/utils';
 import { getSubjectWithTopics, getSubjectBySlug } from '@/lib/data';
 import { RevisionPlanBuilder } from '@/components/revision';
 
+const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://revisioncity.com';
+
+// ISR: rebuild subject pages at most once per day
+export const revalidate = 86400;
+
 const validSlugs = ['mathematics', 'english', 'biology', 'chemistry', 'physics', 'computer-science', 'business-studies', 'economics', 'history', 'geography'];
 const validBoards = ['cambridge', 'edexcel'];
+
+// Pre-render all known subject+board combinations at build time
+export function generateStaticParams() {
+  return validBoards.flatMap(board =>
+    validSlugs.map(slug => ({ board, slug }))
+  );
+}
 
 const fallbackTopics: Record<string, { name: string; slug: string; description: string; subtopic_count: number }[]> = {
   mathematics: [
@@ -47,10 +59,16 @@ export async function generateMetadata({
   const boardLabel = board === 'edexcel' ? 'Edexcel' : 'Cambridge';
   const name = subject?.name || slug.charAt(0).toUpperCase() + slug.slice(1);
 
-  const title = `${boardLabel} IGCSE ${name} Revision Notes & Practice | Revision City`;
-  const description = `Free ${boardLabel} IGCSE ${name} revision notes, flashcards, quizzes, and practice questions. ${subject?.description || ''}`.trim();
+  const title = `${boardLabel} IGCSE ${name} Revision — Notes, Flashcards & Quizzes | RevisionCity`;
+  const description = `Free ${boardLabel} IGCSE ${name} revision resources. Study notes, flashcards, quizzes, and practice questions covering all topics for Cambridge and Edexcel exams.${subject?.description ? ` ${subject.description}` : ''}`.trim();
+  const canonical = `/subject/${board}/${slug}`;
 
-  return { title, description };
+  return {
+    title,
+    description,
+    alternates: { canonical },
+    openGraph: { title, description, url: canonical },
+  };
 }
 
 export default async function BoardSubjectPage({
@@ -90,8 +108,19 @@ export default async function BoardSubjectPage({
   const boardLabel = board === 'edexcel' ? 'Edexcel' : 'Cambridge';
   const boardColor = board === 'edexcel' ? '#6A0DAD' : '#003865';
 
+  const courseJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Course',
+    name: `IGCSE ${subject.name}`,
+    description: `Comprehensive ${boardLabel} IGCSE ${subject.name} revision covering all exam topics`,
+    provider: { '@type': 'Organization', name: 'RevisionCity' },
+    educationalLevel: 'IGCSE',
+    isAccessibleForFree: true,
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-brand-50 to-white">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(courseJsonLd) }} />
       {/* Header */}
       <div className="relative overflow-hidden">
         <div className={`absolute inset-0 bg-gradient-to-br ${color} opacity-10`} />

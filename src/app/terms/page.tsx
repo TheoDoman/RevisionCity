@@ -1,310 +1,489 @@
+export const metadata = {
+  title: 'Terms of Service | RevisionCity',
+  description: 'Terms of Service for RevisionCity — IGCSE revision platform.',
+}
+
 export default function TermsPage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-brand-50 to-white">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <h1 className="font-display text-4xl sm:text-5xl font-bold text-brand-950 mb-4">
+        <h1 className="font-display text-4xl sm:text-5xl font-bold text-brand-950 mb-2">
           Terms of Service
         </h1>
-        <p className="text-brand-600 mb-8">
-          Last updated: 25 January 2026
-        </p>
+        <p className="text-brand-500 mb-10">Last updated: 23 March 2026</p>
 
-        <div className="bg-white rounded-2xl border-2 border-brand-100 p-8 space-y-8">
-          {/* 1. Agreement to Terms */}
-          <section>
+        {/* Table of Contents */}
+        <nav className="bg-white border-2 border-brand-100 rounded-2xl p-6 mb-10">
+          <h2 className="font-display text-lg font-bold text-brand-900 mb-4">Contents</h2>
+          <ol className="space-y-2 text-brand-700">
+            {[
+              ['acceptance', '1. Acceptance of Terms'],
+              ['description', '2. Description of Service'],
+              ['accounts', '3. Account Responsibilities'],
+              ['acceptable-use', '4. Acceptable Use Policy'],
+              ['ip', '5. Intellectual Property'],
+              ['payment', '6. Payment Terms'],
+              ['ai-content', '7. AI-Generated Content Disclaimer'],
+              ['liability', '8. Limitation of Liability'],
+              ['termination', '9. Termination'],
+              ['governing-law', '10. Governing Law'],
+              ['changes', '11. Changes to These Terms'],
+              ['contact', '12. Contact Us'],
+            ].map(([id, label]) => (
+              <li key={id}>
+                <a
+                  href={`#${id}`}
+                  className="text-brand-600 hover:text-brand-900 hover:underline transition-colors"
+                >
+                  {label}
+                </a>
+              </li>
+            ))}
+          </ol>
+        </nav>
+
+        <div className="bg-white rounded-2xl border-2 border-brand-100 p-8 space-y-12">
+
+          {/* 1. Acceptance */}
+          <section id="acceptance">
             <h2 className="font-display text-2xl font-bold text-brand-900 mb-4">
-              1. Agreement to Terms
+              1. Acceptance of Terms
             </h2>
             <p className="text-brand-700 leading-relaxed mb-3">
-              By accessing or using Revision City ("the Service"), you agree to be bound by these Terms of Service ("Terms").
-              If you disagree with any part of these terms, you may not access the Service.
+              By creating an account or using any part of the RevisionCity platform (the &ldquo;Service&rdquo;),
+              you agree to be bound by these Terms of Service (&ldquo;Terms&rdquo;). If you do not agree, do not use the Service.
+            </p>
+            <p className="text-brand-700 leading-relaxed mb-3">
+              The Service is operated by RevisionCity Ltd (&ldquo;we&rdquo;, &ldquo;us&rdquo;, &ldquo;our&rdquo;), a company registered in
+              England and Wales. These Terms form a legally binding contract between you and RevisionCity Ltd.
             </p>
             <p className="text-brand-700 leading-relaxed">
-              Revision City Ltd ("we", "us", or "our") operates the Service. These Terms apply to all visitors, users,
-              and others who access or use the Service.
+              If you are under 18, you should read these Terms with a parent or guardian and obtain their
+              consent before using the Service. If you are under 13, you may not create an account.
             </p>
           </section>
 
-          {/* 2. Service Description */}
-          <section>
+          {/* 2. Description */}
+          <section id="description">
             <h2 className="font-display text-2xl font-bold text-brand-900 mb-4">
-              2. Service Description
+              2. Description of Service
             </h2>
             <p className="text-brand-700 leading-relaxed mb-3">
-              Revision City is an IGCSE revision platform providing educational content, including but not limited to:
+              RevisionCity is an IGCSE revision platform that provides:
             </p>
-            <ul className="list-disc pl-6 space-y-2 text-brand-700">
-              <li>Study notes and revision materials</li>
-              <li>Flashcards and quizzes</li>
-              <li>Practice questions and tests</li>
-              <li>AI-powered test generation tools (Pro tier)</li>
-              <li>AI tutor assistance (Premium tier)</li>
-              <li>Progress tracking and analytics</li>
+            <ul className="list-disc pl-6 space-y-2 text-brand-700 mb-4">
+              <li>
+                <strong>Free tier:</strong> Study notes, flashcards, quizzes, and practice questions for
+                Cambridge and Edexcel IGCSE subjects.
+              </li>
+              <li>
+                <strong>Pro tier (£4.99/month):</strong> All free content plus AI-generated practice tests,
+                mind maps, summary sheets, recall prompts, and progress analytics.
+              </li>
+              <li>
+                <strong>Premium tier (£14.99/month):</strong> Everything in Pro plus the AI Tutor (Socratic
+                explanations and streamed chat), unlimited mock exam simulations with AI grading, detailed
+                topic and timing analysis, grade prediction, and personalised revision plans.
+              </li>
             </ul>
-            <p className="text-brand-700 leading-relaxed mt-3">
-              We reserve the right to modify, suspend, or discontinue any part of the Service at any time without prior notice.
+            <p className="text-brand-700 leading-relaxed">
+              We reserve the right to modify, suspend, or discontinue any feature at any time. We will
+              endeavour to give reasonable notice of significant changes to paid features.
             </p>
           </section>
 
-          {/* 3. User Accounts */}
-          <section>
+          {/* 3. Account Responsibilities */}
+          <section id="accounts">
             <h2 className="font-display text-2xl font-bold text-brand-900 mb-4">
-              3. User Accounts
+              3. Account Responsibilities
             </h2>
             <p className="text-brand-700 leading-relaxed mb-3">
-              To access certain features of the Service, you must create an account. You agree to:
+              Accounts are authenticated via Clerk (our identity provider). You are responsible for:
             </p>
-            <ul className="list-disc pl-6 space-y-2 text-brand-700">
-              <li>Provide accurate, current, and complete information during registration</li>
-              <li>Maintain and promptly update your account information</li>
-              <li>Maintain the security of your account credentials</li>
-              <li>Accept responsibility for all activities that occur under your account</li>
-              <li>Notify us immediately of any unauthorized use of your account</li>
+            <ul className="list-disc pl-6 space-y-2 text-brand-700 mb-4">
+              <li>Providing accurate information when creating your account (name, email).</li>
+              <li>Keeping your login credentials secure and not sharing them with others.</li>
+              <li>
+                All activity that occurs under your account — whether authorised by you or not.
+              </li>
+              <li>
+                Notifying us immediately at{' '}
+                <a href="mailto:support@revisioncity.com" className="text-brand-600 hover:underline">
+                  support@revisioncity.com
+                </a>{' '}
+                if you suspect unauthorised access.
+              </li>
             </ul>
-            <p className="text-brand-700 leading-relaxed mt-3">
-              You must be at least 13 years old to create an account. Users under 18 should obtain parental or guardian
-              consent before using the Service.
+            <p className="text-brand-700 leading-relaxed">
+              Each account is for a single individual. Creating multiple accounts to circumvent free tier
+              limits (e.g. the one-mock-exam-per-month limit) is a breach of these Terms.
             </p>
           </section>
 
-          {/* 4. Subscription Terms */}
-          <section>
+          {/* 4. Acceptable Use */}
+          <section id="acceptable-use">
             <h2 className="font-display text-2xl font-bold text-brand-900 mb-4">
-              4. Subscription Terms
+              4. Acceptable Use Policy
+            </h2>
+            <p className="text-brand-700 leading-relaxed mb-3">
+              You may only use RevisionCity for your own personal, non-commercial educational purposes.
+              You must not:
+            </p>
+            <ul className="list-disc pl-6 space-y-2 text-brand-700 mb-4">
+              <li>
+                Attempt to gain unauthorised access to any part of the Service, its servers, or databases.
+              </li>
+              <li>
+                Scrape, crawl, or automate requests to the Service in a way that imposes unreasonable load
+                (e.g. bulk API calls to generate content at scale).
+              </li>
+              <li>
+                Use our AI features to generate content for resale, redistribution, or commercial tutoring
+                services without our written consent.
+              </li>
+              <li>
+                Submit abusive, discriminatory, or illegal content to any AI feature (prompts are logged for
+                moderation and safety purposes).
+              </li>
+              <li>Attempt to reverse-engineer the Service, extract source code, or bypass rate limits.</li>
+              <li>
+                Share, sell, or redistribute downloaded or exported content from the Service, including
+                generated exams, notes, flashcards, or mind maps.
+              </li>
+              <li>Use the Service in any way that violates UK, EU, or applicable local law.</li>
+            </ul>
+            <p className="text-brand-700 leading-relaxed">
+              We monitor usage for abuse. Violations may result in immediate account suspension without
+              refund.
+            </p>
+          </section>
+
+          {/* 5. Intellectual Property */}
+          <section id="ip">
+            <h2 className="font-display text-2xl font-bold text-brand-900 mb-4">
+              5. Intellectual Property
+            </h2>
+            <p className="text-brand-700 leading-relaxed mb-3">
+              All content on RevisionCity — including study notes, flashcard sets, quiz questions, practice
+              questions, mind maps, summary sheets, recall prompts, and the AI-generated content produced
+              by our systems — is the exclusive property of RevisionCity Ltd or is licensed to us, and is
+              protected by copyright and other intellectual property laws.
+            </p>
+            <p className="text-brand-700 leading-relaxed mb-3">
+              We grant you a limited, personal, non-exclusive, non-transferable licence to access and use
+              the content solely for your own IGCSE revision. This licence does not permit you to:
+            </p>
+            <ul className="list-disc pl-6 space-y-2 text-brand-700 mb-4">
+              <li>Copy or reproduce substantial portions of our content for distribution.</li>
+              <li>
+                Publish, share, or commercially exploit our content (including exam questions, notes, or
+                AI outputs) on other platforms or services.
+              </li>
+              <li>Remove or obscure any copyright, trademark, or proprietary notices.</li>
+              <li>Create derivative works based on our content for distribution.</li>
+            </ul>
+            <p className="text-brand-700 leading-relaxed">
+              Exam board syllabuses and past paper content are the intellectual property of Cambridge
+              Assessment International Education (CAIE) and Pearson Edexcel respectively. Our content is
+              independently created for revision purposes and is not endorsed by either exam board.
+            </p>
+          </section>
+
+          {/* 6. Payment Terms */}
+          <section id="payment">
+            <h2 className="font-display text-2xl font-bold text-brand-900 mb-4">
+              6. Payment Terms
             </h2>
 
-            <h3 className="font-display text-lg font-semibold text-brand-800 mb-2 mt-4">
-              4.1 Subscription Tiers
+            <h3 className="font-display text-lg font-semibold text-brand-800 mb-2 mt-5">
+              6.1 Pricing
             </h3>
             <p className="text-brand-700 leading-relaxed mb-3">
-              We offer multiple subscription tiers: Free Trial, Pro (€5.99/month or €47.99/year), and Premium (€9.99/month or €79.99/year).
-              Annual billing provides a 33% discount compared to monthly pricing.
+              All prices are in British Pounds (GBP) and include VAT where applicable:
             </p>
+            <div className="overflow-x-auto mb-4">
+              <table className="w-full text-sm border border-brand-200 rounded-lg overflow-hidden">
+                <thead className="bg-brand-50">
+                  <tr>
+                    <th className="px-4 py-3 text-left font-semibold text-brand-800">Tier</th>
+                    <th className="px-4 py-3 text-left font-semibold text-brand-800">Monthly</th>
+                    <th className="px-4 py-3 text-left font-semibold text-brand-800">Annual</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-brand-100">
+                  <tr>
+                    <td className="px-4 py-3 text-brand-700">Free</td>
+                    <td className="px-4 py-3 text-brand-700">£0</td>
+                    <td className="px-4 py-3 text-brand-700">£0</td>
+                  </tr>
+                  <tr>
+                    <td className="px-4 py-3 text-brand-700">Pro</td>
+                    <td className="px-4 py-3 text-brand-700">£4.99/month</td>
+                    <td className="px-4 py-3 text-brand-700">£39.99/year (33% saving)</td>
+                  </tr>
+                  <tr>
+                    <td className="px-4 py-3 text-brand-700">Premium</td>
+                    <td className="px-4 py-3 text-brand-700">£14.99/month</td>
+                    <td className="px-4 py-3 text-brand-700">£119.99/year (33% saving)</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
 
-            <h3 className="font-display text-lg font-semibold text-brand-800 mb-2 mt-4">
-              4.2 Billing and Renewal
+            <h3 className="font-display text-lg font-semibold text-brand-800 mb-2 mt-5">
+              6.2 Billing and Renewal
             </h3>
-            <ul className="list-disc pl-6 space-y-2 text-brand-700">
-              <li>Subscriptions automatically renew at the end of each billing period unless cancelled</li>
-              <li>You will be charged the then-current subscription fee</li>
-              <li>We reserve the right to change subscription fees with 30 days notice</li>
-              <li>Payments are processed securely through Stripe</li>
-              <li>All fees are in British Pounds (GBP) and are non-refundable except as required by law</li>
+            <ul className="list-disc pl-6 space-y-2 text-brand-700 mb-4">
+              <li>
+                Subscriptions are billed via Stripe and renew automatically at the end of each billing
+                period (monthly or annual) until you cancel.
+              </li>
+              <li>
+                You authorise us to charge your saved payment method on the renewal date.
+              </li>
+              <li>
+                We will give at least 30 days&rsquo; notice before increasing subscription prices. Continued use
+                after the price change date constitutes acceptance.
+              </li>
+              <li>
+                Failed payments may result in temporary downgrade to the Free tier until payment is resolved.
+              </li>
             </ul>
 
-            <h3 className="font-display text-lg font-semibold text-brand-800 mb-2 mt-4">
-              4.3 Cancellation
+            <h3 className="font-display text-lg font-semibold text-brand-800 mb-2 mt-5">
+              6.3 Cancellation
+            </h3>
+            <p className="text-brand-700 leading-relaxed mb-3">
+              You may cancel at any time via your account settings. Cancellation takes effect at the end of
+              the current billing period — you retain paid-tier access until then. We do not prorate refunds
+              for partial billing periods.
+            </p>
+
+            <h3 className="font-display text-lg font-semibold text-brand-800 mb-2 mt-5">
+              6.4 Refunds
             </h3>
             <p className="text-brand-700 leading-relaxed">
-              You may cancel your subscription at any time through your account settings. Cancellation will take effect
-              at the end of the current billing period. You will retain access to paid features until that date.
+              We offer a <strong>14-day money-back guarantee</strong> on first-time purchases (monthly or
+              annual). To request a refund within 14 days of your first payment, email{' '}
+              <a href="mailto:support@revisioncity.com" className="text-brand-600 hover:underline">
+                support@revisioncity.com
+              </a>
+              . Refunds are not available for subscription renewals or subsequent billing cycles. Statutory
+              refund rights under UK consumer law are not affected.
             </p>
           </section>
 
-          {/* 5. Refund Policy */}
-          <section>
+          {/* 7. AI-Generated Content Disclaimer */}
+          <section id="ai-content">
             <h2 className="font-display text-2xl font-bold text-brand-900 mb-4">
-              5. Refund Policy
+              7. AI-Generated Content Disclaimer
             </h2>
             <p className="text-brand-700 leading-relaxed mb-3">
-              We offer a 14-day money-back guarantee for first-time subscribers. To request a refund:
+              Several RevisionCity features use large language models (currently Claude by Anthropic) to
+              generate or evaluate content:
             </p>
-            <ul className="list-disc pl-6 space-y-2 text-brand-700">
-              <li>The request must be made within 14 days of your initial purchase</li>
-              <li>Refunds are only available for first-time purchases, not renewals</li>
-              <li>Contact our support team with your refund request</li>
-              <li>Refunds will be processed within 5-10 business days to your original payment method</li>
+            <ul className="list-disc pl-6 space-y-3 text-brand-700 mb-4">
+              <li>
+                <strong>Mock Exam Generator:</strong> Produces IGCSE-style exam papers on demand.
+                Questions are AI-generated and are not official past papers. They may contain errors,
+                omissions, or subject matter not on your specific syllabus.
+              </li>
+              <li>
+                <strong>Mock Exam Grader:</strong> Automatically marks written responses against an
+                AI-generated mark scheme. Marks awarded are indicative only — they do not reflect how an
+                official IGCSE examiner would grade your work.
+              </li>
+              <li>
+                <strong>AI Tutor:</strong> Provides Socratic explanations and answers subject questions in
+                real time. Responses are generated automatically and may occasionally be factually
+                incorrect, out of date, or inconsistent with the official syllabus.
+              </li>
+              <li>
+                <strong>Revision Plans:</strong> AI-generated week-by-week study schedules are based on
+                your stated exam date and subject list. They are indicative suggestions and should be
+                adapted to your individual circumstances.
+              </li>
+              <li>
+                <strong>AI Practice Tests:</strong> Auto-generated multiple-choice and short-answer
+                questions for topic practice. These supplement, but do not replace, official practice papers.
+              </li>
             </ul>
-            <p className="text-brand-700 leading-relaxed mt-3">
-              Subscription renewals and annual subscriptions beyond the first 14 days are non-refundable.
-            </p>
-          </section>
-
-          {/* 6. Intellectual Property */}
-          <section>
-            <h2 className="font-display text-2xl font-bold text-brand-900 mb-4">
-              6. Intellectual Property Rights
-            </h2>
             <p className="text-brand-700 leading-relaxed mb-3">
-              All content on the Service, including text, graphics, logos, images, software, and educational materials,
-              is the property of Revision City Ltd or its content suppliers and is protected by copyright, trademark,
-              and other intellectual property laws.
+              <strong>You acknowledge that:</strong>
             </p>
-            <p className="text-brand-700 leading-relaxed mb-3">
-              You are granted a limited, non-exclusive, non-transferable license to access and use the Service for
-              personal, non-commercial educational purposes only. You may not:
-            </p>
-            <ul className="list-disc pl-6 space-y-2 text-brand-700">
-              <li>Copy, modify, distribute, or reproduce any content without permission</li>
-              <li>Use the Service or content for commercial purposes</li>
-              <li>Attempt to reverse engineer or extract source code</li>
-              <li>Remove or alter copyright notices or proprietary markings</li>
-              <li>Share your account access with others</li>
+            <ul className="list-disc pl-6 space-y-2 text-brand-700 mb-4">
+              <li>
+                AI-generated content is provided for <strong>supplementary revision purposes only</strong>.
+                It is not a substitute for your official textbooks, teacher guidance, or past papers
+                published by CAIE or Pearson Edexcel.
+              </li>
+              <li>
+                We do not guarantee the accuracy, completeness, or syllabus alignment of any AI-generated
+                content. You should cross-reference important information with authoritative sources.
+              </li>
+              <li>
+                Grade predictions produced by the mock exam grader are statistical estimates based on your
+                mock performance. They are not a reliable predictor of your actual IGCSE result.
+              </li>
+              <li>
+                We are not responsible for any academic decisions you make based solely on AI-generated
+                content or grade predictions.
+              </li>
             </ul>
+            <p className="text-brand-700 leading-relaxed">
+              Conversations with the AI Tutor and exam submissions are transmitted to Anthropic for
+              processing. See our{' '}
+              <a href="/privacy-policy" className="text-brand-600 hover:underline">
+                Privacy Policy
+              </a>{' '}
+              for details on how this data is handled.
+            </p>
           </section>
 
-          {/* 7. User Conduct */}
-          <section>
+          {/* 8. Limitation of Liability */}
+          <section id="liability">
             <h2 className="font-display text-2xl font-bold text-brand-900 mb-4">
-              7. User Conduct
+              8. Limitation of Liability
             </h2>
             <p className="text-brand-700 leading-relaxed mb-3">
-              You agree not to use the Service to:
+              The Service is provided &ldquo;as is&rdquo; and &ldquo;as available&rdquo;. To the fullest extent permitted by
+              English law, we disclaim all implied warranties including merchantability, fitness for a
+              particular purpose, and non-infringement.
             </p>
-            <ul className="list-disc pl-6 space-y-2 text-brand-700">
-              <li>Violate any applicable laws or regulations</li>
-              <li>Infringe on the rights of others</li>
-              <li>Transmit harmful code, viruses, or malicious software</li>
-              <li>Attempt to gain unauthorized access to the Service or related systems</li>
-              <li>Interfere with or disrupt the Service or servers</li>
-              <li>Engage in any automated use of the system, including scraping or data mining</li>
-              <li>Harass, abuse, or harm other users</li>
+            <p className="text-brand-700 leading-relaxed mb-3">
+              We do not warrant that:
+            </p>
+            <ul className="list-disc pl-6 space-y-2 text-brand-700 mb-4">
+              <li>The Service will be uninterrupted or error-free.</li>
+              <li>Any content is accurate, complete, or up to date with the current syllabus.</li>
+              <li>Use of RevisionCity will result in any particular examination grade.</li>
             </ul>
-          </section>
-
-          {/* 8. AI-Generated Content */}
-          <section>
-            <h2 className="font-display text-2xl font-bold text-brand-900 mb-4">
-              8. AI-Generated Content
-            </h2>
             <p className="text-brand-700 leading-relaxed mb-3">
-              Our Service includes AI-powered features such as test generation and tutoring. You acknowledge that:
-            </p>
-            <ul className="list-disc pl-6 space-y-2 text-brand-700">
-              <li>AI-generated content is provided for educational purposes and may not be perfect</li>
-              <li>You should verify important information and not rely solely on AI-generated responses</li>
-              <li>We do not guarantee the accuracy, completeness, or reliability of AI-generated content</li>
-              <li>The AI tutor is a study aid and not a replacement for qualified teachers or tutors</li>
-            </ul>
-          </section>
-
-          {/* 9. Disclaimer of Warranties */}
-          <section>
-            <h2 className="font-display text-2xl font-bold text-brand-900 mb-4">
-              9. Disclaimer of Warranties
-            </h2>
-            <p className="text-brand-700 leading-relaxed mb-3">
-              THE SERVICE IS PROVIDED "AS IS" AND "AS AVAILABLE" WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS OR IMPLIED.
-              TO THE FULLEST EXTENT PERMITTED BY LAW, WE DISCLAIM ALL WARRANTIES, INCLUDING BUT NOT LIMITED TO:
-            </p>
-            <ul className="list-disc pl-6 space-y-2 text-brand-700">
-              <li>Merchantability and fitness for a particular purpose</li>
-              <li>Non-infringement of intellectual property rights</li>
-              <li>Accuracy, reliability, or completeness of content</li>
-              <li>Uninterrupted, secure, or error-free operation</li>
-            </ul>
-            <p className="text-brand-700 leading-relaxed mt-3">
-              We do not guarantee that the Service will meet your specific requirements or that it will help you achieve
-              particular examination results.
-            </p>
-          </section>
-
-          {/* 10. Limitation of Liability */}
-          <section>
-            <h2 className="font-display text-2xl font-bold text-brand-900 mb-4">
-              10. Limitation of Liability
-            </h2>
-            <p className="text-brand-700 leading-relaxed mb-3">
-              TO THE MAXIMUM EXTENT PERMITTED BY LAW, REVISION CITY LTD SHALL NOT BE LIABLE FOR ANY INDIRECT, INCIDENTAL,
-              SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES, OR ANY LOSS OF PROFITS OR REVENUES, WHETHER INCURRED DIRECTLY
-              OR INDIRECTLY, OR ANY LOSS OF DATA, USE, GOODWILL, OR OTHER INTANGIBLE LOSSES.
+              To the maximum extent permitted by law, RevisionCity Ltd shall not be liable for any indirect,
+              incidental, special, consequential, or punitive damages, including loss of data, loss of
+              profits, or disappointment at examination results, whether arising in contract, tort, or
+              otherwise.
             </p>
             <p className="text-brand-700 leading-relaxed">
-              Our total liability to you for all claims arising from or related to the Service shall not exceed the amount
-              you paid us in the twelve (12) months prior to the claim, or €100, whichever is greater.
+              Our total aggregate liability to you for any claim arising out of or related to the Service
+              is capped at the greater of: (a) the total fees you paid us in the 12 months preceding the
+              claim, or (b) £50. Nothing in these Terms limits our liability for death or personal injury
+              caused by our negligence, fraud, or any other liability that cannot be excluded by law.
             </p>
           </section>
 
-          {/* 11. Termination */}
-          <section>
+          {/* 9. Termination */}
+          <section id="termination">
             <h2 className="font-display text-2xl font-bold text-brand-900 mb-4">
-              11. Termination
+              9. Termination
             </h2>
             <p className="text-brand-700 leading-relaxed mb-3">
-              We reserve the right to suspend or terminate your account and access to the Service at our sole discretion,
-              without notice, for conduct that we believe:
+              <strong>By you:</strong> You may delete your account at any time via your account settings
+              or by emailing{' '}
+              <a href="mailto:support@revisioncity.com" className="text-brand-600 hover:underline">
+                support@revisioncity.com
+              </a>
+              . Active subscriptions should be cancelled first (see Section 6.3) to avoid further charges.
             </p>
-            <ul className="list-disc pl-6 space-y-2 text-brand-700">
-              <li>Violates these Terms or our policies</li>
-              <li>Is harmful to other users, us, or third parties</li>
-              <li>Violates applicable laws or regulations</li>
-              <li>Involves suspected fraudulent payment activity</li>
+            <p className="text-brand-700 leading-relaxed mb-3">
+              <strong>By us:</strong> We may suspend or permanently terminate your account without notice if we
+              reasonably believe you have:
+            </p>
+            <ul className="list-disc pl-6 space-y-2 text-brand-700 mb-4">
+              <li>Breached any provision of these Terms or our Acceptable Use Policy.</li>
+              <li>Used the Service fraudulently or in a way that harms us or other users.</li>
+              <li>Violated applicable law.</li>
+              <li>Failed to pay valid subscription charges after reasonable notice.</li>
             </ul>
-            <p className="text-brand-700 leading-relaxed mt-3">
-              Upon termination, your right to use the Service will immediately cease. All provisions of these Terms that
-              by their nature should survive termination shall survive, including ownership provisions, warranty disclaimers,
-              and limitations of liability.
+            <p className="text-brand-700 leading-relaxed">
+              On termination, your access to paid features ceases immediately. We will retain your data for
+              30 days in case of dispute or re-activation, after which it will be deleted in accordance with
+              our{' '}
+              <a href="/privacy-policy" className="text-brand-600 hover:underline">
+                Privacy Policy
+              </a>
+              . Sections 5 (Intellectual Property), 7 (AI Disclaimer), 8 (Limitation of Liability), 10
+              (Governing Law), and any accrued payment obligations survive termination.
             </p>
           </section>
 
-          {/* 12. Governing Law */}
-          <section>
+          {/* 10. Governing Law */}
+          <section id="governing-law">
             <h2 className="font-display text-2xl font-bold text-brand-900 mb-4">
-              12. Governing Law
+              10. Governing Law
             </h2>
-            <p className="text-brand-700 leading-relaxed">
-              These Terms shall be governed by and construed in accordance with the laws of England and Wales, without
-              regard to its conflict of law provisions. Any disputes arising from these Terms or the Service shall be
+            <p className="text-brand-700 leading-relaxed mb-3">
+              These Terms are governed by and construed in accordance with the laws of England and Wales.
+              Any dispute arising from or connected to these Terms or your use of the Service shall be
               subject to the exclusive jurisdiction of the courts of England and Wales.
             </p>
+            <p className="text-brand-700 leading-relaxed">
+              If you are a consumer resident in another jurisdiction, you may also have the benefit of
+              mandatory consumer protection laws in your country of residence that cannot be excluded by
+              choice of law.
+            </p>
           </section>
 
-          {/* 13. Changes to Terms */}
-          <section>
+          {/* 11. Changes to Terms */}
+          <section id="changes">
             <h2 className="font-display text-2xl font-bold text-brand-900 mb-4">
-              13. Changes to Terms
+              11. Changes to These Terms
             </h2>
             <p className="text-brand-700 leading-relaxed mb-3">
-              We reserve the right to modify these Terms at any time. We will notify users of material changes by:
+              We may update these Terms from time to time. For material changes, we will:
             </p>
-            <ul className="list-disc pl-6 space-y-2 text-brand-700">
-              <li>Posting the updated Terms on the Service</li>
-              <li>Updating the "Last updated" date</li>
-              <li>Sending email notification for significant changes</li>
+            <ul className="list-disc pl-6 space-y-2 text-brand-700 mb-4">
+              <li>Update the &ldquo;Last updated&rdquo; date at the top of this page.</li>
+              <li>Send an email to your registered address at least 14 days before changes take effect.</li>
             </ul>
-            <p className="text-brand-700 leading-relaxed mt-3">
-              Your continued use of the Service after changes become effective constitutes acceptance of the revised Terms.
+            <p className="text-brand-700 leading-relaxed">
+              Continued use of the Service after the effective date of any change constitutes your acceptance
+              of the revised Terms. If you do not agree to the revised Terms, you must stop using the Service
+              and cancel any active subscription before the effective date.
             </p>
           </section>
 
-          {/* 14. Contact Information */}
-          <section>
+          {/* 12. Contact */}
+          <section id="contact">
             <h2 className="font-display text-2xl font-bold text-brand-900 mb-4">
-              14. Contact Information
+              12. Contact Us
             </h2>
-            <p className="text-brand-700 leading-relaxed mb-3">
-              If you have any questions about these Terms, please contact us:
+            <p className="text-brand-700 leading-relaxed mb-4">
+              If you have questions about these Terms or need help with your account:
             </p>
-            <div className="bg-brand-50 rounded-lg p-4 space-y-1">
-              <p className="text-brand-800 font-medium">Revision City Ltd</p>
-              <p className="text-brand-700">Email: support@revisioncity.com</p>
-              <p className="text-brand-700">Website: www.revisioncity.com</p>
+            <div className="bg-brand-50 rounded-xl p-5 space-y-2">
+              <p className="font-semibold text-brand-900">RevisionCity Ltd</p>
+              <p className="text-brand-700">
+                General / support:{' '}
+                <a href="mailto:support@revisioncity.com" className="text-brand-600 hover:underline">
+                  support@revisioncity.com
+                </a>
+              </p>
+              <p className="text-brand-700">
+                Privacy / data requests:{' '}
+                <a href="mailto:privacy@revisioncity.com" className="text-brand-600 hover:underline">
+                  privacy@revisioncity.com
+                </a>
+              </p>
+              <p className="text-brand-700">
+                Website:{' '}
+                <a href="https://revisioncity.com" className="text-brand-600 hover:underline">
+                  revisioncity.com
+                </a>
+              </p>
             </div>
-          </section>
-
-          {/* 15. Severability */}
-          <section>
-            <h2 className="font-display text-2xl font-bold text-brand-900 mb-4">
-              15. Severability
-            </h2>
-            <p className="text-brand-700 leading-relaxed">
-              If any provision of these Terms is found to be unenforceable or invalid, that provision will be limited or
-              eliminated to the minimum extent necessary so that these Terms will otherwise remain in full force and effect.
+            <p className="text-brand-600 text-sm mt-4">
+              These Terms, together with our{' '}
+              <a href="/privacy-policy" className="text-brand-600 hover:underline">
+                Privacy Policy
+              </a>
+              , constitute the entire agreement between you and RevisionCity Ltd regarding the Service.
+              If any provision is found unenforceable, the remaining provisions continue in full force and effect.
             </p>
           </section>
 
-          {/* 16. Entire Agreement */}
-          <section>
-            <h2 className="font-display text-2xl font-bold text-brand-900 mb-4">
-              16. Entire Agreement
-            </h2>
-            <p className="text-brand-700 leading-relaxed">
-              These Terms, together with our Privacy Policy, constitute the entire agreement between you and Revision City Ltd
-              regarding the Service and supersede all prior agreements and understandings, whether written or oral.
-            </p>
-          </section>
         </div>
       </div>
     </div>
-  );
+  )
 }

@@ -28,48 +28,56 @@ const jetbrainsMono = JetBrains_Mono({
   display: 'swap',
 });
 
-const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://revisioncity.com';
+const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://revisioncity.net';
 
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),
   title: {
-    default: 'Revision City | IGCSE Revision Made Simple',
-    template: '%s | Revision City',
+    default: 'RevisionCity — Free IGCSE Revision Notes, Flashcards & Quizzes',
+    template: '%s | RevisionCity',
   },
   description:
-    'The ultimate IGCSE revision platform. Master every subject with AI-powered notes, flashcards, quizzes, and more. Aligned to the Cambridge IGCSE syllabus.',
+    'Revise for your IGCSE exams with free notes, flashcards, quizzes, and practice questions. Covering Cambridge and Edexcel subjects including Maths, Biology, Chemistry, Physics, and more.',
   keywords: [
-    'IGCSE',
     'IGCSE revision',
-    'Cambridge IGCSE',
     'IGCSE notes',
-    'IGCSE past papers',
-    'exam prep',
-    'study',
-    'flashcards',
-    'quizzes',
-    'IGCSE Biology',
-    'IGCSE Chemistry',
-    'IGCSE Physics',
-    'IGCSE Maths',
+    'Cambridge IGCSE',
+    'Edexcel IGCSE',
+    'IGCSE flashcards',
+    'IGCSE quizzes',
+    'IGCSE practice questions',
+    'IGCSE Biology revision',
+    'IGCSE Chemistry revision',
+    'IGCSE Physics revision',
+    'IGCSE Maths revision',
+    'free IGCSE revision',
+    'IGCSE exam preparation',
   ],
-  authors: [{ name: 'Revision City' }],
+  authors: [{ name: 'RevisionCity' }],
   openGraph: {
-    title: 'Revision City | IGCSE Revision Made Simple',
+    title: 'RevisionCity — Free IGCSE Revision Notes, Flashcards & Quizzes',
     description:
-      'The ultimate IGCSE revision platform. Master every subject with AI-powered notes, flashcards, quizzes, and more.',
+      'Revise for your IGCSE exams with free notes, flashcards, quizzes, and practice questions. Covering Cambridge and Edexcel subjects.',
     type: 'website',
-    siteName: 'Revision City',
+    siteName: 'RevisionCity',
+    url: BASE_URL,
+    images: [
+      {
+        url: '/og-image.png',
+        width: 1200,
+        height: 630,
+        alt: 'RevisionCity — Free IGCSE Revision',
+      },
+    ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Revision City | IGCSE Revision Made Simple',
+    title: 'RevisionCity — Free IGCSE Revision Notes, Flashcards & Quizzes',
     description:
-      'Master every IGCSE subject with AI-powered notes, flashcards, quizzes, and more.',
+      'Free IGCSE revision notes, flashcards, quizzes and practice questions for Cambridge and Edexcel.',
+    images: ['/og-image.png'],
   },
-  alternates: {
-    canonical: BASE_URL,
-  },
+  // No global canonical here — each page sets its own via generateMetadata
 };
 
 export default function RootLayout({
@@ -89,15 +97,28 @@ export default function RootLayout({
           <script
             type="application/ld+json"
             dangerouslySetInnerHTML={{
-              __html: JSON.stringify({
-                '@context': 'https://schema.org',
-                '@type': 'EducationalOrganization',
-                name: 'Revision City',
-                url: BASE_URL,
-                description:
-                  'AI-powered IGCSE revision platform with notes, flashcards, quizzes, and practice questions for all Cambridge IGCSE subjects.',
-                sameAs: [],
-              }),
+              __html: JSON.stringify([
+                {
+                  '@context': 'https://schema.org',
+                  '@type': 'Organization',
+                  name: 'RevisionCity',
+                  url: BASE_URL,
+                  logo: `${BASE_URL}/logo.png`,
+                  description:
+                    'Free IGCSE revision platform with notes, flashcards, quizzes, practice questions, and AI-powered tools for Cambridge and Edexcel students.',
+                },
+                {
+                  '@context': 'https://schema.org',
+                  '@type': 'WebSite',
+                  name: 'RevisionCity',
+                  url: BASE_URL,
+                  potentialAction: {
+                    '@type': 'SearchAction',
+                    target: `${BASE_URL}/subjects?q={search_term_string}`,
+                    'query-input': 'required name=search_term_string',
+                  },
+                },
+              ]),
             }}
           />
           {/* Plausible — cookie-free, GDPR-compliant, loads unconditionally */}

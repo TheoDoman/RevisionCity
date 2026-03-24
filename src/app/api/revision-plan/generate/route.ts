@@ -3,6 +3,7 @@ import { currentUser } from '@clerk/nextjs/server'
 import { createClient } from '@supabase/supabase-js'
 import Anthropic from '@anthropic-ai/sdk'
 import type { IGCSEGrade, WeekPlan, PlanCheckpoint, GradeProgressionPoint } from '@/types'
+import { rateLimit, getIP, tooManyRequests } from '@/lib/rate-limit'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -121,6 +122,11 @@ export async function POST(request: NextRequest) {
   if (!user) {
     return NextResponse.json({ error: 'Unauthorised' }, { status: 401 })
   }
+
+  // Rate limiting: 10 req/min per user (Anthropic route)
+  const rlKey = `anthropic:${user.id}`
+  const { allowed, retryAfter } = rateLimit(rlKey, 10)
+  if (!allowed) return tooManyRequests(retryAfter)
 
   let body: {
     subjectId: string

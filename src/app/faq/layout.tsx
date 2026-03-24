@@ -1,10 +1,11 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'FAQ - Frequently Asked Questions',
+  title: 'FAQ — Frequently Asked Questions',
   description:
-    'Answers to common questions about Revision City. Learn about pricing, features, IGCSE subjects, the AI Test Generator, and more.',
-  keywords: ['IGCSE revision FAQ', 'Revision City help', 'IGCSE study platform'],
+    'Answers to common questions about RevisionCity — which subjects are covered, how subscriptions work, Cambridge vs Edexcel support, the AI Tutor, mock exams, and more.',
+  alternates: { canonical: '/faq' },
+  keywords: ['IGCSE revision FAQ', 'RevisionCity help', 'IGCSE study platform'],
 };
 
 const faqJsonLd = {
@@ -13,10 +14,10 @@ const faqJsonLd = {
   mainEntity: [
     {
       '@type': 'Question',
-      name: 'What is Revision City?',
+      name: 'What is RevisionCity?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'Revision City is an IGCSE revision platform that provides comprehensive study materials including notes, flashcards, quizzes, and AI-powered tools to help you ace your exams.',
+        text: 'RevisionCity is a free IGCSE revision platform with comprehensive study notes, flashcards, quizzes, practice questions, an AI Tutor, mock exam simulator, and personalised revision plans — covering Cambridge and Edexcel subjects.',
       },
     },
     {
@@ -29,18 +30,18 @@ const faqJsonLd = {
     },
     {
       '@type': 'Question',
-      name: 'How much does Revision City cost?',
+      name: 'How much does RevisionCity cost?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'We offer three tiers: Free Trial (1 day), Pro (€4.99/month or €39.99/year), and Premium (€7.99/month or €63.99/year). Annual plans save you 33%!',
+        text: 'RevisionCity has a free tier with notes, flashcards, and quizzes. Pro costs £4.99/month (or £39.99/year) and adds AI practice tests and analytics. Premium costs £14.99/month (or £119.99/year) and includes the AI Tutor, unlimited mock exams with AI grading, and personalised revision plans. Annual plans save 33%.',
       },
     },
     {
       '@type': 'Question',
-      name: 'Is the content aligned to the Cambridge syllabus?',
+      name: 'Is the content aligned to the Cambridge and Edexcel syllabuses?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'Yes! All our content is carefully aligned to the latest Cambridge IGCSE syllabus specifications.',
+        text: 'Yes. RevisionCity covers both Cambridge IGCSE and Edexcel IGCSE specifications. You can filter content by exam board when you browse subjects.',
       },
     },
     {

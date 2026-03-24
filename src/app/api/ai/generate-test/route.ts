@@ -2,12 +2,18 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import Anthropic from '@anthropic-ai/sdk'
 import { trackServerTestGeneration } from '@/lib/analytics-server'
+import { rateLimit, getIP, tooManyRequests } from '@/lib/rate-limit'
 
 // ROOT CAUSE (fixed 2026-03-22): Model 'claude-3-haiku-20240307' was deprecated.
 // Updated to 'claude-haiku-4-5-20251001'. Removed hardcoded API key fallback.
 export const maxDuration = 60
 
 export async function POST(request: NextRequest) {
+  // Rate limiting: 10 req/min per IP (Anthropic route)
+  const ip = getIP(request)
+  const { allowed, retryAfter } = rateLimit(`anthropic:${ip}`, 10)
+  if (!allowed) return tooManyRequests(retryAfter)
+
   try {
     const { subjectId, topicId, difficulty, questionCount, board } = await request.json()
 

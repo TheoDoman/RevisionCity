@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { currentUser } from '@clerk/nextjs/server'
 import { createClient } from '@supabase/supabase-js'
 import type { WeekPlan } from '@/types'
+import { rateLimit, tooManyRequests } from '@/lib/rate-limit'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -14,6 +15,10 @@ const supabase = createClient(
 export async function POST(request: NextRequest) {
   const user = await currentUser()
   if (!user) return NextResponse.json({ error: 'Unauthorised' }, { status: 401 })
+
+  // Rate limiting: 30 req/min per user (general write route)
+  const { allowed, retryAfter } = rateLimit(`general:${user.id}`, 30)
+  if (!allowed) return tooManyRequests(retryAfter)
 
   let body: { planId: string }
   try {

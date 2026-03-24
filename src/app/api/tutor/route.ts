@@ -1,24 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import Anthropic from '@anthropic-ai/sdk'
-
-// ── In-memory rate limiter: 5 req/min per IP ─────────────────────────────
-const rateLimitMap = new Map<string, number[]>()
-
-function checkRateLimit(ip: string): { allowed: boolean; retryAfter: number } {
-  const now = Date.now()
-  const windowMs = 60_000
-  const limit = 5
-
-  const prev = (rateLimitMap.get(ip) ?? []).filter(t => now - t < windowMs)
-  if (prev.length >= limit) {
-    const oldest = prev[0]
-    const retryAfter = Math.ceil((oldest + windowMs - now) / 1000)
-    return { allowed: false, retryAfter }
-  }
-  prev.push(now)
-  rateLimitMap.set(ip, prev)
-  return { allowed: true, retryAfter: 0 }
-}
+import { rateLimit, getIP, tooManyRequests } from '@/lib/rate-limit'
 
 // ── Socratic system prompt ────────────────────────────────────────────────
 const SYSTEM_PROMPT = `You are an expert IGCSE/A-Level tutor who teaches through the Socratic method. Your role is to guide students to discover answers themselves through questioning, never to give direct answers immediately.
@@ -55,19 +37,10 @@ You: "Great question! Let's figure it out together. The word 'photosynthesis' ha
 
 // ── Route handler ─────────────────────────────────────────────────────────
 export async function POST(request: NextRequest) {
-  // Rate limiting
-  const ip =
-    request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ??
-    request.headers.get('x-real-ip') ??
-    'unknown'
-
-  const { allowed, retryAfter } = checkRateLimit(ip)
-  if (!allowed) {
-    return NextResponse.json(
-      { error: 'Rate limit exceeded', retryAfter },
-      { status: 429, headers: { 'Retry-After': String(retryAfter) } }
-    )
-  }
+  // Rate limiting: 10 req/min per IP (Anthropic route)
+  const ip = getIP(request)
+  const { allowed, retryAfter } = rateLimit(`anthropic:${ip}`, 10)
+  if (!allowed) return tooManyRequests(retryAfter)
 
   let body: {
     question: string
