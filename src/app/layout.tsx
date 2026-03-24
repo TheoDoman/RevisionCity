@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Outfit, Space_Grotesk, JetBrains_Mono } from 'next/font/google';
 import { ClerkProvider } from '@clerk/nextjs';
+import Script from 'next/script';
 import './globals.css';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
@@ -98,6 +99,13 @@ export default function RootLayout({
                 sameAs: [],
               }),
             }}
+          />
+          {/* Plausible — cookie-free, GDPR-compliant, loads unconditionally */}
+          <Script
+            defer
+            data-domain="revisioncity.net"
+            src="https://plausible.io/js/script.js"
+            strategy="afterInteractive"
           />
           {gaId && <GoogleAnalytics measurementId={gaId} />}
           <PostHogProvider>
