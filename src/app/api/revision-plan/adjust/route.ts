@@ -4,6 +4,8 @@ import { createClient } from '@supabase/supabase-js'
 import type { WeekPlan } from '@/types'
 import { rateLimit, tooManyRequests } from '@/lib/rate-limit'
 
+export const maxDuration = 60
+
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!

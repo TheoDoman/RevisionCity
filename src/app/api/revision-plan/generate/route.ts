@@ -5,6 +5,9 @@ import Anthropic from '@anthropic-ai/sdk'
 import type { IGCSEGrade, WeekPlan, PlanCheckpoint, GradeProgressionPoint } from '@/types'
 import { rateLimit, getIP, tooManyRequests } from '@/lib/rate-limit'
 
+// Claude generation takes 15-30s — extend Vercel timeout beyond the default 10s
+export const maxDuration = 60
+
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!

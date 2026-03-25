@@ -5,6 +5,9 @@ import Anthropic from '@anthropic-ai/sdk'
 import type { ExamSection, ExamAnalysis, IGCSEGrade, TopicScore, SectionScore, QuestionTiming } from '@/types'
 import { rateLimit, tooManyRequests } from '@/lib/rate-limit'
 
+// AI grading of written answers can take 15-25s — extend beyond Vercel's 10s default
+export const maxDuration = 60
+
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!
