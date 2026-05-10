@@ -105,21 +105,7 @@ export default function PrivacyPolicyPage() {
               showing your progress, predicting grades, and adjusting revision plans.
             </p>
 
-            <h3 className="text-lg font-semibold text-brand-900 mb-2 mt-6">2.3 Payment Data</h3>
-            <p className="mb-3">
-              Subscription payments are processed by Stripe. We never see or store your full card number, CVV, or bank
-              account details. What we do store is:
-            </p>
-            <ul className="list-disc pl-5 space-y-1 mb-4">
-              <li>Your Stripe customer ID</li>
-              <li>Subscription tier (Free, Pro, or Premium) and status (active, cancelled, etc.)</li>
-              <li>Billing cycle (monthly or annual) and renewal dates</li>
-            </ul>
-            <p>
-              Stripe stores your full payment information under their own privacy policy and PCI-DSS compliance programme.
-            </p>
-
-            <h3 className="text-lg font-semibold text-brand-900 mb-2 mt-6">2.4 Technical & Usage Data</h3>
+            <h3 className="text-lg font-semibold text-brand-900 mb-2 mt-6">2.3 Technical & Usage Data</h3>
             <ul className="list-disc pl-5 space-y-1">
               <li>Browser type and version</li>
               <li>Operating system</li>
@@ -146,8 +132,7 @@ export default function PrivacyPolicyPage() {
                     ['Providing and maintaining your RevisionCity account', 'Contract performance'],
                     ['Tracking your study progress and displaying personalised analytics', 'Contract performance'],
                     ['Generating AI-personalised revision plans and mock exams', 'Contract performance'],
-                    ['Processing subscription payments via Stripe', 'Contract performance'],
-                    ['Sending transactional emails (receipts, account alerts)', 'Contract performance'],
+                    ['Sending transactional emails (account alerts)', 'Contract performance'],
                     ['Detecting and preventing fraud or abuse', 'Legitimate interests'],
                     ['Improving our platform and developing new features (using aggregated/anonymised data)', 'Legitimate interests'],
                     ['Complying with legal obligations (e.g., tax records, law enforcement requests)', 'Legal obligation'],
@@ -183,16 +168,9 @@ export default function PrivacyPolicyPage() {
                 {
                   name: 'Supabase',
                   role: 'Database & Storage',
-                  what: 'All study progress, quiz results, revision plans, mock exam data, and subscription records.',
+                  what: 'All study progress, quiz results, revision plans, and mock exam data.',
                   where: 'EU (AWS eu-west region). Data does not leave the EU.',
                   link: 'https://supabase.com/privacy',
-                },
-                {
-                  name: 'Stripe',
-                  role: 'Payment Processing',
-                  what: 'Payment card details and billing information. We receive only your Stripe customer ID and subscription status.',
-                  where: 'USA and EU (SCCs in place). Stripe is PCI-DSS Level 1 certified.',
-                  link: 'https://stripe.com/privacy',
                 },
                 {
                   name: 'Anthropic',
@@ -249,8 +227,8 @@ export default function PrivacyPolicyPage() {
             </div>
 
             <p className="mb-4">
-              We do not send your name, email, or payment information to Anthropic. Study queries are sent with only the
-              context needed to generate an educational response (subject, topic, and your input text).
+              We do not send your name or email to Anthropic. Study queries are sent with only the context needed to
+              generate an educational response (subject, topic, and your input text).
             </p>
             <p>
               If you do not wish to have your study content processed by Anthropic, do not use the AI Tutor, AI Test
@@ -277,7 +255,6 @@ export default function PrivacyPolicyPage() {
                 <tbody className="divide-y divide-brand-50">
                   {[
                     ['__session, __client_uat', 'Clerk', 'Authentication session management — keeps you signed in', 'Session / 1 year'],
-                    ['_stripe_*', 'Stripe', 'Fraud prevention and payment flow management', 'Session'],
                     ['exam-[examId] (localStorage)', 'RevisionCity', 'Saves in-progress exam answers locally to prevent data loss if you refresh', 'Until exam submitted'],
                     ['progress store (localStorage/Zustand)', 'RevisionCity', 'Caches your study progress in the browser for faster page loads', 'Persistent'],
                     ['ph_* (PostHog)', 'PostHog', 'Anonymous usage analytics — helps us understand how features are used. No personal data.', '1 year'],
@@ -309,7 +286,6 @@ export default function PrivacyPolicyPage() {
                 ['Study progress & activity', 'Retained while your account is active. Deleted within 30 days of account deletion.'],
                 ['Mock exam answers & analysis', 'Retained for 2 years after the exam date, then automatically purged. You can request earlier deletion.'],
                 ['Revision plans', 'Retained while your account is active. Deleted with your account.'],
-                ['Subscription & billing records', 'Retained for 7 years from the transaction date to comply with UK tax law (even after account deletion).'],
                 ['Server logs (Vercel)', 'Retained for 30 days by Vercel, then automatically deleted.'],
                 ['Anonymous analytics (PostHog)', 'Retained for 12 months, then automatically purged.'],
               ].map(([type, policy]) => (
@@ -326,7 +302,7 @@ export default function PrivacyPolicyPage() {
             <h2 className="font-display text-2xl font-bold text-brand-950 mb-4">8. International Transfers</h2>
             <p className="mb-4">
               Your study and account data is stored in the EU (Supabase on AWS eu-west). Some of our processors (Clerk,
-              Anthropic, Vercel, Stripe) operate in the USA. Where data is transferred to the USA, we rely on Standard
+              Anthropic, Vercel) operate in the USA. Where data is transferred to the USA, we rely on Standard
               Contractual Clauses (SCCs) approved by the European Commission to ensure an adequate level of protection.
             </p>
             <p>
@@ -387,7 +363,7 @@ export default function PrivacyPolicyPage() {
                 },
                 {
                   right: 'Right to erasure ("right to be forgotten")',
-                  desc: 'You can request that we delete your account and all associated personal data. Note that billing records are retained for 7 years as required by UK tax law.',
+                  desc: 'You can request that we delete your account and all associated personal data.',
                 },
                 {
                   right: 'Right to data portability',
@@ -447,9 +423,7 @@ export default function PrivacyPolicyPage() {
               </li>
             </ol>
             <p className="text-sm text-brand-500">
-              Note: Stripe billing records are retained for 7 years from the transaction date regardless of account
-              deletion, as required by UK HMRC regulations. All other data (study progress, activity logs, revision
-              plans, exam attempts) is permanently deleted.
+              All your data — study progress, activity logs, revision plans, and exam attempts — is permanently deleted.
             </p>
           </section>
 
@@ -465,7 +439,6 @@ export default function PrivacyPolicyPage() {
               <li>Row Level Security (RLS) is enforced on all database tables — each user can only access their own data</li>
               <li>API keys and service credentials are stored as environment variables, never in source code</li>
               <li>Authentication is delegated to Clerk, which provides bot protection, brute-force prevention, and secure session management</li>
-              <li>Payment card data is handled exclusively by Stripe and never touches our servers</li>
             </ul>
             <p className="text-sm text-brand-500">
               If you discover a security vulnerability in RevisionCity, please report it responsibly to{' '}

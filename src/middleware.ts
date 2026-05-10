@@ -7,14 +7,12 @@ const isPublicRoute = createRouteMatcher([
   '/sign-up(.*)',
   '/subjects',
   '/subject/(.*)',
-  '/pricing',
   '/privacy',
   '/terms',
   '/faq',
   '/about',
   '/contact',
   '/api/test/(.*)',
-  '/api/stripe/webhook',
 ])
 
 // Use the simpler middleware that just allows public routes through

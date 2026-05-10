@@ -22,7 +22,7 @@ export default function TermsPage() {
               ['accounts', '3. Account Responsibilities'],
               ['acceptable-use', '4. Acceptable Use Policy'],
               ['ip', '5. Intellectual Property'],
-              ['payment', '6. Payment Terms'],
+              ['payment', '6. Cost'],
               ['ai-content', '7. AI-Generated Content Disclaimer'],
               ['liability', '8. Limitation of Liability'],
               ['termination', '9. Termination'],
@@ -69,26 +69,19 @@ export default function TermsPage() {
               2. Description of Service
             </h2>
             <p className="text-brand-700 leading-relaxed mb-3">
-              RevisionCity is an IGCSE revision platform that provides:
+              RevisionCity is a free IGCSE revision platform. Every feature is unlocked for every signed-in
+              user, including:
             </p>
             <ul className="list-disc pl-6 space-y-2 text-brand-700 mb-4">
-              <li>
-                <strong>Free tier:</strong> Study notes, flashcards, quizzes, and practice questions for
-                Cambridge and Edexcel IGCSE subjects.
-              </li>
-              <li>
-                <strong>Pro tier (£4.99/month):</strong> All free content plus AI-generated practice tests,
-                mind maps, summary sheets, recall prompts, and progress analytics.
-              </li>
-              <li>
-                <strong>Premium tier (£14.99/month):</strong> Everything in Pro plus the AI Tutor (Socratic
-                explanations and streamed chat), unlimited mock exam simulations with AI grading, detailed
-                topic and timing analysis, grade prediction, and personalised revision plans.
-              </li>
+              <li>Study notes, flashcards, quizzes, and practice questions for Cambridge and Edexcel IGCSE subjects.</li>
+              <li>AI-generated practice tests, mind maps, summary sheets, and recall prompts.</li>
+              <li>The AI Tutor (Socratic explanations and streamed chat).</li>
+              <li>Unlimited mock exam simulations with AI grading and detailed topic and timing analysis.</li>
+              <li>Grade prediction, progress analytics, and personalised revision plans.</li>
             </ul>
             <p className="text-brand-700 leading-relaxed">
               We reserve the right to modify, suspend, or discontinue any feature at any time. We will
-              endeavour to give reasonable notice of significant changes to paid features.
+              endeavour to give reasonable notice of significant changes.
             </p>
           </section>
 
@@ -115,8 +108,7 @@ export default function TermsPage() {
               </li>
             </ul>
             <p className="text-brand-700 leading-relaxed">
-              Each account is for a single individual. Creating multiple accounts to circumvent free tier
-              limits (e.g. the one-mock-exam-per-month limit) is a breach of these Terms.
+              Each account is for a single individual.
             </p>
           </section>
 
@@ -153,8 +145,7 @@ export default function TermsPage() {
               <li>Use the Service in any way that violates UK, EU, or applicable local law.</li>
             </ul>
             <p className="text-brand-700 leading-relaxed">
-              We monitor usage for abuse. Violations may result in immediate account suspension without
-              refund.
+              We monitor usage for abuse. Violations may result in immediate account suspension.
             </p>
           </section>
 
@@ -189,87 +180,14 @@ export default function TermsPage() {
             </p>
           </section>
 
-          {/* 6. Payment Terms */}
+          {/* 6. Cost */}
           <section id="payment">
             <h2 className="font-display text-2xl font-bold text-brand-900 mb-4">
-              6. Payment Terms
+              6. Cost
             </h2>
-
-            <h3 className="font-display text-lg font-semibold text-brand-800 mb-2 mt-5">
-              6.1 Pricing
-            </h3>
-            <p className="text-brand-700 leading-relaxed mb-3">
-              All prices are in British Pounds (GBP) and include VAT where applicable:
-            </p>
-            <div className="overflow-x-auto mb-4">
-              <table className="w-full text-sm border border-brand-200 rounded-lg overflow-hidden">
-                <thead className="bg-brand-50">
-                  <tr>
-                    <th className="px-4 py-3 text-left font-semibold text-brand-800">Tier</th>
-                    <th className="px-4 py-3 text-left font-semibold text-brand-800">Monthly</th>
-                    <th className="px-4 py-3 text-left font-semibold text-brand-800">Annual</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-brand-100">
-                  <tr>
-                    <td className="px-4 py-3 text-brand-700">Free</td>
-                    <td className="px-4 py-3 text-brand-700">£0</td>
-                    <td className="px-4 py-3 text-brand-700">£0</td>
-                  </tr>
-                  <tr>
-                    <td className="px-4 py-3 text-brand-700">Pro</td>
-                    <td className="px-4 py-3 text-brand-700">£4.99/month</td>
-                    <td className="px-4 py-3 text-brand-700">£39.99/year (33% saving)</td>
-                  </tr>
-                  <tr>
-                    <td className="px-4 py-3 text-brand-700">Premium</td>
-                    <td className="px-4 py-3 text-brand-700">£14.99/month</td>
-                    <td className="px-4 py-3 text-brand-700">£119.99/year (33% saving)</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-
-            <h3 className="font-display text-lg font-semibold text-brand-800 mb-2 mt-5">
-              6.2 Billing and Renewal
-            </h3>
-            <ul className="list-disc pl-6 space-y-2 text-brand-700 mb-4">
-              <li>
-                Subscriptions are billed via Stripe and renew automatically at the end of each billing
-                period (monthly or annual) until you cancel.
-              </li>
-              <li>
-                You authorise us to charge your saved payment method on the renewal date.
-              </li>
-              <li>
-                We will give at least 30 days&rsquo; notice before increasing subscription prices. Continued use
-                after the price change date constitutes acceptance.
-              </li>
-              <li>
-                Failed payments may result in temporary downgrade to the Free tier until payment is resolved.
-              </li>
-            </ul>
-
-            <h3 className="font-display text-lg font-semibold text-brand-800 mb-2 mt-5">
-              6.3 Cancellation
-            </h3>
-            <p className="text-brand-700 leading-relaxed mb-3">
-              You may cancel at any time via your account settings. Cancellation takes effect at the end of
-              the current billing period — you retain paid-tier access until then. We do not prorate refunds
-              for partial billing periods.
-            </p>
-
-            <h3 className="font-display text-lg font-semibold text-brand-800 mb-2 mt-5">
-              6.4 Refunds
-            </h3>
             <p className="text-brand-700 leading-relaxed">
-              We offer a <strong>14-day money-back guarantee</strong> on first-time purchases (monthly or
-              annual). To request a refund within 14 days of your first payment, email{' '}
-              <a href="mailto:support@revisioncity.com" className="text-brand-600 hover:underline">
-                support@revisioncity.com
-              </a>
-              . Refunds are not available for subscription renewals or subsequent billing cycles. Statutory
-              refund rights under UK consumer law are not affected.
+              RevisionCity is provided free of charge. There are no subscriptions, no paid tiers, and no
+              billing. We do not collect or process payment information.
             </p>
           </section>
 
@@ -383,7 +301,7 @@ export default function TermsPage() {
               <a href="mailto:support@revisioncity.com" className="text-brand-600 hover:underline">
                 support@revisioncity.com
               </a>
-              . Active subscriptions should be cancelled first (see Section 6.3) to avoid further charges.
+              .
             </p>
             <p className="text-brand-700 leading-relaxed mb-3">
               <strong>By us:</strong> We may suspend or permanently terminate your account without notice if we
@@ -393,17 +311,16 @@ export default function TermsPage() {
               <li>Breached any provision of these Terms or our Acceptable Use Policy.</li>
               <li>Used the Service fraudulently or in a way that harms us or other users.</li>
               <li>Violated applicable law.</li>
-              <li>Failed to pay valid subscription charges after reasonable notice.</li>
             </ul>
             <p className="text-brand-700 leading-relaxed">
-              On termination, your access to paid features ceases immediately. We will retain your data for
+              On termination, your access to the Service ceases immediately. We will retain your data for
               30 days in case of dispute or re-activation, after which it will be deleted in accordance with
               our{' '}
               <a href="/privacy-policy" className="text-brand-600 hover:underline">
                 Privacy Policy
               </a>
-              . Sections 5 (Intellectual Property), 7 (AI Disclaimer), 8 (Limitation of Liability), 10
-              (Governing Law), and any accrued payment obligations survive termination.
+              . Sections 5 (Intellectual Property), 7 (AI Disclaimer), 8 (Limitation of Liability), and 10
+              (Governing Law) survive termination.
             </p>
           </section>
 
@@ -439,7 +356,7 @@ export default function TermsPage() {
             <p className="text-brand-700 leading-relaxed">
               Continued use of the Service after the effective date of any change constitutes your acceptance
               of the revised Terms. If you do not agree to the revised Terms, you must stop using the Service
-              and cancel any active subscription before the effective date.
+              before the effective date.
             </p>
           </section>
 

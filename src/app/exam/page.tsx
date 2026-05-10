@@ -90,7 +90,6 @@ export default function ExamPage() {
       const data = await res.json()
       if (!res.ok) {
         setError(data.error ?? 'Failed to generate exam')
-        if (data.upgradeRequired) setError(data.error)
         return
       }
       router.push(`/exam/${data.examId}/take`)
@@ -234,11 +233,6 @@ export default function ExamPage() {
                   {error && (
                     <div className="p-3 bg-red-50 rounded-xl text-sm text-red-700 flex items-start gap-2">
                       {error}
-                      {error.includes('Upgrade') && (
-                        <Link href="/pricing" className="ml-auto underline whitespace-nowrap shrink-0">
-                          Upgrade →
-                        </Link>
-                      )}
                     </div>
                   )}
 
@@ -257,9 +251,6 @@ export default function ExamPage() {
                     )}
                   </button>
 
-                  <p className="text-xs text-brand-400 text-center">
-                    Free: 1 exam per month · Premium (£14.99/mo): unlimited exams + full AI analytics
-                  </p>
                 </div>
               )}
             </div>

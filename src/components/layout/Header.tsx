@@ -6,19 +6,16 @@ import { useState } from 'react';
 import { Menu, X, Sparkles, BarChart2, Calendar, ClipboardList, Settings } from 'lucide-react';
 import { SignInButton, SignUpButton, UserButton, useUser } from '@clerk/nextjs';
 import { cn } from '@/lib/utils';
-import { useAppStore } from '@/lib/store';
 
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const { subscriptionTier } = useAppStore();
-  const { isSignedIn, user } = useUser();
+  const { isSignedIn } = useUser();
 
   const navigation = [
     { name: 'Subjects', href: '/subjects' },
     { name: 'AI Test Generator', href: '/ai-generator', highlight: true },
     { name: 'Revision Plan', href: '/revision-plan', plan: true },
     { name: 'Mock Exams', href: '/exam', exam: true },
-    { name: 'Pricing', href: '/pricing' },
   ];
 
   return (

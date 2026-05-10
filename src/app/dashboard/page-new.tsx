@@ -148,15 +148,6 @@ export default async function DashboardPage() {
                     <span className="font-medium">AI Test Generator</span>
                   </div>
                 </Link>
-                <Link
-                  href="/pricing"
-                  className="block w-full p-4 border-2 border-brand-200 text-brand-900 rounded-xl hover:border-brand-300 hover:bg-brand-50 transition-all"
-                >
-                  <div className="flex items-center gap-3">
-                    <Target className="h-5 w-5" />
-                    <span className="font-medium">Upgrade Plan</span>
-                  </div>
-                </Link>
               </div>
             </div>
 

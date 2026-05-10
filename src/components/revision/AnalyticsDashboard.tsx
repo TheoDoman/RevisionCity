@@ -5,11 +5,9 @@ import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   BarChart, Bar, Cell,
 } from 'recharts';
-import { TrendingUp, TrendingDown, Minus, Lock, Share2, Flame, Trophy, Target, AlertTriangle, Zap } from 'lucide-react';
+import { TrendingUp, TrendingDown, Minus, Share2, Flame, Trophy, Target, AlertTriangle, Zap } from 'lucide-react';
 import { useAppStore } from '@/lib/store';
-import { useSubscription } from '@/hooks/useSubscription';
 import type { Subject, Topic, Subtopic } from '@/types';
-import Link from 'next/link';
 
 interface AnalyticsData {
   overallScore: number;
@@ -79,26 +77,8 @@ function TrendIcon({ trend }: { trend: 'up' | 'stable' | 'down' }) {
   return <Minus className="h-3 w-3 text-yellow-500" />;
 }
 
-function PremiumGate({ children, isPremium }: { children: React.ReactNode; isPremium: boolean }) {
-  if (isPremium) return <>{children}</>;
-  return (
-    <div className="relative">
-      <div className="blur-sm pointer-events-none select-none">{children}</div>
-      <div className="absolute inset-0 flex flex-col items-center justify-center bg-white/70 rounded-xl">
-        <Lock className="h-6 w-6 text-brand-400 mb-2" />
-        <p className="text-sm font-semibold text-brand-700 mb-3">Premium Feature</p>
-        <Link href="/pricing" className="btn-primary text-xs px-4 py-2">
-          Unlock Full Analytics — £4.99/mo
-        </Link>
-      </div>
-    </div>
-  );
-}
-
 export function AnalyticsDashboard({ subject, topic, subtopics }: Props) {
   const { progress } = useAppStore();
-  const { subscriptionTier } = useSubscription();
-  const isPremium = subscriptionTier !== 'free';
 
   const [data, setData] = useState<AnalyticsData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -184,15 +164,13 @@ export function AnalyticsDashboard({ subject, topic, subtopics }: Props) {
             {data.attemptedCount} of {data.subtopicCount} subtopics attempted
           </p>
         </div>
-        {isPremium && (
-          <button
-            onClick={handleShare}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl border-2 border-brand-200 text-brand-700 hover:border-brand-400 text-sm font-medium transition-all"
-          >
-            <Share2 className="h-4 w-4" />
-            Share
-          </button>
-        )}
+        <button
+          onClick={handleShare}
+          className="flex items-center gap-2 px-4 py-2 rounded-xl border-2 border-brand-200 text-brand-700 hover:border-brand-400 text-sm font-medium transition-all"
+        >
+          <Share2 className="h-4 w-4" />
+          Share
+        </button>
       </div>
 
       {!hasActivity && (
@@ -325,11 +303,8 @@ export function AnalyticsDashboard({ subject, topic, subtopics }: Props) {
         )}
       </div>
 
-      {/* Sections 4-6: Premium Gated */}
-
       {/* Section 4: Grade Predictor */}
-      <PremiumGate isPremium={isPremium}>
-        <div className="bg-white rounded-2xl border-2 border-brand-100 p-6">
+      <div className="bg-white rounded-2xl border-2 border-brand-100 p-6">
           <h3 className="text-sm font-semibold text-brand-500 uppercase tracking-wide mb-4">
             <Target className="h-4 w-4 inline mr-1" />
             Grade Predictor
@@ -379,8 +354,7 @@ export function AnalyticsDashboard({ subject, topic, subtopics }: Props) {
               )}
             </div>
           )}
-        </div>
-      </PremiumGate>
+      </div>
 
       {/* Section 5: Study Streak */}
       <div className="bg-white rounded-2xl border-2 border-brand-100 p-6">
@@ -412,8 +386,7 @@ export function AnalyticsDashboard({ subject, topic, subtopics }: Props) {
       </div>
 
       {/* Section 6: Class Comparison */}
-      <PremiumGate isPremium={isPremium}>
-        <div className="bg-white rounded-2xl border-2 border-brand-100 p-6">
+      <div className="bg-white rounded-2xl border-2 border-brand-100 p-6">
           <h3 className="text-sm font-semibold text-brand-500 uppercase tracking-wide mb-4">Class Comparison</h3>
           <div className="flex items-end gap-4 mb-4">
             <div className="flex-1">
@@ -475,20 +448,16 @@ export function AnalyticsDashboard({ subject, topic, subtopics }: Props) {
                 : 'Keep going to beat the average!'}
             </span>
           </div>
-          {isPremium && (
-            <button
-              onClick={handleShare}
-              className="mt-3 w-full text-center text-xs text-brand-400 hover:text-brand-600 transition-colors"
-            >
-              Share: &ldquo;I&apos;m in the {data.compareToClass.percentile}th percentile! 📊&rdquo;
-            </button>
-          )}
-        </div>
-      </PremiumGate>
+          <button
+            onClick={handleShare}
+            className="mt-3 w-full text-center text-xs text-brand-400 hover:text-brand-600 transition-colors"
+          >
+            Share: &ldquo;I&apos;m in the {data.compareToClass.percentile}th percentile! 📊&rdquo;
+          </button>
+      </div>
 
       {/* Section 7: Weak Areas */}
-      <PremiumGate isPremium={isPremium}>
-        <div className="bg-white rounded-2xl border-2 border-brand-100 p-6">
+      <div className="bg-white rounded-2xl border-2 border-brand-100 p-6">
           <h3 className="text-sm font-semibold text-brand-500 uppercase tracking-wide mb-4">
             <AlertTriangle className="h-4 w-4 inline mr-1 text-red-400" />
             Weak Areas — Focus Here First
@@ -530,33 +499,8 @@ export function AnalyticsDashboard({ subject, topic, subtopics }: Props) {
               })}
             </div>
           )}
-        </div>
-      </PremiumGate>
+      </div>
 
-      {/* Free tier CTA */}
-      {!isPremium && (
-        <div className="bg-gradient-to-br from-brand-600 to-brand-800 rounded-2xl p-6 text-white text-center">
-          <Lock className="h-8 w-8 mx-auto mb-3 text-brand-200" />
-          <h3 className="font-display text-lg font-bold mb-1">Unlock Full Analytics</h3>
-          <p className="text-brand-200 text-sm mb-4">
-            Grade prediction, class comparison, and personalised weak area recommendations
-          </p>
-          <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <Link
-              href="/pricing"
-              className="bg-white text-brand-800 font-semibold px-6 py-2.5 rounded-xl hover:bg-brand-50 transition-colors text-sm"
-            >
-              £4.99/month
-            </Link>
-            <Link
-              href="/pricing"
-              className="border-2 border-brand-300 text-white font-semibold px-6 py-2.5 rounded-xl hover:border-white transition-colors text-sm"
-            >
-              £39.99/year (save 33%)
-            </Link>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

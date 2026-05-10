@@ -176,7 +176,7 @@ export default function AboutPage() {
             Join thousands of students already improving their grades with Revision City.
           </p>
           <a
-            href="/pricing"
+            href="/subjects"
             className="inline-block bg-white text-brand-600 px-8 py-4 rounded-xl font-semibold hover:bg-brand-50 transition-colors"
           >
             Get Started Today

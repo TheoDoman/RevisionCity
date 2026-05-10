@@ -142,34 +142,6 @@ export async function POST(request: NextRequest) {
   const { allowed, retryAfter } = rateLimit(`anthropic:${user.id}`, 10)
   if (!allowed) return tooManyRequests(retryAfter)
 
-  // Free tier: max 1 exam per month
-  const monthAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString()
-  const { data: recentExams } = await supabase
-    .from('mock_exams')
-    .select('id')
-    .eq('created_by', user.id)
-    .gte('created_at', monthAgo)
-
-  // Check subscription
-  const { data: subscription } = await supabase
-    .from('subscriptions')
-    .select('tier, status')
-    .eq('user_id', user.id)
-    .single()
-
-  const isPremium =
-    subscription?.status === 'active' && subscription?.tier === 'premium'
-
-  if (!isPremium && recentExams && recentExams.length >= 1) {
-    return NextResponse.json(
-      {
-        error: "You've taken 1 mock this month. Upgrade to Premium (£14.99/mo) for unlimited exams.",
-        upgradeRequired: true,
-      },
-      { status: 403 }
-    )
-  }
-
   let body: {
     subjectId: string
     subjectName: string

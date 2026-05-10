@@ -10,11 +10,11 @@ const faqs = [
     questions: [
       {
         q: 'What is Revision City?',
-        a: 'Revision City is an IGCSE revision platform that provides comprehensive study materials including notes, flashcards, quizzes, and AI-powered tools to help you ace your exams.',
+        a: 'Revision City is a free IGCSE revision platform that provides comprehensive study materials including notes, flashcards, quizzes, and AI-powered tools to help you ace your exams.',
       },
       {
         q: 'How do I get started?',
-        a: 'Simply sign up for a free account, browse our subjects, and start revising! You can upgrade to Pro or Premium at any time for additional features.',
+        a: 'Simply sign up for a free account, browse our subjects, and start revising. Every feature is free.',
       },
       {
         q: 'Which subjects are available?',
@@ -23,23 +23,11 @@ const faqs = [
     ],
   },
   {
-    category: 'Pricing & Subscriptions',
+    category: 'Pricing',
     questions: [
       {
         q: 'How much does Revision City cost?',
-        a: 'We offer three tiers: Free Trial (1 day), Pro (€4.99/month or €39.99/year), and Premium (€7.99/month or €63.99/year). Annual plans save you 33%!',
-      },
-      {
-        q: 'Can I cancel anytime?',
-        a: 'Yes! You can cancel your subscription at any time from your dashboard. You\'ll keep access until the end of your billing period.',
-      },
-      {
-        q: 'Do you offer refunds?',
-        a: 'Yes, we offer a 14-day money-back guarantee for first-time subscribers. Contact support@revisioncity.com to request a refund.',
-      },
-      {
-        q: 'What payment methods do you accept?',
-        a: 'We accept all major credit and debit cards through Stripe. We also support Apple Pay and Google Pay.',
+        a: 'Revision City is completely free. Every feature — notes, flashcards, quizzes, AI Test Generator, AI Tutor, mock exams, study plans, analytics — is unlocked for everyone with no subscription required.',
       },
     ],
   },
@@ -47,20 +35,16 @@ const faqs = [
     category: 'Features',
     questions: [
       {
-        q: 'What\'s included in the Pro plan?',
-        a: 'Pro includes all 9 subjects, unlimited quizzes and flashcards, AI Test Generator, mind maps, summary sheets, and detailed progress tracking.',
-      },
-      {
-        q: 'What\'s the difference between Pro and Premium?',
-        a: 'Premium includes everything in Pro plus our AI Tutor for 24/7 instant help, personalized study plans, and smart weak area analysis.',
+        q: 'What features are included?',
+        a: 'Everything: all 9 subjects, unlimited quizzes and flashcards, AI Test Generator, mind maps, summary sheets, AI Tutor, personalised study plans, mock exams, and full analytics including grade prediction and weak-area recommendations.',
       },
       {
         q: 'What is the AI Test Generator?',
-        a: 'The AI Test Generator creates custom practice tests on any topic you choose. Perfect for targeting specific areas you need to improve!',
+        a: 'The AI Test Generator creates custom practice tests on any topic you choose. Perfect for targeting specific areas you need to improve.',
       },
       {
         q: 'Can I track my progress?',
-        a: 'Yes! Your dashboard shows your study streak, quiz scores, topics completed, and more. Premium users get advanced analytics.',
+        a: 'Yes. Your dashboard shows your study streak, quiz scores, topics completed, and detailed analytics including grade prediction and class comparison.',
       },
     ],
   },
@@ -69,15 +53,15 @@ const faqs = [
     questions: [
       {
         q: 'Does Revision City work on mobile?',
-        a: 'Yes! Our platform is fully responsive and works great on phones, tablets, and computers. A dedicated mobile app is coming soon!',
+        a: 'Yes. Our platform is fully responsive and works on phones, tablets, and computers.',
       },
       {
         q: 'Do I need an internet connection?',
-        a: 'Yes, you need an internet connection to access Revision City. Offline mode is planned for future updates.',
+        a: 'Yes, you need an internet connection to access Revision City.',
       },
       {
         q: 'Is my data secure?',
-        a: 'Absolutely! We use industry-standard encryption, secure authentication via Clerk, and never store your payment details (handled by Stripe).',
+        a: 'Yes. We use industry-standard encryption and secure authentication via Clerk.',
       },
     ],
   },

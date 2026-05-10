@@ -11,7 +11,6 @@ import {
 } from 'lucide-react'
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
-import { useSubscription } from '@/hooks/useSubscription'
 import type { Subject, Topic, RevisionPlan, IGCSEGrade, ContentType } from '@/types'
 
 interface Props {
@@ -190,8 +189,6 @@ function downloadBlob(content: string, filename: string, mimeType: string) {
 // ── Component ─────────────────────────────────────────────────────────────────
 export function RevisionPlanBuilder({ subject, topics }: Props) {
   const { user, isLoaded } = useUser()
-  const { subscriptionTier } = useSubscription()
-  const isPremium = subscriptionTier === 'pro' || subscriptionTier === 'premium'
 
   const [step, setStep] = useState<Step>('idle')
   const [plan, setPlan] = useState<RevisionPlan | null>(null)
@@ -251,12 +248,6 @@ export function RevisionPlanBuilder({ subject, topics }: Props) {
     if (!examDate) { setErrorMsg('Please set an exam date.'); return }
     if (!user) { setErrorMsg('You must be signed in.'); return }
 
-    // Premium gate: check if user already has a plan (free tier = 1 plan only)
-    if (!isPremium && !replanning && plan) {
-      setErrorMsg('Upgrade to Premium for unlimited re-planning.')
-      return
-    }
-
     setStep('loading')
     setErrorMsg('')
 
@@ -287,7 +278,7 @@ export function RevisionPlanBuilder({ subject, topics }: Props) {
       setStep('error')
       setErrorMsg('Network error. Please try again.')
     }
-  }, [examDate, user, isPremium, plan, subject.id, subject.name, subject.slug, targetGrade, hoursPerWeek])
+  }, [examDate, user, subject.id, subject.name, subject.slug, targetGrade, hoursPerWeek])
 
   // ── Week count from plan start ─────────────────────────────────────────────
   const currentWeekNum = plan
@@ -425,9 +416,6 @@ export function RevisionPlanBuilder({ subject, topics }: Props) {
                   <div className="flex items-start gap-2 p-3 bg-red-50 rounded-xl text-sm text-red-700">
                     <AlertCircle className="h-4 w-4 mt-0.5 shrink-0" />
                     {errorMsg}
-                    {errorMsg.includes('Premium') && (
-                      <Link href="/pricing" className="ml-auto underline whitespace-nowrap">Upgrade →</Link>
-                    )}
                   </div>
                 )}
 
@@ -478,7 +466,6 @@ export function RevisionPlanBuilder({ subject, topics }: Props) {
               plan={plan}
               currentWeekNum={currentWeekNum}
               daysUntilExam={daysUntilExam}
-              isPremium={isPremium}
               onReplan={() => {
                 setExamDate(plan.examDate.slice(0, 10))
                 setTargetGrade(plan.targetGrade)
@@ -498,13 +485,11 @@ function PlanDisplay({
   plan,
   currentWeekNum,
   daysUntilExam,
-  isPremium,
   onReplan,
 }: {
   plan: RevisionPlan
   currentWeekNum: number
   daysUntilExam: number
-  isPremium: boolean
   onReplan: () => void
 }) {
   const planStart = new Date(plan.createdAt)
@@ -562,7 +547,6 @@ function PlanDisplay({
             const weekStart = addWeeks(planStart, week.week - 1)
             const isCurrent = week.week === currentWeekNum
             const isPast = week.week < currentWeekNum
-            const isLocked = !isPremium && week.week > 4
 
             return (
               <div
@@ -604,50 +588,42 @@ function PlanDisplay({
                   </div>
                 </div>
 
-                {isLocked ? (
-                  <div className="px-4 py-3 flex items-center gap-2 text-sm text-brand-500">
-                    <Lock className="h-4 w-4" />
-                    <span>Weeks 5+ require Premium</span>
-                    <Link href="/pricing" className="ml-auto text-purple-600 underline text-xs">Upgrade</Link>
-                  </div>
-                ) : (
-                  <div className="px-4 py-3">
-                    {week.isCheckpoint && (
-                      <div className="mb-2 p-2 bg-amber-50 rounded-lg text-xs text-amber-700">
-                        <Flame className="h-3.5 w-3.5 inline mr-1" />
-                        Checkpoint mini-test: 20 questions from your weakest topics
-                      </div>
-                    )}
-                    <div className="space-y-1.5">
-                      {week.topicAllocations.map((alloc) => (
-                        <div key={alloc.topicId} className="flex items-center gap-3 text-sm">
-                          <div
-                            className={cn(
-                              'w-2 h-2 rounded-full shrink-0',
-                              alloc.priority === 'high'
-                                ? 'bg-red-400'
-                                : alloc.priority === 'medium'
-                                  ? 'bg-amber-400'
-                                  : 'bg-green-400',
-                            )}
-                          />
-                          <span className="font-medium text-brand-800 w-32 truncate">{alloc.topicName}</span>
-                          <span className="text-brand-500">{alloc.hours}h</span>
-                          <div className="flex gap-1 flex-wrap">
-                            {alloc.contentTypes.map((ct) => (
-                              <span
-                                key={ct}
-                                className="text-xs px-1.5 py-0.5 bg-brand-100 text-brand-600 rounded"
-                              >
-                                {CONTENT_LABELS[ct]}
-                              </span>
-                            ))}
-                          </div>
-                        </div>
-                      ))}
+                <div className="px-4 py-3">
+                  {week.isCheckpoint && (
+                    <div className="mb-2 p-2 bg-amber-50 rounded-lg text-xs text-amber-700">
+                      <Flame className="h-3.5 w-3.5 inline mr-1" />
+                      Checkpoint mini-test: 20 questions from your weakest topics
                     </div>
+                  )}
+                  <div className="space-y-1.5">
+                    {week.topicAllocations.map((alloc) => (
+                      <div key={alloc.topicId} className="flex items-center gap-3 text-sm">
+                        <div
+                          className={cn(
+                            'w-2 h-2 rounded-full shrink-0',
+                            alloc.priority === 'high'
+                              ? 'bg-red-400'
+                              : alloc.priority === 'medium'
+                                ? 'bg-amber-400'
+                                : 'bg-green-400',
+                          )}
+                        />
+                        <span className="font-medium text-brand-800 w-32 truncate">{alloc.topicName}</span>
+                        <span className="text-brand-500">{alloc.hours}h</span>
+                        <div className="flex gap-1 flex-wrap">
+                          {alloc.contentTypes.map((ct) => (
+                            <span
+                              key={ct}
+                              className="text-xs px-1.5 py-0.5 bg-brand-100 text-brand-600 rounded"
+                            >
+                              {CONTENT_LABELS[ct]}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
                   </div>
-                )}
+                </div>
               </div>
             )
           })}
@@ -675,21 +651,12 @@ function PlanDisplay({
           <Download className="h-4 w-4" /> PDF (print)
         </button>
         <div className="ml-auto">
-          {isPremium ? (
-            <button
-              onClick={onReplan}
-              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-purple-600 text-white hover:bg-purple-700 text-sm transition-colors"
-            >
-              <RefreshCw className="h-4 w-4" /> Re-plan
-            </button>
-          ) : (
-            <Link
-              href="/pricing"
-              className="flex items-center gap-2 px-4 py-2 rounded-xl border-2 border-purple-200 text-purple-700 hover:bg-purple-50 text-sm transition-colors"
-            >
-              <Lock className="h-4 w-4" /> Unlock Re-planning — Premium
-            </Link>
-          )}
+          <button
+            onClick={onReplan}
+            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-purple-600 text-white hover:bg-purple-700 text-sm transition-colors"
+          >
+            <RefreshCw className="h-4 w-4" /> Re-plan
+          </button>
         </div>
       </div>
     </div>

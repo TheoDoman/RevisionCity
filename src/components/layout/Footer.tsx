@@ -70,11 +70,6 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/pricing" className="hover:text-white transition-colors">
-                  Pricing
-                </Link>
-              </li>
-              <li>
                 <Link href="/ai-generator" className="hover:text-white transition-colors">
                   AI Test Generator
                 </Link>

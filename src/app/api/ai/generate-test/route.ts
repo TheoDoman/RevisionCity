@@ -47,9 +47,6 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Subject or topic not found' }, { status: 404 })
     }
 
-    // Check if user has premium or free tier usage
-    // TODO: Implement usage tracking for free tier (3 tests/month)
-
     // Generate test using Claude
     const difficultyDescription = difficulty <= 3 ? 'Foundation/Easy' :
                                   difficulty <= 7 ? 'Intermediate' :

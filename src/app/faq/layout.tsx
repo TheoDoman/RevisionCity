@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'FAQ — Frequently Asked Questions',
   description:
-    'Answers to common questions about RevisionCity — which subjects are covered, how subscriptions work, Cambridge vs Edexcel support, the AI Tutor, mock exams, and more.',
+    'Answers to common questions about RevisionCity — which subjects are covered, Cambridge vs Edexcel support, the AI Tutor, mock exams, and more. Every feature is free.',
   alternates: { canonical: '/faq' },
   keywords: ['IGCSE revision FAQ', 'RevisionCity help', 'IGCSE study platform'],
 };
@@ -33,7 +33,7 @@ const faqJsonLd = {
       name: 'How much does RevisionCity cost?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'RevisionCity has a free tier with notes, flashcards, and quizzes. Pro costs £4.99/month (or £39.99/year) and adds AI practice tests and analytics. Premium costs £14.99/month (or £119.99/year) and includes the AI Tutor, unlimited mock exams with AI grading, and personalised revision plans. Annual plans save 33%.',
+        text: 'RevisionCity is completely free. Every feature — notes, flashcards, quizzes, AI Test Generator, AI Tutor, mock exams, study plans, and analytics — is unlocked for everyone with no subscription required.',
       },
     },
     {

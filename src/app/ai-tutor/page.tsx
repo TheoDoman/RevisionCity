@@ -3,7 +3,6 @@ import { useState, useEffect } from 'react';
 import { Sparkles, ChevronDown } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { AiTutor } from '@/components/revision/AiTutor';
-import { useSubscription } from '@/hooks/useSubscription';
 
 interface Subject { id: string; name: string; slug: string; exam_board: string }
 interface Topic   { id: string; name: string }
@@ -15,8 +14,6 @@ export default function AiTutorPage() {
   const [subjectId, setSubjectId] = useState('');
   const [topicId, setTopicId]     = useState('');
   const [started, setStarted]     = useState(false);
-
-  const { subscriptionTier } = useSubscription();
 
   const selectedSubject = subjects.find(s => s.id === subjectId);
   const selectedTopic   = topics.find(t => t.id === topicId);
@@ -174,7 +171,6 @@ export default function AiTutorPage() {
               subject={selectedSubject?.name ?? ''}
               topic={selectedTopic?.name ?? ''}
               examBoard={examBoard}
-              subscriptionTier={subscriptionTier}
             />
           </div>
         )}

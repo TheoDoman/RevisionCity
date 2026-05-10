@@ -97,7 +97,7 @@ export default function SettingsPage() {
             Privacy &amp; Data
           </h2>
           <p className="text-sm text-brand-600">
-            We store your study activity, quiz results, revision plans, and subscription data.
+            We store your study activity, quiz results, and revision plans.
             You have the right to request deletion of all personal data under GDPR.
           </p>
         </div>
@@ -110,7 +110,7 @@ export default function SettingsPage() {
           </h2>
           <p className="text-sm text-brand-600 mb-4">
             Permanently deletes your account and all associated data — activity history, quiz results,
-            revision plans, and subscription records. Active subscriptions will be cancelled immediately.
+            and revision plans.
             <strong className="text-brand-900"> This cannot be undone.</strong>
           </p>
           <button
@@ -147,7 +147,6 @@ export default function SettingsPage() {
             <ul className="mb-5 space-y-1 text-sm text-brand-700 ml-13 pl-2">
               <li className="flex items-center gap-2 before:content-['•'] before:text-red-400 before:font-bold">All study activity and quiz results</li>
               <li className="flex items-center gap-2 before:content-['•'] before:text-red-400 before:font-bold">Revision plans</li>
-              <li className="flex items-center gap-2 before:content-['•'] before:text-red-400 before:font-bold">Subscription (refunds are not automatic)</li>
               <li className="flex items-center gap-2 before:content-['•'] before:text-red-400 before:font-bold">Your account login</li>
             </ul>
 

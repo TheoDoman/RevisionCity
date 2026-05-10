@@ -123,9 +123,6 @@ export default function HomePage() {
             <HomepageExamBoardSelector />
 
             <div className="mt-4 flex flex-wrap justify-center gap-3 animate-slide-up animation-delay-250">
-              <Link href="/pricing" className="btn-secondary px-8 py-3 text-base hover-lift">
-                View Pricing
-              </Link>
               <Link href="/revision-plan" className="inline-flex items-center gap-2 px-8 py-3 text-base font-medium rounded-xl border-2 border-violet-200 text-violet-700 bg-violet-50 hover:bg-violet-100 hover:border-violet-300 transition-all hover-lift">
                 <Calendar className="h-5 w-5" />
                 Smart Study Plan

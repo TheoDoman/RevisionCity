@@ -130,29 +130,6 @@ export interface SummarySheet {
   created_at: string;
 }
 
-// Subscription types
-export type SubscriptionTier = 'free' | 'pro' | 'premium';
-
-export interface Subscription {
-  id: string;
-  user_id: string;
-  tier: SubscriptionTier;
-  stripe_customer_id?: string;
-  stripe_subscription_id?: string;
-  current_period_start: string;
-  current_period_end: string;
-  trial_ends_at?: string;
-  created_at: string;
-}
-
-// Usage tracking (for free tier limits)
-export interface UsageTracker {
-  subtopics_accessed: string[];
-  quizzes_taken_today: number;
-  flashcards_reviewed_today: number;
-  last_reset: string;
-}
-
 // Revision Plan types
 export type IGCSEGrade = 'A*' | 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'U';
 export type ContentType = 'notes' | 'flashcards' | 'quiz' | 'practice' | 'recall';

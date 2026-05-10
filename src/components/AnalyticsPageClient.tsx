@@ -8,10 +8,9 @@ import {
 } from 'recharts';
 import {
   BarChart2, TrendingUp, TrendingDown, Flame, Trophy, AlertTriangle,
-  BookOpen, Brain, Target, Zap, ArrowRight, Lock,
+  BookOpen, Brain, Target, ArrowRight,
 } from 'lucide-react';
 import { useAppStore } from '@/lib/store';
-import { useSubscription } from '@/hooks/useSubscription';
 
 const GREEN = '#10B981';
 const YELLOW = '#F59E0B';
@@ -42,26 +41,8 @@ function gradeBadgeClass(grade: string) {
   return 'bg-red-100 text-red-800 border-red-300';
 }
 
-function PremiumGate({ children, isPremium }: { children: React.ReactNode; isPremium: boolean }) {
-  if (isPremium) return <>{children}</>;
-  return (
-    <div className="relative">
-      <div className="blur-sm pointer-events-none select-none">{children}</div>
-      <div className="absolute inset-0 flex flex-col items-center justify-center bg-white/80 rounded-2xl">
-        <Lock className="h-6 w-6 text-brand-400 mb-2" />
-        <p className="text-sm font-semibold text-brand-700 mb-3">Premium Feature</p>
-        <Link href="/pricing" className="bg-gradient-to-r from-brand-600 to-brand-700 text-white text-xs font-semibold px-5 py-2.5 rounded-xl hover:opacity-90 transition-opacity">
-          Unlock — £4.99/mo
-        </Link>
-      </div>
-    </div>
-  );
-}
-
 export function AnalyticsPageClient() {
   const { progress } = useAppStore();
-  const { subscriptionTier } = useSubscription();
-  const isPremium = subscriptionTier !== 'free';
 
   const entries = Object.values(progress);
 
@@ -291,77 +272,73 @@ export function AnalyticsPageClient() {
           </div>
         </div>
 
-        {/* Grade Predictor — Premium */}
-        <PremiumGate isPremium={isPremium}>
+        {/* Grade Predictor */}
+        <div className="bg-white rounded-2xl border-2 border-brand-100 p-6">
+          <h2 className="font-display text-lg font-semibold text-brand-900 mb-4 flex items-center gap-2">
+            <Target className="h-5 w-5 text-brand-500" />
+            Grade Predictor
+          </h2>
+          <div className="grid sm:grid-cols-3 gap-4">
+            <div className="text-center p-4 rounded-xl bg-brand-50">
+              <p className="text-xs text-brand-500 mb-2">Current Grade</p>
+              <span className={`text-5xl font-bold border-2 rounded-xl px-5 py-2 inline-block ${gradeBadgeClass(currentGrade)}`}>
+                {overallScore > 0 ? currentGrade : '–'}
+              </span>
+            </div>
+            <div className="text-center p-4 rounded-xl bg-brand-50 flex flex-col items-center justify-center">
+              <ArrowRight className="h-8 w-8 text-brand-300" />
+              {nextGrade && overallScore > 0 && (
+                <p className="text-xs text-brand-500 mt-2">~{hoursNeeded}h to next grade</p>
+              )}
+            </div>
+            <div className="text-center p-4 rounded-xl bg-brand-50">
+              <p className="text-xs text-brand-500 mb-2">Projected Grade</p>
+              <span className={`text-5xl font-bold border-2 rounded-xl px-5 py-2 inline-block ${gradeBadgeClass(nextGrade && overallScore > 0 ? nextGrade : currentGrade)}`}>
+                {overallScore > 0 ? (nextGrade ?? currentGrade) : '–'}
+              </span>
+            </div>
+          </div>
+          {overallScore > 0 && nextGrade && (
+            <div className="mt-4 bg-emerald-50 rounded-xl p-4 text-sm text-emerald-800">
+              <TrendingUp className="h-4 w-4 inline mr-1.5" />
+              At your current pace, you&apos;ll reach <strong>Grade {nextGrade}</strong> with ~{hoursNeeded} more hours of focused study.
+            </div>
+          )}
+        </div>
+
+        <div className="grid lg:grid-cols-2 gap-6">
+          {/* Weak Areas */}
           <div className="bg-white rounded-2xl border-2 border-brand-100 p-6">
             <h2 className="font-display text-lg font-semibold text-brand-900 mb-4 flex items-center gap-2">
-              <Target className="h-5 w-5 text-brand-500" />
-              Grade Predictor
+              <AlertTriangle className="h-5 w-5 text-red-400" />
+              Weak Areas
             </h2>
-            <div className="grid sm:grid-cols-3 gap-4">
-              <div className="text-center p-4 rounded-xl bg-brand-50">
-                <p className="text-xs text-brand-500 mb-2">Current Grade</p>
-                <span className={`text-5xl font-bold border-2 rounded-xl px-5 py-2 inline-block ${gradeBadgeClass(currentGrade)}`}>
-                  {overallScore > 0 ? currentGrade : '–'}
-                </span>
+            {weakEntries.length === 0 ? (
+              <div className="text-center py-8 text-brand-400 text-sm">
+                No weak areas yet — take some quizzes first
               </div>
-              <div className="text-center p-4 rounded-xl bg-brand-50 flex flex-col items-center justify-center">
-                <ArrowRight className="h-8 w-8 text-brand-300" />
-                {nextGrade && overallScore > 0 && (
-                  <p className="text-xs text-brand-500 mt-2">~{hoursNeeded}h to next grade</p>
-                )}
-              </div>
-              <div className="text-center p-4 rounded-xl bg-brand-50">
-                <p className="text-xs text-brand-500 mb-2">Projected Grade</p>
-                <span className={`text-5xl font-bold border-2 rounded-xl px-5 py-2 inline-block ${gradeBadgeClass(nextGrade && overallScore > 0 ? nextGrade : currentGrade)}`}>
-                  {overallScore > 0 ? (nextGrade ?? currentGrade) : '–'}
-                </span>
-              </div>
-            </div>
-            {overallScore > 0 && nextGrade && (
-              <div className="mt-4 bg-emerald-50 rounded-xl p-4 text-sm text-emerald-800">
-                <TrendingUp className="h-4 w-4 inline mr-1.5" />
-                At your current pace, you&apos;ll reach <strong>Grade {nextGrade}</strong> with ~{hoursNeeded} more hours of focused study.
+            ) : (
+              <div className="space-y-3">
+                {weakEntries.map((entry, i) => (
+                  <div key={entry.subtopic_id} className="flex items-center gap-3 p-3 bg-red-50 rounded-xl border border-red-100">
+                    <div className="w-6 h-6 rounded-lg bg-red-200 text-red-700 font-bold flex items-center justify-center text-xs flex-shrink-0">
+                      {i + 1}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="w-full bg-red-100 rounded-full h-2">
+                        <div
+                          className="h-2 rounded-full bg-red-400"
+                          style={{ width: `${computeScore(entry)}%` }}
+                        />
+                      </div>
+                    </div>
+                    <span className="text-sm font-bold text-red-600">{computeScore(entry)}%</span>
+                  </div>
+                ))}
+                <p className="text-xs text-brand-400 mt-2">Open a topic&apos;s Analytics tab to see subtopic names</p>
               </div>
             )}
           </div>
-        </PremiumGate>
-
-        <div className="grid lg:grid-cols-2 gap-6">
-          {/* Weak Areas — Premium */}
-          <PremiumGate isPremium={isPremium}>
-            <div className="bg-white rounded-2xl border-2 border-brand-100 p-6">
-              <h2 className="font-display text-lg font-semibold text-brand-900 mb-4 flex items-center gap-2">
-                <AlertTriangle className="h-5 w-5 text-red-400" />
-                Weak Areas
-              </h2>
-              {weakEntries.length === 0 ? (
-                <div className="text-center py-8 text-brand-400 text-sm">
-                  No weak areas yet — take some quizzes first
-                </div>
-              ) : (
-                <div className="space-y-3">
-                  {weakEntries.map((entry, i) => (
-                    <div key={entry.subtopic_id} className="flex items-center gap-3 p-3 bg-red-50 rounded-xl border border-red-100">
-                      <div className="w-6 h-6 rounded-lg bg-red-200 text-red-700 font-bold flex items-center justify-center text-xs flex-shrink-0">
-                        {i + 1}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="w-full bg-red-100 rounded-full h-2">
-                          <div
-                            className="h-2 rounded-full bg-red-400"
-                            style={{ width: `${computeScore(entry)}%` }}
-                          />
-                        </div>
-                      </div>
-                      <span className="text-sm font-bold text-red-600">{computeScore(entry)}%</span>
-                    </div>
-                  ))}
-                  <p className="text-xs text-brand-400 mt-2">Open a topic&apos;s Analytics tab to see subtopic names</p>
-                </div>
-              )}
-            </div>
-          </PremiumGate>
 
           {/* Strong Areas */}
           <div className="bg-white rounded-2xl border-2 border-brand-100 p-6">
@@ -396,60 +373,58 @@ export function AnalyticsPageClient() {
           </div>
         </div>
 
-        {/* Class Comparison — Premium */}
-        <PremiumGate isPremium={isPremium}>
-          <div className="bg-white rounded-2xl border-2 border-brand-100 p-6">
-            <h2 className="font-display text-lg font-semibold text-brand-900 mb-4">Class Comparison</h2>
-            <div className="grid sm:grid-cols-2 gap-6 items-center">
-              <div className="space-y-4">
-                <div>
-                  <div className="flex justify-between text-sm mb-1">
-                    <span className="font-medium text-brand-700">You</span>
-                    <span style={{ color: scoreColor(overallScore) }} className="font-bold">{overallScore}%</span>
-                  </div>
-                  <div className="w-full bg-brand-100 rounded-full h-3">
-                    <div className="h-3 rounded-full transition-all" style={{ width: `${Math.max(2, overallScore)}%`, backgroundColor: scoreColor(overallScore) }} />
-                  </div>
+        {/* Class Comparison */}
+        <div className="bg-white rounded-2xl border-2 border-brand-100 p-6">
+          <h2 className="font-display text-lg font-semibold text-brand-900 mb-4">Class Comparison</h2>
+          <div className="grid sm:grid-cols-2 gap-6 items-center">
+            <div className="space-y-4">
+              <div>
+                <div className="flex justify-between text-sm mb-1">
+                  <span className="font-medium text-brand-700">You</span>
+                  <span style={{ color: scoreColor(overallScore) }} className="font-bold">{overallScore}%</span>
                 </div>
-                <div>
-                  <div className="flex justify-between text-sm mb-1">
-                    <span className="font-medium text-brand-700">Class Average</span>
-                    <span className="font-bold text-gray-500">{classAverage}%</span>
-                  </div>
-                  <div className="w-full bg-brand-100 rounded-full h-3">
-                    <div className="h-3 rounded-full bg-gray-400" style={{ width: `${classAverage}%` }} />
-                  </div>
+                <div className="w-full bg-brand-100 rounded-full h-3">
+                  <div className="h-3 rounded-full transition-all" style={{ width: `${Math.max(2, overallScore)}%`, backgroundColor: scoreColor(overallScore) }} />
                 </div>
-                <p className="text-sm text-brand-600">
-                  You are in the <strong className="text-brand-900">{percentile}th percentile</strong>{' '}
-                  {overallScore >= classAverage ? (
-                    <span className="text-green-600">🎯 above class average</span>
-                  ) : (
-                    <span className="text-yellow-600">— keep going!</span>
-                  )}
-                </p>
               </div>
-              <ResponsiveContainer width="100%" height={150}>
-                <BarChart
-                  data={[
-                    { name: 'You', score: overallScore },
-                    { name: 'Class', score: classAverage },
-                  ]}
-                  margin={{ top: 5, right: 10, left: -20, bottom: 0 }}
-                >
-                  <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                  <XAxis dataKey="name" tick={{ fontSize: 12, fill: '#6B7280' }} />
-                  <YAxis domain={[0, 100]} tick={{ fontSize: 12, fill: '#6B7280' }} />
-                  <Tooltip contentStyle={{ borderRadius: 8, fontSize: 12 }} formatter={(v) => [`${v}%`, 'Score']} />
-                  <Bar dataKey="score" radius={[4, 4, 0, 0]}>
-                    <Cell fill={scoreColor(overallScore)} />
-                    <Cell fill="#9CA3AF" />
-                  </Bar>
-                </BarChart>
-              </ResponsiveContainer>
+              <div>
+                <div className="flex justify-between text-sm mb-1">
+                  <span className="font-medium text-brand-700">Class Average</span>
+                  <span className="font-bold text-gray-500">{classAverage}%</span>
+                </div>
+                <div className="w-full bg-brand-100 rounded-full h-3">
+                  <div className="h-3 rounded-full bg-gray-400" style={{ width: `${classAverage}%` }} />
+                </div>
+              </div>
+              <p className="text-sm text-brand-600">
+                You are in the <strong className="text-brand-900">{percentile}th percentile</strong>{' '}
+                {overallScore >= classAverage ? (
+                  <span className="text-green-600">🎯 above class average</span>
+                ) : (
+                  <span className="text-yellow-600">— keep going!</span>
+                )}
+              </p>
             </div>
+            <ResponsiveContainer width="100%" height={150}>
+              <BarChart
+                data={[
+                  { name: 'You', score: overallScore },
+                  { name: 'Class', score: classAverage },
+                ]}
+                margin={{ top: 5, right: 10, left: -20, bottom: 0 }}
+              >
+                <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                <XAxis dataKey="name" tick={{ fontSize: 12, fill: '#6B7280' }} />
+                <YAxis domain={[0, 100]} tick={{ fontSize: 12, fill: '#6B7280' }} />
+                <Tooltip contentStyle={{ borderRadius: 8, fontSize: 12 }} formatter={(v) => [`${v}%`, 'Score']} />
+                <Bar dataKey="score" radius={[4, 4, 0, 0]}>
+                  <Cell fill={scoreColor(overallScore)} />
+                  <Cell fill="#9CA3AF" />
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
           </div>
-        </PremiumGate>
+        </div>
 
         {/* CTA: Take a mock exam */}
         <div className="bg-gradient-to-br from-emerald-600 to-teal-700 rounded-2xl p-6 text-white">
@@ -488,22 +463,6 @@ export function AnalyticsPageClient() {
           </div>
         </div>
 
-        {/* Free tier upgrade */}
-        {!isPremium && (
-          <div className="border-2 border-dashed border-brand-200 rounded-2xl p-6 text-center">
-            <Zap className="h-8 w-8 text-brand-400 mx-auto mb-3" />
-            <h3 className="font-display text-lg font-bold text-brand-800 mb-1">Unlock Full Analytics</h3>
-            <p className="text-brand-500 text-sm mb-4">Grade prediction, class comparison, and weak area recommendations</p>
-            <div className="flex flex-col sm:flex-row gap-3 justify-center">
-              <Link href="/pricing" className="bg-brand-600 text-white font-semibold px-6 py-2.5 rounded-xl hover:bg-brand-700 transition-colors text-sm">
-                £4.99 / month
-              </Link>
-              <Link href="/pricing" className="border-2 border-brand-300 text-brand-700 font-semibold px-6 py-2.5 rounded-xl hover:border-brand-500 transition-colors text-sm">
-                £39.99 / year — save 33%
-              </Link>
-            </div>
-          </div>
-        )}
       </div>
     </div>
   );

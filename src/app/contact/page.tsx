@@ -3,7 +3,7 @@ import { Mail, MessageSquare, HelpCircle } from 'lucide-react';
 
 export const metadata: Metadata = {
   title: 'Contact Us',
-  description: 'Get in touch with the RevisionCity team. We\'re here to help with questions about your account, subscriptions, or IGCSE revision content.',
+  description: 'Get in touch with the RevisionCity team. We\'re here to help with questions about your account or IGCSE revision content.',
   alternates: { canonical: '/contact' },
 };
 
@@ -67,20 +67,6 @@ export default function ContactPage() {
 
           <div className="space-y-6">
             <div>
-              <h3 className="font-semibold text-brand-900 mb-2">How do I cancel my subscription?</h3>
-              <p className="text-brand-600">
-                You can cancel your subscription anytime from your account settings. Your access will continue until the end of your billing period.
-              </p>
-            </div>
-
-            <div>
-              <h3 className="font-semibold text-brand-900 mb-2">Can I switch between monthly and yearly plans?</h3>
-              <p className="text-brand-600">
-                Yes! You can upgrade or change your plan at any time. If switching from monthly to yearly, you'll receive a credit for unused time.
-              </p>
-            </div>
-
-            <div>
               <h3 className="font-semibold text-brand-900 mb-2">Which subjects do you cover?</h3>
               <p className="text-brand-600">
                 We currently cover 9 core IGCSE subjects: Physics, Chemistry, Biology, Mathematics, Computer Science, Business Studies, Economics, Geography, and History.
@@ -95,9 +81,9 @@ export default function ContactPage() {
             </div>
 
             <div>
-              <h3 className="font-semibold text-brand-900 mb-2">Is my payment information secure?</h3>
+              <h3 className="font-semibold text-brand-900 mb-2">Is Revision City really free?</h3>
               <p className="text-brand-600">
-                Yes! All payments are processed securely through Stripe, a PCI-DSS compliant payment processor. We never store your full card details on our servers.
+                Yes. Every feature on Revision City is free for everyone — notes, flashcards, quizzes, AI Test Generator, AI Tutor, mock exams, study plans, and analytics. No subscription, no card required.
               </p>
             </div>
 
@@ -108,12 +94,6 @@ export default function ContactPage() {
               </p>
             </div>
 
-            <div>
-              <h3 className="font-semibold text-brand-900 mb-2">Do you offer student discounts?</h3>
-              <p className="text-brand-600">
-                Contact us at support@revisioncity.com to inquire about student discounts or school/district licensing options.
-              </p>
-            </div>
           </div>
         </div>
 

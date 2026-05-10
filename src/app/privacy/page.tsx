@@ -24,7 +24,6 @@ export default function PrivacyPage() {
             <ul className="list-disc pl-6 text-brand-700 mb-4">
               <li>Name and email address</li>
               <li>Account credentials</li>
-              <li>Payment information (processed securely through Stripe)</li>
               <li>Study progress and performance data</li>
             </ul>
 
@@ -42,7 +41,6 @@ export default function PrivacyPage() {
             <p className="text-brand-700 mb-4">We use your information to:</p>
             <ul className="list-disc pl-6 text-brand-700 mb-4">
               <li>Provide and maintain our services</li>
-              <li>Process your subscription payments</li>
               <li>Track your study progress and personalize your experience</li>
               <li>Send you updates and educational content</li>
               <li>Improve our platform and develop new features</li>
@@ -64,21 +62,14 @@ export default function PrivacyPage() {
           </section>
 
           <section className="mb-8">
-            <h2 className="text-2xl font-bold text-brand-900 mb-4">5. Payment Processing</h2>
-            <p className="text-brand-700 mb-4">
-              All payment transactions are processed securely through Stripe. We do not store your full credit card details on our servers. Stripe is PCI-DSS compliant and handles all payment information securely.
-            </p>
-          </section>
-
-          <section className="mb-8">
-            <h2 className="text-2xl font-bold text-brand-900 mb-4">6. Cookies and Tracking</h2>
+            <h2 className="text-2xl font-bold text-brand-900 mb-4">5. Cookies and Tracking</h2>
             <p className="text-brand-700 mb-4">
               We use cookies and similar technologies to enhance your experience, analyze usage, and provide personalized content. You can control cookie preferences through your browser settings.
             </p>
           </section>
 
           <section className="mb-8">
-            <h2 className="text-2xl font-bold text-brand-900 mb-4">7. Your Rights (GDPR)</h2>
+            <h2 className="text-2xl font-bold text-brand-900 mb-4">6. Your Rights (GDPR)</h2>
             <p className="text-brand-700 mb-4">
               Under the General Data Protection Regulation (GDPR), you have the right to:
             </p>
@@ -96,21 +87,21 @@ export default function PrivacyPage() {
           </section>
 
           <section className="mb-8">
-            <h2 className="text-2xl font-bold text-brand-900 mb-4">8. Data Retention</h2>
+            <h2 className="text-2xl font-bold text-brand-900 mb-4">7. Data Retention</h2>
             <p className="text-brand-700 mb-4">
-              We retain your personal data only for as long as necessary to provide our services and comply with legal obligations. When you cancel your subscription, we will delete or anonymize your data within 90 days, unless required to retain it by law.
+              We retain your personal data only for as long as necessary to provide our services and comply with legal obligations. If you delete your account, we will remove or anonymise your data within 90 days, unless required to retain it by law.
             </p>
           </section>
 
           <section className="mb-8">
-            <h2 className="text-2xl font-bold text-brand-900 mb-4">9. Third-Party Services</h2>
+            <h2 className="text-2xl font-bold text-brand-900 mb-4">8. Third-Party Services</h2>
             <p className="text-brand-700 mb-4">
               We use the following third-party services:
             </p>
             <ul className="list-disc pl-6 text-brand-700 mb-4">
               <li><strong>Supabase:</strong> Database and authentication</li>
-              <li><strong>Stripe:</strong> Payment processing</li>
-              <li><strong>Anthropic:</strong> AI-powered test generation</li>
+              <li><strong>Clerk:</strong> Authentication and account management</li>
+              <li><strong>Anthropic:</strong> AI-powered test generation and tutoring</li>
             </ul>
             <p className="text-brand-700 mb-4">
               Each service has its own privacy policy governing the use of your information.
@@ -118,28 +109,28 @@ export default function PrivacyPage() {
           </section>
 
           <section className="mb-8">
-            <h2 className="text-2xl font-bold text-brand-900 mb-4">10. Children's Privacy</h2>
+            <h2 className="text-2xl font-bold text-brand-900 mb-4">9. Children's Privacy</h2>
             <p className="text-brand-700 mb-4">
               Our services are intended for students aged 13 and above. If you are under 13, please have a parent or guardian create an account on your behalf. We do not knowingly collect personal information from children under 13 without parental consent.
             </p>
           </section>
 
           <section className="mb-8">
-            <h2 className="text-2xl font-bold text-brand-900 mb-4">11. International Data Transfers</h2>
+            <h2 className="text-2xl font-bold text-brand-900 mb-4">10. International Data Transfers</h2>
             <p className="text-brand-700 mb-4">
               Your data may be transferred to and processed in countries other than your country of residence. We ensure appropriate safeguards are in place for such transfers in compliance with GDPR and other applicable data protection laws.
             </p>
           </section>
 
           <section className="mb-8">
-            <h2 className="text-2xl font-bold text-brand-900 mb-4">12. Changes to This Policy</h2>
+            <h2 className="text-2xl font-bold text-brand-900 mb-4">11. Changes to This Policy</h2>
             <p className="text-brand-700 mb-4">
               We may update this Privacy Policy from time to time. We will notify you of any material changes by posting the new policy on this page and updating the "Last Updated" date. Continued use of our services after changes constitutes acceptance of the updated policy.
             </p>
           </section>
 
           <section className="mb-8">
-            <h2 className="text-2xl font-bold text-brand-900 mb-4">13. Contact Us</h2>
+            <h2 className="text-2xl font-bold text-brand-900 mb-4">12. Contact Us</h2>
             <p className="text-brand-700 mb-4">
               If you have any questions about this Privacy Policy or our data practices, please contact us:
             </p>

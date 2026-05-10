@@ -88,100 +88,6 @@ export const trackLogin = (method: string = 'email') => {
 };
 
 // ============================================================================
-// SUBSCRIPTION EVENTS
-// ============================================================================
-
-/**
- * Track when a user views the pricing page
- */
-export const trackViewPricing = () => {
-  trackEvent('view_pricing');
-};
-
-/**
- * Track when a user initiates checkout
- * @param tier - The subscription tier ('free', 'pro', 'premium')
- * @param interval - The billing interval ('monthly', 'yearly')
- * @param value - The price value
- */
-export const trackBeginCheckout = (
-  tier: string,
-  interval: 'monthly' | 'yearly',
-  value: number
-) => {
-  trackEvent('begin_checkout', {
-    currency: 'EUR',
-    value,
-    items: [
-      {
-        item_id: `${tier}_${interval}`,
-        item_name: `${tier.charAt(0).toUpperCase() + tier.slice(1)} Plan`,
-        item_category: 'subscription',
-        price: value,
-        quantity: 1,
-      },
-    ],
-    tier,
-    interval,
-  });
-};
-
-/**
- * Track successful subscription purchase
- * @param tier - The subscription tier
- * @param interval - The billing interval
- * @param value - The transaction value
- * @param transactionId - The Stripe transaction/subscription ID
- */
-export const trackPurchase = (
-  tier: string,
-  interval: 'monthly' | 'yearly',
-  value: number,
-  transactionId: string
-) => {
-  trackEvent('purchase', {
-    currency: 'EUR',
-    value,
-    transaction_id: transactionId,
-    items: [
-      {
-        item_id: `${tier}_${interval}`,
-        item_name: `${tier.charAt(0).toUpperCase() + tier.slice(1)} Plan`,
-        item_category: 'subscription',
-        price: value,
-        quantity: 1,
-      },
-    ],
-    tier,
-    interval,
-  });
-};
-
-/**
- * Track subscription cancellation
- * @param tier - The subscription tier that was cancelled
- * @param subscriptionId - The Stripe subscription ID
- */
-export const trackCancelSubscription = (tier: string, subscriptionId: string) => {
-  trackEvent('cancel_subscription', {
-    tier,
-    subscription_id: subscriptionId,
-  });
-};
-
-/**
- * Track subscription renewal
- * @param tier - The subscription tier
- * @param subscriptionId - The Stripe subscription ID
- */
-export const trackSubscriptionRenewal = (tier: string, subscriptionId: string) => {
-  trackEvent('subscription_renewal', {
-    tier,
-    subscription_id: subscriptionId,
-  });
-};
-
-// ============================================================================
 // CONTENT INTERACTION EVENTS
 // ============================================================================
 
@@ -224,33 +130,6 @@ export const trackViewNote = (
     subtopic_name: subtopicName,
     topic_name: topicName,
     subject_name: subjectName,
-  });
-};
-
-/**
- * Track when a user attempts to unlock paid content
- * @param contentType - The type of content ('note', 'quiz', 'flashcard', 'mindmap', 'summary')
- * @param requiredTier - The subscription tier required
- */
-export const trackContentUnlockAttempt = (
-  contentType: string,
-  requiredTier: string
-) => {
-  trackEvent('content_unlock_attempt', {
-    content_type: contentType,
-    required_tier: requiredTier,
-  });
-};
-
-/**
- * Track when a user successfully unlocks paid content
- * @param contentType - The type of content unlocked
- * @param userTier - The user's subscription tier
- */
-export const trackContentUnlocked = (contentType: string, userTier: string) => {
-  trackEvent('content_unlocked', {
-    content_type: contentType,
-    user_tier: userTier,
   });
 };
 

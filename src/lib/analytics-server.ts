@@ -75,57 +75,6 @@ export async function trackServerEvent(
 }
 
 /**
- * Track a server-side purchase event
- */
-export async function trackServerPurchase(
-  tier: string,
-  interval: string,
-  value: number,
-  transactionId: string,
-  userId?: string
-) {
-  await trackServerEvent(
-    'purchase',
-    {
-      currency: 'EUR',
-      value,
-      transaction_id: transactionId,
-      items: [
-        {
-          item_id: `${tier}_${interval}`,
-          item_name: `${tier.charAt(0).toUpperCase() + tier.slice(1)} Plan`,
-          item_category: 'subscription',
-          price: value,
-          quantity: 1,
-        },
-      ],
-      tier,
-      interval,
-    },
-    userId
-  );
-}
-
-/**
- * Track a server-side subscription event
- */
-export async function trackServerSubscriptionEvent(
-  eventName: 'subscription_created' | 'subscription_updated' | 'subscription_cancelled' | 'payment_succeeded' | 'payment_failed',
-  tier: string,
-  subscriptionId: string,
-  userId?: string
-) {
-  await trackServerEvent(
-    eventName,
-    {
-      tier,
-      subscription_id: subscriptionId,
-    },
-    userId
-  );
-}
-
-/**
  * Track a server-side test generation event
  */
 export async function trackServerTestGeneration(

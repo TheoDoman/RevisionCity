@@ -118,15 +118,6 @@ export default async function DashboardPage() {
                     <Zap className="h-5 w-5" />
                   </div>
                 </Link>
-                <Link
-                  href="/pricing"
-                  className="block p-4 bg-brand-50 text-brand-700 rounded-xl hover:bg-brand-100 transition-all border-2 border-brand-200"
-                >
-                  <div className="flex items-center justify-between">
-                    <span className="font-medium">Upgrade to Pro</span>
-                    <TrendingUp className="h-5 w-5" />
-                  </div>
-                </Link>
               </div>
             </div>
           </div>

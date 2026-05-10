@@ -1,9 +1,6 @@
 'use client';
 import { useState, useRef, useEffect } from 'react';
-import { Send, Bot, User, Loader2, Sparkles, BookmarkPlus, Lock } from 'lucide-react';
-import Link from 'next/link';
-
-// ── Types ─────────────────────────────────────────────────────────────────
+import { Send, Bot, User, Loader2, Sparkles, BookmarkPlus } from 'lucide-react';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -15,39 +12,9 @@ interface AiTutorProps {
   subject: string;
   topic: string;
   examBoard?: string;
-  subscriptionTier?: 'free' | 'pro' | 'premium';
 }
 
-// ── Constants ─────────────────────────────────────────────────────────────
-
-const FREE_DAILY_LIMIT = 3;
 const CHAR_LIMIT = 500;
-const STORAGE_KEY = 'rc_tutor_usage';
-
-// ── Helpers ───────────────────────────────────────────────────────────────
-
-function getTodayKey() {
-  return new Date().toDateString();
-}
-
-function getUsage(): number {
-  if (typeof window === 'undefined') return 0;
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return 0;
-    const { date, count } = JSON.parse(raw);
-    if (date !== getTodayKey()) return 0;
-    return count as number;
-  } catch {
-    return 0;
-  }
-}
-
-function incrementUsage(): number {
-  const next = getUsage() + 1;
-  localStorage.setItem(STORAGE_KEY, JSON.stringify({ date: getTodayKey(), count: next }));
-  return next;
-}
 
 function parseFlashcard(text: string): { content: string; flashcard: { front: string; back: string } | null } {
   const match = text.match(/\[FLASHCARD:\s*([\s\S]+?)\s*\|\s*([\s\S]+?)\s*\]/);
@@ -56,9 +23,7 @@ function parseFlashcard(text: string): { content: string; flashcard: { front: st
   return { content, flashcard: { front: match[1].trim(), back: match[2].trim() } };
 }
 
-// ── Component ─────────────────────────────────────────────────────────────
-
-export function AiTutor({ subject, topic, examBoard, subscriptionTier = 'free' }: AiTutorProps) {
+export function AiTutor({ subject, topic, examBoard }: AiTutorProps) {
   const [messages, setMessages] = useState<Message[]>([
     {
       role: 'assistant',
@@ -69,18 +34,10 @@ export function AiTutor({ subject, topic, examBoard, subscriptionTier = 'free' }
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [savedFlashcards, setSavedFlashcards] = useState<Set<string>>(new Set());
-  const [questionsToday, setQuestionsToday] = useState(0);
   const [rateLimitError, setRateLimitError] = useState<string | null>(null);
 
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
-
-  const isPremium = subscriptionTier === 'pro' || subscriptionTier === 'premium';
-  const atLimit = !isPremium && questionsToday >= FREE_DAILY_LIMIT;
-
-  useEffect(() => {
-    setQuestionsToday(getUsage());
-  }, []);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -88,7 +45,7 @@ export function AiTutor({ subject, topic, examBoard, subscriptionTier = 'free' }
 
   const send = async () => {
     const q = input.trim();
-    if (!q || loading || atLimit) return;
+    if (!q || loading) return;
 
     setInput('');
     setRateLimitError(null);
@@ -129,10 +86,6 @@ export function AiTutor({ subject, topic, examBoard, subscriptionTier = 'free' }
       if (!res.ok) {
         throw new Error(data.error ?? 'Failed to connect to tutor');
       }
-
-      // Increment free-tier usage
-      const newCount = incrementUsage();
-      setQuestionsToday(newCount);
 
       const { content, flashcard } = parseFlashcard(data.reply ?? '');
       setMessages(prev => [...prev, { role: 'assistant', content, flashcard }]);
@@ -180,11 +133,6 @@ export function AiTutor({ subject, topic, examBoard, subscriptionTier = 'free' }
             <p className="text-xs text-brand-500">{boardLabel} IGCSE · {topic}</p>
           </div>
         </div>
-        {!isPremium && (
-          <div className="text-xs text-brand-500">
-            {Math.max(0, FREE_DAILY_LIMIT - questionsToday)} questions left today
-          </div>
-        )}
       </div>
 
       {/* Messages */}
@@ -259,51 +207,32 @@ export function AiTutor({ subject, topic, examBoard, subscriptionTier = 'free' }
         <p className="text-xs text-red-600 mb-2 text-center">{rateLimitError}</p>
       )}
 
-      {/* Upgrade gate */}
-      {atLimit ? (
-        <div className="bg-gradient-to-r from-violet-50 to-purple-50 border border-violet-200 rounded-xl p-4 text-center">
-          <div className="flex items-center justify-center gap-2 mb-2">
-            <Lock className="h-4 w-4 text-violet-600" />
-            <p className="text-sm font-semibold text-violet-900">Daily limit reached</p>
-          </div>
-          <p className="text-xs text-violet-700 mb-3">
-            Free tier includes {FREE_DAILY_LIMIT} AI tutor questions per day. Upgrade for unlimited access.
-          </p>
-          <Link
-            href="/pricing"
-            className="inline-block bg-gradient-to-r from-violet-600 to-purple-600 text-white text-sm font-medium px-6 py-2 rounded-lg hover:opacity-90 transition-opacity"
+      {/* Input area */}
+      <div className="border border-brand-200 rounded-xl focus-within:border-brand-400 focus-within:ring-2 focus-within:ring-brand-100 transition-all bg-white">
+        <textarea
+          ref={inputRef}
+          value={input}
+          onChange={e => setInput(e.target.value.slice(0, CHAR_LIMIT))}
+          onKeyDown={handleKey}
+          placeholder={`Ask about ${topic}... (Shift+Enter for new line)`}
+          rows={2}
+          disabled={loading}
+          className="w-full px-4 pt-3 pb-1 text-sm resize-none outline-none rounded-t-xl bg-transparent text-brand-900 placeholder:text-brand-400 disabled:opacity-50"
+        />
+        <div className="flex items-center justify-between px-4 pb-3">
+          <span className={`text-xs ${remaining < 50 ? 'text-red-500' : 'text-brand-400'}`}>
+            {remaining} chars left
+          </span>
+          <button
+            onClick={send}
+            disabled={!input.trim() || loading}
+            className="flex items-center gap-1.5 bg-gradient-to-r from-violet-600 to-purple-600 text-white text-xs font-medium px-3 py-1.5 rounded-lg hover:opacity-90 disabled:opacity-40 transition-all"
           >
-            Upgrade to Premium · £4.99/month
-          </Link>
+            <Send className="h-3 w-3" />
+            Ask
+          </button>
         </div>
-      ) : (
-        /* Input area */
-        <div className="border border-brand-200 rounded-xl focus-within:border-brand-400 focus-within:ring-2 focus-within:ring-brand-100 transition-all bg-white">
-          <textarea
-            ref={inputRef}
-            value={input}
-            onChange={e => setInput(e.target.value.slice(0, CHAR_LIMIT))}
-            onKeyDown={handleKey}
-            placeholder={`Ask about ${topic}... (Shift+Enter for new line)`}
-            rows={2}
-            disabled={loading}
-            className="w-full px-4 pt-3 pb-1 text-sm resize-none outline-none rounded-t-xl bg-transparent text-brand-900 placeholder:text-brand-400 disabled:opacity-50"
-          />
-          <div className="flex items-center justify-between px-4 pb-3">
-            <span className={`text-xs ${remaining < 50 ? 'text-red-500' : 'text-brand-400'}`}>
-              {remaining} chars left
-            </span>
-            <button
-              onClick={send}
-              disabled={!input.trim() || loading}
-              className="flex items-center gap-1.5 bg-gradient-to-r from-violet-600 to-purple-600 text-white text-xs font-medium px-3 py-1.5 rounded-lg hover:opacity-90 disabled:opacity-40 transition-all"
-            >
-              <Send className="h-3 w-3" />
-              Ask
-            </button>
-          </div>
-        </div>
-      )}
+      </div>
     </div>
   );
 }

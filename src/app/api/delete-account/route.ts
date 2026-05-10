@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { currentUser, clerkClient } from '@clerk/nextjs/server'
 import { createClient } from '@supabase/supabase-js'
-import { stripe } from '@/lib/stripe'
 import { rateLimit, tooManyRequests } from '@/lib/rate-limit'
 
 const supabase = createClient(
@@ -23,32 +22,12 @@ export async function DELETE(request: NextRequest) {
   const userId = user.id
   const errors: string[] = []
 
-  // ── Step 1: Cancel active Stripe subscription ─────────────────────────────
-  try {
-    const { data: subscription } = await supabase
-      .from('subscriptions')
-      .select('stripe_subscription_id, status')
-      .eq('user_id', userId)
-      .in('status', ['active', 'trialing'])
-      .maybeSingle()
-
-    if (subscription?.stripe_subscription_id) {
-      await stripe.subscriptions.cancel(subscription.stripe_subscription_id)
-      console.log('[DeleteAccount] Cancelled Stripe subscription:', subscription.stripe_subscription_id)
-    }
-  } catch (err) {
-    // Non-fatal: log but continue — subscription may already be cancelled
-    console.error('[DeleteAccount] Stripe cancellation error:', err)
-    errors.push('stripe_cancel')
-  }
-
-  // ── Step 2: Delete Supabase rows in dependency order ─────────────────────
+  // ── Step 1: Delete Supabase rows in dependency order ─────────────────────
   // Tables keyed by user_id
   const userIdTables = [
     'user_activity',
     'exam_attempts',
     'revision_plans',
-    'subscriptions',
     'profiles',
   ]
 
@@ -91,7 +70,7 @@ export async function DELETE(request: NextRequest) {
     )
   }
 
-  // ── Step 3: Delete Clerk user ─────────────────────────────────────────────
+  // ── Step 2: Delete Clerk user ─────────────────────────────────────────────
   try {
     const client = await clerkClient()
     await client.users.deleteUser(userId)

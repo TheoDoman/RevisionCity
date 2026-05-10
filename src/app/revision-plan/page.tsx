@@ -97,17 +97,7 @@ export default function RevisionPlanPage() {
               Create My Study Plan
               <ArrowRight className="h-5 w-5" />
             </Link>
-            <Link
-              href="/pricing"
-              className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl text-lg font-medium border-2 border-violet-200 text-violet-700 hover:bg-violet-50 transition-colors"
-            >
-              View Premium Features
-            </Link>
           </div>
-
-          <p className="mt-4 text-sm text-brand-500">
-            Free tier: 1 plan per subject · Premium: unlimited re-planning
-          </p>
         </div>
       </section>
 

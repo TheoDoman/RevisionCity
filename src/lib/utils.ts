@@ -60,21 +60,3 @@ export function getDbSlug(board: string, slug: string): string {
   return board === 'edexcel' ? `${slug}-edexcel` : slug;
 }
 
-// Free tier limits
-export const FREE_TIER_LIMITS = {
-  subtopicsPerSubject: 2,
-  quizzesPerDay: 5,
-  flashcardsPerDay: 20,
-  trialDays: 1,
-};
-
-export const SUBSCRIPTION_PRICES = {
-  pro: {
-    monthly: 4.99,  // Highly competitive - cheaper than Quizlet Plus
-    yearly: 39.99,  // 33% discount (~€3.33/month)
-  },
-  premium: {
-    monthly: 14.99, // Premium tier with AI tutor + mock exams
-    yearly: 119.99, // 33% discount (~£10/month)
-  },
-};
