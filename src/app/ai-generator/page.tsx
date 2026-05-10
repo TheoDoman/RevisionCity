@@ -77,6 +77,7 @@ export default function AIGeneratorPage() {
   const [questionCount, setQuestionCount] = useState<number>(10)
   const [loading, setLoading] = useState(false)
   const [generatedTest, setGeneratedTest] = useState<any>(null)
+  const [generatedTestId, setGeneratedTestId] = useState<string | null>(null)
   const [showConfetti, setShowConfetti] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [userAnswers, setUserAnswers] = useState<Record<number, string>>({})
@@ -121,6 +122,7 @@ export default function AIGeneratorPage() {
     setLoading(true)
     setError(null)
     setGeneratedTest(null)
+    setGeneratedTestId(null)
     setUserAnswers({})
     setIsSubmitted(false)
     setScore(0)
@@ -145,6 +147,7 @@ export default function AIGeneratorPage() {
       }
 
       setGeneratedTest(data.test)
+      setGeneratedTestId(data.testId ?? null)
 
       // Track test generation
       const subjectName = subjects.find(s => s.id === selectedSubject)?.name || selectedSubject
@@ -206,6 +209,15 @@ export default function AIGeneratorPage() {
     setScore(earnedScore)
     setIsSubmitted(true)
 
+    // Persist this attempt's score back to the saved test
+    if (generatedTestId) {
+      fetch(`/api/ai/generated-tests/${generatedTestId}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ score: earnedScore, maxScore: totalScore }),
+      }).catch(() => {/* non-fatal */})
+    }
+
     // Track test completion
     trackCompleteTest(
       `ai-${selectedSubject}-${selectedTopic}`,
@@ -262,9 +274,15 @@ export default function AIGeneratorPage() {
           <h1 className="text-3xl md:text-5xl font-bold text-gray-900 mb-4 bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600">
             AI Test Generator
           </h1>
-          <p className="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto">
+          <p className="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto mb-4">
             Generate unlimited unique practice tests powered by AI. Complete tests interactively and get instant feedback.
           </p>
+          <a
+            href="/ai-tests"
+            className="inline-flex items-center gap-2 text-sm font-medium text-indigo-700 hover:text-indigo-900 underline underline-offset-4"
+          >
+            View my saved tests →
+          </a>
         </div>
 
         {/* Generator Form */}

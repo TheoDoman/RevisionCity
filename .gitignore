@@ -45,6 +45,10 @@ next-env.d.ts
 *.sql
 *.js.map
 
+# But always track DB migrations and the one-shot apply file
+!supabase/migrations/*.sql
+!APPLY-THESE-MIGRATIONS.sql
+
 # Documentation (keep only main ones)
 AI-TEST-GENERATOR-SPEC.md
 ALL-FIXES-AND-ANIMATIONS-ADDED.md

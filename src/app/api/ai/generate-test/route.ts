@@ -1,17 +1,20 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { currentUser } from '@clerk/nextjs/server'
 import { createClient } from '@supabase/supabase-js'
 import Anthropic from '@anthropic-ai/sdk'
 import { trackServerTestGeneration } from '@/lib/analytics-server'
-import { rateLimit, getIP, tooManyRequests } from '@/lib/rate-limit'
+import { rateLimit, tooManyRequests } from '@/lib/rate-limit'
 
-// ROOT CAUSE (fixed 2026-03-22): Model 'claude-3-haiku-20240307' was deprecated.
-// Updated to 'claude-haiku-4-5-20251001'. Removed hardcoded API key fallback.
 export const maxDuration = 60
 
 export async function POST(request: NextRequest) {
-  // Rate limiting: 10 req/min per IP (Anthropic route)
-  const ip = getIP(request)
-  const { allowed, retryAfter } = rateLimit(`anthropic:${ip}`, 10)
+  const user = await currentUser()
+  if (!user) {
+    return NextResponse.json({ error: 'Sign in required', type: 'auth_error' }, { status: 401 })
+  }
+
+  // Rate limiting: 10 req/min per user
+  const { allowed, retryAfter } = rateLimit(`anthropic:${user.id}`, 10)
   if (!allowed) return tooManyRequests(retryAfter)
 
   try {
@@ -101,10 +104,9 @@ Return ONLY valid JSON in this exact format (no markdown, no explanation):
   }
 }`
 
-    // Calculate max tokens based on question count
-    // For Haiku: ~300 tokens per question with answer and explanation
-    // Use maximum allowed (4096) for large tests
-    const maxTokens = questionCount > 10 ? 4096 : Math.max(2048, questionCount * 300 + 500);
+    // ~350 tokens per question (question + options + answer + explanation).
+    // Cap at the model's per-response output limit (Haiku 4.5 supports 8k output).
+    const maxTokens = Math.min(8000, Math.max(2048, questionCount * 350 + 500));
 
     console.log('[AI Generator] Generating test with params:', {
       questionCount,
@@ -177,7 +179,28 @@ Return ONLY valid JSON in this exact format (no markdown, no explanation):
     const totalMarks = testData.questions.reduce((sum: number, q: any) => sum + (q.marks || 0), 0)
     testData.metadata.totalMarks = totalMarks
 
-    // Track test generation in GA4
+    // Persist for the user so they can revisit/retake
+    const { data: savedTest, error: saveError } = await supabase
+      .from('ai_generated_tests')
+      .insert({
+        user_id: user.id,
+        subject_id: subjectId,
+        subject_name: subject.name,
+        topic_id: topicId,
+        topic_name: topic.name,
+        exam_board: board === 'edexcel' ? 'edexcel' : 'cambridge',
+        difficulty,
+        question_count: questionCount,
+        total_marks: totalMarks,
+        test_data: testData,
+      })
+      .select('id')
+      .single()
+
+    if (saveError) {
+      console.error('[AI Generator] Failed to persist test:', saveError)
+    }
+
     await trackServerTestGeneration(
       subject.name,
       topic.name,
@@ -185,12 +208,10 @@ Return ONLY valid JSON in this exact format (no markdown, no explanation):
       questionCount
     )
 
-    // TODO: Save test to database for tracking
-    // TODO: Increment user's usage count
-
     return NextResponse.json({
       success: true,
-      test: testData
+      testId: savedTest?.id ?? null,
+      test: testData,
     })
 
   } catch (error) {
