@@ -277,3 +277,23 @@ GRANT ALL                                ON classes           TO service_role;
 GRANT SELECT, INSERT, UPDATE             ON classes           TO authenticated;
 GRANT ALL                                ON class_memberships TO service_role;
 GRANT SELECT, INSERT, UPDATE             ON class_memberships TO authenticated;
+
+-- ── 10. Fix classes RLS recursion (replaces policies above) ──
+DROP POLICY IF EXISTS "classes_select_own_or_member" ON classes;
+DROP POLICY IF EXISTS "classes_select_own"           ON classes;
+DROP POLICY IF EXISTS "memberships_select_own"       ON class_memberships;
+DROP POLICY IF EXISTS "memberships_delete_teacher"   ON class_memberships;
+DROP POLICY IF EXISTS "memberships_update_self"      ON class_memberships;
+
+CREATE POLICY "classes_select_own"
+  ON classes FOR SELECT
+  USING (teacher_user_id = auth.uid()::text);
+
+CREATE POLICY "memberships_select_own"
+  ON class_memberships FOR SELECT
+  USING (student_user_id = auth.uid()::text);
+
+CREATE POLICY "memberships_update_self"
+  ON class_memberships FOR UPDATE
+  USING (student_user_id = auth.uid()::text)
+  WITH CHECK (student_user_id = auth.uid()::text);
