@@ -3,20 +3,30 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { useState } from 'react';
-import { Menu, X, Sparkles, BarChart2, Calendar, ClipboardList, Settings } from 'lucide-react';
+import { Menu, X, Sparkles, BarChart2, Calendar, ClipboardList, Settings, GraduationCap } from 'lucide-react';
 import { SignInButton, SignUpButton, UserButton, useUser } from '@clerk/nextjs';
 import { cn } from '@/lib/utils';
 
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const { isSignedIn } = useUser();
+  const { isSignedIn, user } = useUser();
+  const role = user?.publicMetadata?.role as 'teacher' | 'student' | undefined;
+  const isTeacher = role === 'teacher';
 
-  const navigation = [
-    { name: 'Subjects', href: '/subjects' },
-    { name: 'AI Test Generator', href: '/ai-generator', highlight: true },
-    { name: 'Revision Plan', href: '/revision-plan', plan: true },
-    { name: 'Mock Exams', href: '/exam', exam: true },
-  ];
+  const navigation = isTeacher
+    ? [
+        { name: 'Subjects', href: '/subjects' },
+        { name: 'AI Test Generator', href: '/ai-generator', highlight: true },
+        { name: 'Mock Exams', href: '/exam', exam: true },
+      ]
+    : [
+        { name: 'Subjects', href: '/subjects' },
+        { name: 'AI Test Generator', href: '/ai-generator', highlight: true },
+        { name: 'Revision Plan', href: '/revision-plan', plan: true },
+        { name: 'Mock Exams', href: '/exam', exam: true },
+      ];
+
+  const dashboardHref = isTeacher ? '/teacher' : '/dashboard';
 
   return (
     <header className="sticky top-0 z-50 glass">
@@ -66,13 +76,22 @@ export function Header() {
             {/* Auth CTA */}
             {isSignedIn ? (
               <div className="flex items-center gap-4">
-                <Link href="/dashboard" className="text-sm font-medium text-brand-700 hover:text-brand-900">
-                  Dashboard
+                <Link
+                  href={dashboardHref}
+                  className={cn(
+                    'flex items-center gap-1.5 text-sm font-medium transition-colors',
+                    isTeacher ? 'text-purple-700 hover:text-purple-900' : 'text-brand-700 hover:text-brand-900'
+                  )}
+                >
+                  {isTeacher && <GraduationCap className="h-4 w-4" />}
+                  {isTeacher ? 'Teacher Dashboard' : 'Dashboard'}
                 </Link>
-                <Link href="/analytics" className="flex items-center gap-1.5 text-sm font-medium text-emerald-700 hover:text-emerald-900">
-                  <BarChart2 className="h-4 w-4" />
-                  Progress
-                </Link>
+                {!isTeacher && (
+                  <Link href="/analytics" className="flex items-center gap-1.5 text-sm font-medium text-emerald-700 hover:text-emerald-900">
+                    <BarChart2 className="h-4 w-4" />
+                    Progress
+                  </Link>
+                )}
                 <Link href="/settings" className="p-2 rounded-lg text-brand-500 hover:text-brand-800 hover:bg-brand-50 transition-colors" title="Account Settings">
                   <Settings className="h-5 w-5" />
                 </Link>
@@ -146,20 +165,26 @@ export function Header() {
           {isSignedIn ? (
             <>
               <Link
-                href="/dashboard"
-                className="block px-4 py-2 text-base font-medium text-brand-700 hover:bg-brand-50 rounded-lg transition-colors"
+                href={dashboardHref}
+                className={cn(
+                  'flex items-center gap-2 px-4 py-2 text-base font-medium rounded-lg transition-colors',
+                  isTeacher ? 'text-purple-700 hover:bg-purple-50' : 'text-brand-700 hover:bg-brand-50'
+                )}
                 onClick={() => setMobileMenuOpen(false)}
               >
-                Dashboard
+                {isTeacher && <GraduationCap className="h-4 w-4" />}
+                {isTeacher ? 'Teacher Dashboard' : 'Dashboard'}
               </Link>
-              <Link
-                href="/analytics"
-                className="flex items-center gap-2 px-4 py-2 text-base font-medium text-emerald-700 hover:bg-emerald-50 rounded-lg transition-colors"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                <BarChart2 className="h-4 w-4" />
-                My Progress
-              </Link>
+              {!isTeacher && (
+                <Link
+                  href="/analytics"
+                  className="flex items-center gap-2 px-4 py-2 text-base font-medium text-emerald-700 hover:bg-emerald-50 rounded-lg transition-colors"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <BarChart2 className="h-4 w-4" />
+                  My Progress
+                </Link>
+              )}
               <Link
                 href="/settings"
                 className="flex items-center gap-2 px-4 py-2 text-base font-medium text-brand-600 hover:bg-brand-50 rounded-lg transition-colors"

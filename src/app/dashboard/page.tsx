@@ -1,8 +1,10 @@
 import { currentUser } from '@clerk/nextjs/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
-import { BookOpen, Brain, Target, Zap, TrendingUp, Clock } from 'lucide-react'
+import { createClient } from '@supabase/supabase-js'
+import { BookOpen, Brain, Target, Zap, TrendingUp, Clock, Users, ArrowRight } from 'lucide-react'
 import { getUserProgress, getRecentActivity } from '@/lib/user-progress'
+import { readRole, fetchClerkUsers } from '@/lib/classes'
 
 export default async function DashboardPage() {
   const user = await currentUser()
@@ -11,9 +13,41 @@ export default async function DashboardPage() {
     redirect('/sign-in')
   }
 
+  // Role gate: teachers go to their own dashboard; missing role goes to onboarding
+  const role = readRole(user.publicMetadata)
+  if (role === 'teacher') redirect('/teacher')
+  if (!user.publicMetadata?.role) redirect('/onboarding')
+
   // Fetch real user progress
   const progress = await getUserProgress(user.id)
   const recentActivity = await getRecentActivity(user.id, 5)
+
+  // Fetch classes this student is in
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  )
+  const { data: memberships } = await supabase
+    .from('class_memberships')
+    .select('class_id, joined_at, classes!inner(id, name, teacher_user_id, archived_at)')
+    .eq('student_user_id', user.id)
+    .is('removed_at', null)
+
+  type MembershipRow = {
+    class_id: string
+    joined_at: string
+    classes: { id: string; name: string; teacher_user_id: string; archived_at: string | null }
+  }
+  const memberRows = ((memberships ?? []) as unknown as MembershipRow[])
+    .filter((m) => m.classes.archived_at === null)
+
+  const teacherIds = Array.from(new Set(memberRows.map((m) => m.classes.teacher_user_id)))
+  const teacherMap = await fetchClerkUsers(teacherIds)
+  const myClasses = memberRows.map((m) => ({
+    id: m.classes.id,
+    name: m.classes.name,
+    teacher: teacherMap.get(m.classes.teacher_user_id)?.fullName ?? 'Unknown',
+  }))
 
   const stats = [
     {
@@ -78,6 +112,54 @@ export default async function DashboardPage() {
               <p className="font-display text-3xl font-bold text-brand-950">{stat.value}</p>
             </div>
           ))}
+        </div>
+
+        {/* My Classes */}
+        <div className="bg-white rounded-2xl border-2 border-brand-100 p-6 mb-8">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="font-display text-xl font-bold text-brand-950 flex items-center gap-2">
+              <Users className="h-5 w-5 text-purple-500" />
+              My Classes
+            </h2>
+            <Link
+              href="/classes/join"
+              className="text-sm font-medium text-purple-700 hover:text-purple-900 flex items-center gap-1"
+            >
+              Join a class
+              <ArrowRight className="h-3 w-3" />
+            </Link>
+          </div>
+          {myClasses.length === 0 ? (
+            <div className="py-8 text-center">
+              <p className="text-brand-500 text-sm mb-4">
+                You're not in any classes yet. If your teacher gave you a code, join here.
+              </p>
+              <Link
+                href="/classes/join"
+                className="inline-flex items-center gap-2 px-5 py-2 rounded-xl bg-purple-100 text-purple-700 font-medium hover:bg-purple-200 transition-colors text-sm"
+              >
+                <Users className="h-4 w-4" />
+                Enter class code
+              </Link>
+            </div>
+          ) : (
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              {myClasses.map((c) => (
+                <Link
+                  key={c.id}
+                  href={`/teacher/classes/${c.id}`}
+                  className="group p-4 rounded-xl border border-brand-100 hover:border-purple-300 hover:bg-purple-50/50 transition-all"
+                >
+                  <p className="font-medium text-brand-900 mb-0.5 truncate">{c.name}</p>
+                  <p className="text-xs text-brand-500">Teacher: {c.teacher}</p>
+                  <span className="text-xs text-purple-600 group-hover:text-purple-800 mt-2 inline-flex items-center gap-1">
+                    View progress
+                    <ArrowRight className="h-3 w-3" />
+                  </span>
+                </Link>
+              ))}
+            </div>
+          )}
         </div>
 
         <div className="grid lg:grid-cols-3 gap-8">
